@@ -1,0 +1,43 @@
+{
+  "schema_version": "hyperloom.r9700.local_agent_loop.v1",
+  "date": "2026-09-04",
+  "status": "PASS",
+  "hardware": {
+    "gpu": "AMD Radeon AI PRO R9700",
+    "arch": "gfx1201",
+    "runtime": "ROCm 10"
+  },
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "serving": "vLLM OpenAI-compatible endpoint",
+  "mode": "json-action-fallback",
+  "reason_for_fallback": "Current vLLM runtime was started without --enable-auto-tool-choice / --tool-call-parser; native tool_choice required/auto/named each returned HTTP 400.",
+  "live_result": {
+    "requested_goal": "Create candidate.conf containing exactly concurrency=2",
+    "model_decision": {
+      "action": "write_file",
+      "arguments": {
+        "path": "candidate.conf",
+        "content": "concurrency=2"
+      }
+    },
+    "guarded_file_content": "concurrency=2",
+    "final_model_response": "Successfully created candidate.conf with concurrency=2",
+    "first_call_usage": {
+      "prompt_tokens": 105,
+      "completion_tokens": 21,
+      "total_tokens": 126
+    },
+    "second_call_usage": {
+      "prompt_tokens": 154,
+      "completion_tokens": 13,
+      "total_tokens": 167
+    }
+  },
+  "truth_boundary": {
+    "full_hyperloom_think_decide_implement_benchmark_loop": false,
+    "local_agent_tool_primitive_verified": true,
+    "native_vllm_tool_parser_enabled": false,
+    "official_hyperloom_r9700_support": false
+  },
+  "next_gate": "Wire the verified JSON-action local agent backend into KernelForge provider selection, then run one bounded Hyperloom candidate -> benchmark -> keep/reject iteration."
+}
