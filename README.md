@@ -1,37 +1,95 @@
 # Hyperloom R9700 Experimental
 
-Experimental AMD Lab Program Challenge 1 port that explores running Hyperloom on the AMD Radeon AI PRO R9700 (`gfx1201`, RDNA 4, 64 CUs, 32 GB VRAM).
+Experimental AMD Lab Program Challenge 1 port for running Hyperloom on the AMD Radeon AI PRO R9700 (`gfx1201`, RDNA4, 64 CUs, 32 GiB-class VRAM).
 
-## Goal
+## Status
 
-Hyperloom currently exposes official runner identities for AMD Instinct families. This project adds an **experimental** R9700 identity and validates the architecture-neutral optimization path without claiming official AMD support.
+**LIVE EXPERIMENTAL PASS** for the architecture-neutral Hyperloom benchmark path.
 
-The first target is deliberately narrow:
+On 2026-09-04 the patched Hyperloom build executed on the physical R9700 and successfully produced both baseline and candidate `benchmark_report.json` artifacts using Hyperloom's `bypass` backend + InferenceX against the existing ROCm 10 vLLM server.
 
-1. Accept and auto-detect `r9700` / `gfx1201`.
-2. Use Hyperloom's own `bypass` benchmark backend with vLLM on ROCm 10.
-3. Run a real `baseline -> candidate -> compare` loop on the local R9700.
-4. Keep Instinct/CDNA-specific Magpie, TraceLens and kernel paths gated until they are reimplemented or revalidated for RDNA4.
+This is **not official AMD Hyperloom support** and does not yet include a Magpie R9700 runner, TraceLens RDNA4 profiling or RDNA4-specific kernel optimization.
 
-## Verified development state
+## Experimental upstream patch
 
-- Upstream base: `AMD-AGI/Hyperloom` commit `9ae79d6a8c9fec7ed041735e70fb19ef39850813`.
-- Experimental identity: `r9700 -> (gfx1201, 64 CUs)`.
-- CLI/parser accepts `--gpu-type r9700` in the patched working tree.
-- Product-name and `gfx1201` auto-detection covered by tests.
-- 11 focused upstream tests pass in the development worktree.
-- Live execution on the physical R9700 remains the next acceptance gate.
+Base: `AMD-AGI/Hyperloom@9ae79d6a8c9fec7ed041735e70fb19ef39850813`
+
+The minimal identity port is:
+
+```python
+"r9700": ("gfx1201", 64)
+```
+
+plus:
+
+```python
+"gfx1201": "r9700"
+```
+
+Reproducible patch:
+
+`patches/hyperloom-r9700-gfx1201.patch`
+
+## Live validation
+
+### Preflight
+
+- physical GPU: AMD Radeon AI PRO R9700
+- `rocm-smi`: `gfx1201`
+- Hyperloom autodetect: `r9700`
+- dispatch identity: `gfx1201`, 64 CU
+- backend: `bypass`
+- result: **PASS**
+
+### Baseline
+
+Workload: ISL=32, OSL=32, concurrency=1.
+
+- completed: 10/10
+- output throughput: **21.7953 tok/s**
+- total token throughput: **43.5905 tok/s**
+- mean TTFT: **68.47 ms**
+- mean E2E: **1467.81 ms**
+
+### Candidate
+
+Same model/GPU/server, concurrency=2.
+
+- completed: 20/20
+- output throughput: **36.5927 tok/s**
+- total token throughput: **73.1854 tok/s**
+- mean TTFT: **121.06 ms**
+- mean E2E: **1746.44 ms**
+
+Aggregate output throughput changed by **+67.89%**. This is a concurrency/workload tuning result: latency also increased. It is not presented as a universal 67.89% GPU speedup.
+
+Raw evidence:
+
+`evidence/live-r9700-results-20260904.json`
 
 ## Why the bypass backend first
 
-Hyperloom already ships `HYPERLOOM_BENCHMARK_BACKEND=bypass`. It runs serving-framework benchmarks directly in Python and writes the same report contract consumed by the optimizer, without requiring a Magpie board-specific benchmark script. That makes it the safest first path for an RDNA4 board that does not yet have an official Magpie runner.
+Hyperloom already ships `HYPERLOOM_BENCHMARK_BACKEND=bypass`. It runs serving-framework benchmarks directly in Python and produces the report contract consumed by Hyperloom without requiring a board-specific Magpie shell runner. That makes it the safest first route for an RDNA4 GPU that upstream Hyperloom does not yet recognize.
 
-## Truth boundary
+## Tests
 
-This repository does **not** claim official Hyperloom support for Radeon AI PRO R9700. A successful experiment means the patched Hyperloom orchestration + bypass benchmark path runs on the R9700 and produces reproducible evidence. Instinct-specific kernels must not be reused as if `gfx942/gfx950` artifacts were compatible with `gfx1201`.
+The upstream-style development worktree passed **11 focused tests**, covering the R9700 identity, parser acceptance, product-name autodetection and `gfx1201` fallback detection.
+
+## Truth boundary / Phase 2
+
+Still intentionally not claimed:
+
+- official AMD support
+- Magpie `vllm_r9700.sh` / `sglang_r9700.sh`
+- TraceLens profiling on RDNA4
+- RDNA4-specific kernel optimization
+- portability of `gfx942/gfx950` compiled artifacts
+- full autonomous Think → Decide → Implement Hyperloom optimization session
+
+Those are the next engineering layer after proving the architecture-neutral execution path.
 
 ## Challenge project
 
-The judge-facing integration, evidence map, Builder submission and demo UI live in:
+Judge-facing integration, Builder submission, demo and full evidence map:
 
 `Rafa-Innerchispa/amd-ralfiia-hybrid-ops-copilot`
