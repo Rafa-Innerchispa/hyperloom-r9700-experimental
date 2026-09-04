@@ -32,6 +32,17 @@ from kernelforge.agent_backends.registry import (
     register_agent_provider,
     resolve_agent_runtime,
 )
+from kernelforge.agent_backends.local_openai import (
+    LocalOpenAIBackend,
+    LocalOpenAIUnavailableError,
+    register_local_openai_provider,
+)
+
+# Keep the core registry provider-neutral while making the local OpenAI backend
+# available whenever the agent_backends package is imported. Python imports the
+# package before any submodule, so direct registry imports see the registration
+# too after package initialization completes.
+register_local_openai_provider()
 
 __all__ = [
     "AGENT_WATCHDOG_GRACE_SEC",
@@ -48,6 +59,8 @@ __all__ = [
     "AgentRunSpec",
     "AgentRuntimeConfig",
     "AgentToolPolicy",
+    "LocalOpenAIBackend",
+    "LocalOpenAIUnavailableError",
     "ResumableAgentBackend",
     "StdioMcpServer",
     "create_registered_backend",
