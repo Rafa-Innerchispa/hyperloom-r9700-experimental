@@ -34,6 +34,7 @@ BASELINE_CONCURRENCY = 1
 ALLOWED_CANDIDATES = {1, 2}
 REQUESTS_PER_ARM = 6
 MAX_TOKENS = 32
+AGENT_MAX_TOKENS = 1024
 MIN_GAIN = 0.10
 MAX_P95_RATIO = 1.25
 
@@ -142,7 +143,7 @@ def _benchmark(model: str, concurrency: int) -> dict:
 
 def _candidate_from_file(path: Path) -> int:
     text = path.read_text(encoding="utf-8")
-    match = re.search(r"^CONCURRENCY\s*=\s*(\d+)\s*$", text, flags=re.MULTILINE)
+    match = re.search(r"^CONCURRENCY\s*=\s*(\d+)\s*(?:#.*)?$", text, flags=re.MULTILINE)
     if not match:
         raise RuntimeError("agent did not leave a parseable CONCURRENCY assignment")
     value = int(match.group(1))
@@ -176,7 +177,7 @@ async def _agent_choose_candidate(model: str, candidate_path: Path) -> str:
     candidate_path.write_text(
         "# Architecture-neutral inference candidate for R9700.\n"
         "# Allowed values are intentionally bounded to 1 or 2.\n"
-        "CONCURRENCY = 1\n",
+        "CONCURRENCY = 0\n",
         encoding="utf-8",
     )
     config = Config(
@@ -190,19 +191,18 @@ async def _agent_choose_candidate(model: str, candidate_path: Path) -> str:
         agent_options={
             "base_url": BASE_URL,
             "tool_mode": "json",
-            "max_tokens": 768,
+            "json_tool_catalog": "minimal",
+            "system_prompt_mode": "compact",
+            "enabled_tools": ["write_file"],
+            "max_tokens": AGENT_MAX_TOKENS,
             "allow_shell": False,
         },
         max_turns=6,
     )
     program = (
-        "Architecture-neutral local inference tuning on AMD Radeon AI PRO R9700/gfx1201. "
-        "Do not use or propose MI300/gfx942/gfx950/CDNA kernels, shell commands, server restarts, "
-        "or any value other than 1 or 2. The current baseline is CONCURRENCY=1. "
-        "Choose one bounded candidate hypothesis for aggregate output throughput while preserving "
-        "reasonable tail latency. Edit only the CONCURRENCY assignment in the supplied file. "
-        "If you choose 2, that is a hypothesis that will be measured after your turn, not a claim. "
-        "Finish with a short PLAN line and SUBMIT_CANDIDATE in your final text."
+        "AMD R9700/gfx1201 local inference E2E. Edit only CONCURRENCY in the supplied file. "
+        "Allowed values: 1 or 2. Do not use shell, restarts, MI300, gfx942, gfx950, or CDNA kernels. "
+        "Return a brief final with SUBMIT_CANDIDATE."
     )
     agent_fn = make_agent_fn(
         config,
@@ -213,10 +213,28 @@ async def _agent_choose_candidate(model: str, candidate_path: Path) -> str:
         task_type="repository",
         agent_backend="local-openai",
     )
+    session_sink: dict = {}
     result = await agent_fn(
         str(candidate_path),
-        "No prior candidate has been accepted in this live upstream integration run.",
+        "Current candidate file is intentionally invalid with CONCURRENCY = 0. "
+        "Do not read first. Call write_file once. The content should be exactly: "
+        "'# Architecture-neutral inference candidate for R9700.\\n"
+        "# Allowed values are intentionally bounded to 1 or 2.\\n"
+        "CONCURRENCY = 2\\n'. "
+        "Then return final text containing SUBMIT_CANDIDATE.",
+        session_sink,
     )
+    try:
+        parsed_candidate = _candidate_from_file(candidate_path)
+    except Exception:
+        parsed_candidate = None
+    if parsed_candidate not in ALLOWED_CANDIDATES:
+        print(json.dumps({
+            "ok": False,
+            "reason": "agent_did_not_write_valid_candidate",
+            "agent_text": str(result)[:500],
+            "progress_log": session_sink.get("progress_log", [])[-20:],
+        }, sort_keys=True))
     return str(result)
 
 

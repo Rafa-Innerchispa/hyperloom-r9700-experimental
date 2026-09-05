@@ -1,0 +1,51 @@
+{
+  "agent_backend": "local-openai",
+  "agent_text": "SUBMIT_CANDIDATE",
+  "base_url": "http://127.0.0.1:8000/v1",
+  "baseline": {
+    "concurrency": 1,
+    "errors": [],
+    "failed": 0,
+    "mean_e2e_ms": 797.1843586613735,
+    "output_tok_s": 20.277333635649377,
+    "output_tokens": 97,
+    "p95_e2e_ms": 898.1562732442399,
+    "passed": 6,
+    "requests": 6,
+    "total_tok_s": 57.90537543376163,
+    "total_tokens": 277,
+    "wall_sec": 4.7836664200003725
+  },
+  "candidate": {
+    "concurrency": 2,
+    "errors": [],
+    "failed": 0,
+    "mean_e2e_ms": 961.6350904980209,
+    "output_tok_s": 34.75765714253109,
+    "output_tokens": 102,
+    "p95_e2e_ms": 1210.263605993532,
+    "passed": 6,
+    "requests": 6,
+    "total_tok_s": 96.09469915876241,
+    "total_tokens": 282,
+    "wall_sec": 2.934605160000501
+  },
+  "candidate_concurrency": 2,
+  "cdna_specific_paths_used": false,
+  "gate": {
+    "gain_fraction": 0.714113786707341,
+    "gain_percent": 71.41137867073411,
+    "max_p95_ratio": 1.25,
+    "min_gain_fraction": 0.1,
+    "p95_ratio": 1.3474978041648877
+  },
+  "hardware_claim": "physical AMD Radeon AI PRO R9700 / gfx1201 experiment",
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> bounded candidate -> real benchmark -> deterministic KEEP/REJECT",
+  "schema": "hyperloom-r9700-upstream-agent-e2e-v1",
+  "shell_exposed": false,
+  "support_status": "experimental; not official AMD Hyperloom support",
+  "timestamp_utc": "2026-09-05T04:41:17.720894+00:00",
+  "tool_mode": "json",
+  "verdict": "REJECT"
+}

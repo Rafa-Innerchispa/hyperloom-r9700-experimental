@@ -85,6 +85,65 @@ def test_command_tool_has_narrow_allowlist(tmp_path: Path):
     assert edited is False
 
 
+def test_minimal_json_tool_catalog_omits_large_schemas(tmp_path: Path):
+    backend = LocalOpenAIBackend(runtime(json_tool_catalog="minimal"))
+    spec = AgentRunSpec(
+        system_prompt="",
+        user_prompt="",
+        cwd=str(tmp_path),
+        writable=True,
+        tool_policy=AgentToolPolicy(read=True, search=True, write=True, shell=True),
+    ).resolved(backend.runtime)
+    catalog = json.loads(
+        backend._json_tool_catalog(
+            backend._tool_definitions(spec),
+            minimal=backend.json_tool_catalog_mode == "minimal",
+        )
+    )
+    assert {"name": "write_file", "args": ["content", "path"]} in catalog
+    assert all("parameters" not in item for item in catalog)
+    assert all("description" not in item for item in catalog)
+
+
+def test_enabled_tools_filters_runtime_capabilities(tmp_path: Path):
+    backend = LocalOpenAIBackend(runtime(enabled_tools=["write_file"], allow_shell=True))
+    spec = AgentRunSpec(
+        system_prompt="",
+        user_prompt="",
+        cwd=str(tmp_path),
+        writable=True,
+        tool_policy=AgentToolPolicy(read=True, search=True, write=True, shell=True),
+    ).resolved(backend.runtime)
+    names = {
+        str((tool.get("function") or {}).get("name") or "")
+        for tool in backend._tool_definitions(spec)
+    }
+    assert names == {"write_file"}
+
+
+def test_compact_system_prompt_mode_keeps_large_prompt_out_of_payload(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    backend = LocalOpenAIBackend(runtime(tool_mode="json", system_prompt_mode="compact"))
+    calls = []
+
+    def fake_post(path, payload, timeout):
+        calls.append(payload)
+        assert payload["messages"][1]["content"].startswith("You are a bounded local coding agent.")
+        assert "VERY LARGE PROMPT" not in payload["messages"][1]["content"]
+        return {"choices": [{"message": {"content": '{"final":"ok"}'}}], "usage": {}}
+
+    monkeypatch.setattr(backend, "_post", fake_post)
+    spec = AgentRunSpec(
+        system_prompt="VERY LARGE PROMPT " * 1000,
+        user_prompt="Finish.",
+        cwd=str(tmp_path),
+        writable=False,
+        tool_policy=AgentToolPolicy(read=True, search=False, write=False, shell=False, max_turns=1),
+    )
+    result = asyncio.run(backend.run(spec))
+    assert result.text == "ok"
+    assert len(calls) == 1
+
+
 def test_run_executes_native_tool_call_then_finishes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     backend = LocalOpenAIBackend(runtime(tool_mode="native"))
     calls = []
@@ -177,6 +236,41 @@ def test_auto_mode_falls_back_to_json_actions_when_vllm_has_no_tool_parser(tmp_p
     assert "local-openai: native tools unavailable; falling back to json-action" in progress
     assert "local-openai: json-action tool mode" in progress
     assert result.usage["total_tokens"] == 56
+
+
+def test_json_action_accepts_name_args_dialect(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    backend = LocalOpenAIBackend(runtime(tool_mode="json", json_tool_catalog="minimal"))
+    calls = []
+
+    def fake_post(path, payload, timeout):
+        calls.append(payload)
+        if len(calls) == 1:
+            return {
+                "choices": [
+                    {
+                        "message": {
+                            "content": '{"name":"write_file","args":["CONCURRENCY = 1\\n","candidate.py"]}'
+                        }
+                    }
+                ],
+                "usage": {},
+            }
+        assert "TOOL_RESULT action=write_file: WROTE candidate.py" in payload["messages"][-1]["content"]
+        return {"choices": [{"message": {"content": '{"final":"SUBMIT_CANDIDATE"}'}}], "usage": {}}
+
+    monkeypatch.setattr(backend, "_post", fake_post)
+    spec = AgentRunSpec(
+        system_prompt="",
+        user_prompt="Write the candidate.",
+        cwd=str(tmp_path),
+        writable=True,
+        target_files=["candidate.py"],
+        tool_policy=AgentToolPolicy(write=True, max_turns=3),
+    )
+    result = asyncio.run(backend.run(spec))
+    assert result.text == "SUBMIT_CANDIDATE"
+    assert (tmp_path / "candidate.py").read_text(encoding="utf-8") == "CONCURRENCY = 1\n"
+    assert result.edit_count == 1
 
 
 def test_json_protocol_retries_invalid_non_json_response(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):

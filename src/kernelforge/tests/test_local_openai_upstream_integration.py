@@ -7,12 +7,15 @@ from kernelforge.agent_backends.base import AgentRunResult, AgentRunSpec, AgentR
 from kernelforge.agent_backends.local_openai import LocalOpenAIBackend
 from kernelforge.config import Config
 from kernelforge.orchestrator.agent import make_agent_fn
+from scripts import r9700_upstream_agent_e2e
 
 
 def _runtime(**options) -> AgentRuntimeConfig:
     merged = {
         "base_url": "http://127.0.0.1:8000/v1",
         "tool_mode": "json",
+        "json_tool_catalog": "minimal",
+        "system_prompt_mode": "compact",
         "max_tokens": 128,
     }
     merged.update(options)
@@ -72,6 +75,17 @@ def test_shell_tool_is_fail_closed_without_explicit_runtime_opt_in(tmp_path: Pat
         for tool in opted_in._tool_definitions(opted_spec)
     }
     assert "run_command" in opted_names
+
+
+def test_live_r9700_agent_e2e_uses_bounded_completion_budget():
+    assert r9700_upstream_agent_e2e.AGENT_MAX_TOKENS <= 1024
+
+
+def test_live_r9700_candidate_parser_accepts_inline_comment(tmp_path: Path):
+    candidate = tmp_path / "candidate.py"
+    candidate.write_text("CONCURRENCY = 2  # bounded candidate\n", encoding="utf-8")
+
+    assert r9700_upstream_agent_e2e._candidate_from_file(candidate) == 2
 
 
 def test_upstream_make_agent_fn_runs_registered_local_openai_backend(
@@ -136,6 +150,9 @@ def test_upstream_make_agent_fn_runs_registered_local_openai_backend(
         agent_options={
             "base_url": "http://127.0.0.1:8000/v1",
             "tool_mode": "json",
+            "json_tool_catalog": "minimal",
+            "system_prompt_mode": "compact",
+            "enabled_tools": ["write_file"],
             "max_tokens": 128,
         },
         max_turns=4,

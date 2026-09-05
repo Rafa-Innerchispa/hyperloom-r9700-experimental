@@ -87,6 +87,29 @@ class LocalOpenAIBackend:
         """Require an explicit opt-in before exposing subprocess execution."""
         return bool(self.runtime.options.get("allow_shell", False))
 
+    @property
+    def json_tool_catalog_mode(self) -> str:
+        mode = str(self.runtime.options.get("json_tool_catalog") or "full").strip().lower()
+        if mode not in {"full", "minimal"}:
+            raise ValueError("local-openai json_tool_catalog must be one of: full, minimal")
+        return mode
+
+    @property
+    def system_prompt_mode(self) -> str:
+        mode = str(self.runtime.options.get("system_prompt_mode") or "full").strip().lower()
+        if mode not in {"full", "compact"}:
+            raise ValueError("local-openai system_prompt_mode must be one of: full, compact")
+        return mode
+
+    @property
+    def enabled_tools(self) -> set[str] | None:
+        raw = self.runtime.options.get("enabled_tools")
+        if raw in (None, "", []):
+            return None
+        if not isinstance(raw, list) or not all(isinstance(item, str) and item for item in raw):
+            raise ValueError("local-openai enabled_tools must be a list of tool names")
+        return set(raw)
+
     def _request(self, method: str, path: str, payload: dict[str, Any] | None, timeout: float) -> dict[str, Any]:
         data = json.dumps(payload).encode("utf-8") if payload is not None else None
         request = urllib.request.Request(
@@ -227,20 +250,31 @@ class LocalOpenAIBackend:
                 {"argv": {"type": "array", "items": {"type": "string"}, "minItems": 1}},
                 ["argv"],
             )
+        enabled = self.enabled_tools
+        if enabled is not None:
+            tools = [
+                tool
+                for tool in tools
+                if str((tool.get("function") or {}).get("name") or "") in enabled
+            ]
         return tools
 
     @staticmethod
-    def _json_tool_catalog(tools: list[dict[str, Any]]) -> str:
+    def _json_tool_catalog(tools: list[dict[str, Any]], *, minimal: bool = False) -> str:
         compact = []
         for tool in tools:
             fn = tool.get("function") or {}
-            compact.append(
-                {
-                    "name": fn.get("name"),
-                    "description": fn.get("description"),
-                    "parameters": fn.get("parameters"),
-                }
-            )
+            if minimal:
+                params = ((fn.get("parameters") or {}).get("properties") or {}).keys()
+                compact.append({"name": fn.get("name"), "args": sorted(params)})
+            else:
+                compact.append(
+                    {
+                        "name": fn.get("name"),
+                        "description": fn.get("description"),
+                        "parameters": fn.get("parameters"),
+                    }
+                )
         return json.dumps(compact, separators=(",", ":"), ensure_ascii=False)
 
     @staticmethod
@@ -268,6 +302,32 @@ class LocalOpenAIBackend:
                 if isinstance(payload, dict):
                     return payload
         return None
+
+    @staticmethod
+    def _tool_argument_names(tools: list[dict[str, Any]]) -> dict[str, list[str]]:
+        names: dict[str, list[str]] = {}
+        for tool in tools:
+            fn = tool.get("function") or {}
+            name = str(fn.get("name") or "")
+            params = ((fn.get("parameters") or {}).get("properties") or {}).keys()
+            if name:
+                names[name] = sorted(str(param) for param in params)
+        return names
+
+    @staticmethod
+    def _normalize_json_action(payload: dict[str, Any], tools: list[dict[str, Any]]) -> dict[str, Any]:
+        if "action" in payload or "final" in payload:
+            return payload
+        name = payload.get("name")
+        if not isinstance(name, str) or not name:
+            return payload
+        args = payload.get("arguments", payload.get("args", {}))
+        if isinstance(args, list):
+            arg_names = LocalOpenAIBackend._tool_argument_names(tools).get(name, [])
+            args = {key: value for key, value in zip(arg_names, args, strict=False)}
+        elif not isinstance(args, dict):
+            args = {"_raw": args}
+        return {"action": name, "arguments": args}
 
     @staticmethod
     def _native_tooling_unavailable(error: Exception) -> bool:
@@ -373,7 +433,13 @@ class LocalOpenAIBackend:
 
         messages: list[dict[str, Any]] = []
         if spec.system_prompt:
-            messages.append({"role": "system", "content": spec.system_prompt})
+            system_prompt = spec.system_prompt
+            if self.system_prompt_mode == "compact":
+                system_prompt = (
+                    "You are a bounded local coding agent. Use only supplied JSON tools. "
+                    "Edit only target files. Do not use shell unless that tool is explicitly available."
+                )
+            messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": spec.user_prompt})
 
         tools = self._tool_definitions(spec)
@@ -405,7 +471,10 @@ class LocalOpenAIBackend:
 
             payload_messages = messages
             if tools and json_mode and not json_protocol_injected:
-                protocol = self._JSON_PROTOCOL + " Available tools: " + self._json_tool_catalog(tools)
+                protocol = self._JSON_PROTOCOL + " Available tools: " + self._json_tool_catalog(
+                    tools,
+                    minimal=self.json_tool_catalog_mode == "minimal",
+                )
                 payload_messages = [{"role": "system", "content": protocol}, *messages]
                 messages = payload_messages
                 json_protocol_injected = True
@@ -462,6 +531,7 @@ class LocalOpenAIBackend:
                     if spec.progress_log is not None:
                         spec.progress_log.append("local-openai: invalid json-action response; retrying")
                     continue
+                action_payload = self._normalize_json_action(action_payload, tools)
                 if "final" in action_payload:
                     final_text = str(action_payload.get("final") or "")
                     if spec.progress_log is not None:
