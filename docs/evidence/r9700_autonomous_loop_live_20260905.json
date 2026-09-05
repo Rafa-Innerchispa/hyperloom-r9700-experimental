@@ -1,0 +1,63 @@
+{
+  "schema": "hyperloom.r9700.autonomous_loop.live.v1",
+  "timestamp_utc": "2026-09-05T00:03:17Z",
+  "node": "amd-.5",
+  "gpu": "AMD Radeon AI PRO R9700",
+  "gfx": "gfx1201",
+  "runtime": "ROCm 10 + resident vLLM",
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "execution": {
+    "project": "Rafa-Innerchispa/hyperloom-r9700-autonomous-loop",
+    "script": "optimizer_loop.py",
+    "peer_python_runtime_returncode": 0,
+    "production_vllm_restart": false,
+    "cloud_used": false
+  },
+  "baseline": {
+    "concurrency": 1,
+    "requests_planned": 6,
+    "requests_ok": 6,
+    "elapsed_sec": 8.3021,
+    "output_tokens": 175,
+    "output_tokens_per_sec": 21.079,
+    "requests_per_sec": 0.7227,
+    "latency_mean_sec": 1.3834,
+    "latency_p95_sec": 1.6055
+  },
+  "agent_proposal": {
+    "concurrency": 2,
+    "reason": "Testing concurrency=2 to improve output_tokens_per_sec while monitoring p95 latency",
+    "action": "write_file",
+    "path": "candidate.conf",
+    "content": "concurrency=2",
+    "prompt_tokens": 240,
+    "completion_tokens": 40,
+    "total_tokens": 280
+  },
+  "candidate": {
+    "concurrency": 2,
+    "requests_planned": 6,
+    "requests_ok": 6,
+    "elapsed_sec": 4.822,
+    "output_tokens": 175,
+    "output_tokens_per_sec": 36.2918,
+    "requests_per_sec": 1.2443,
+    "latency_mean_sec": 1.5531,
+    "latency_p95_sec": 1.7177
+  },
+  "gate": {
+    "throughput_gain_pct": 72.17,
+    "p95_latency_ratio": 1.07,
+    "error_free": true,
+    "min_gain_required_pct": 3.0,
+    "max_p95_ratio": 2.5,
+    "verdict": "KEEP"
+  },
+  "final": {
+    "selected_concurrency": 2,
+    "candidate_file": "concurrency=2",
+    "rollback_applied": false,
+    "verdict": "KEEP"
+  },
+  "truth_boundary": "This proves the autonomous proposal/benchmark/KEEP-REJECT primitive live on the R9700. The full upstream Hyperloom KernelForge local-openai branch is separately tested and still needs direct node-.5 checkout execution before claiming end-to-end upstream integration."
+}

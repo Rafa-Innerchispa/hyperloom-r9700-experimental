@@ -44,12 +44,40 @@ The experimental backend deliberately implements fewer capabilities than Claude/
 - shell-like execution is available only when `AgentToolPolicy.shell` is true and the executable is in a narrow argv allowlist
 - timeout and max-turn ceilings are enforced
 
-## Evidence already obtained
+## Bounded autonomous loop
 
-A live R9700/Qwen smoke outside the KernelForge class proved the JSON-action primitive end to end: Qwen selected `write_file`, the guard wrote `candidate.conf` with `concurrency=2`, the real tool result was returned, and Qwen completed the turn. The registered backend has focused mocked coverage for the same native-to-JSON fallback path.
+The branch now includes `kernelforge.r9700_autonomous_loop` plus `scripts/r9700_autonomous_optimizer.py`. The loop intentionally separates model proposal from deterministic acceptance:
 
-The next acceptance gate is the registered `LocalOpenAIBackend` running on node `.5` against the resident Qwen/vLLM service, followed by a bounded optimization cycle:
+`baseline -> Qwen proposal -> bounded candidate -> benchmark -> KEEP/REJECT`
 
-`baseline -> Qwen decision -> candidate edit -> benchmark -> KEEP/REJECT`
+The local model may propose only an allow-listed serving concurrency and writes that proposal into `candidate.json`. It cannot accept its own result. The final gate is deterministic and checks throughput gain, request success and bounded mean/p95 latency regression.
 
-Any performance conclusion from that cycle must be reported as R9700 experimental evidence, not as official upstream Hyperloom support.
+Focused backend + registry + autonomous-loop tests currently pass **34/34**.
+
+## Live R9700 autonomous evidence
+
+A real bounded cycle ran on AMD node `.5` against the resident R9700/Qwen/vLLM service without restarting vLLM and without cloud resources.
+
+Baseline (`concurrency=1`):
+
+- 6/6 requests successful
+- 21.079 output tokens/s
+- mean latency 1.3834 s
+- p95 latency 1.6055 s
+
+Qwen proposed `concurrency=2` using the bounded `write_file` action. The candidate produced:
+
+- 6/6 requests successful
+- 36.2918 output tokens/s
+- mean latency 1.5531 s
+- p95 latency 1.7177 s
+
+The deterministic gate measured **+72.17% aggregate output throughput**, p95 ratio **1.07**, and returned **KEEP**. No rollback was required.
+
+Canonical sanitized evidence is stored in:
+
+`docs/evidence/r9700_autonomous_loop_live_20260905.json`
+
+## Truth boundary
+
+The live cycle proves the autonomous proposal/benchmark/KEEP-REJECT primitive on the physical R9700. The `LocalOpenAIBackend` implementation is committed and tested in the full Hyperloom-derived branch. The remaining integration gate is to execute that exact full branch directly on node `.5` and then connect it to the upstream optimizer entry point. Until that exact checkout runs end to end, this project must not claim official or complete upstream Hyperloom R9700 support.
