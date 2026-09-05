@@ -3,9 +3,9 @@
 
 This intentionally does NOT enter Instinct/CDNA kernel paths. It proves the real
 upstream KernelForge agent factory can select our local-openai backend, let the
-resident Qwen model propose a bounded concurrency candidate, benchmark that
-candidate against the same local vLLM server, and make a deterministic
-KEEP/REJECT decision.
+resident Qwen model choose a bounded concurrency candidate from measured baseline
+evidence, benchmark that candidate repeatedly against the same local vLLM server,
+and make a deterministic KEEP/REJECT decision.
 """
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ import json
 import math
 import os
 import re
+import statistics
 import sys
 import time
 import urllib.request
@@ -33,6 +34,7 @@ BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8000/v1").rstrip(
 BASELINE_CONCURRENCY = 1
 ALLOWED_CANDIDATES = {1, 2}
 REQUESTS_PER_ARM = 6
+MEASUREMENT_ROUNDS = 3
 MAX_TOKENS = 32
 AGENT_MAX_TOKENS = 1024
 MIN_GAIN = 0.10
@@ -113,11 +115,14 @@ def _percentile(values: list[float], q: float) -> float:
     return ordered[low] + (ordered[high] - ordered[low]) * (pos - low)
 
 
-def _benchmark(model: str, concurrency: int) -> dict:
+def _benchmark(model: str, concurrency: int, *, round_index: int = 0) -> dict:
     started = time.perf_counter()
     rows: list[dict] = []
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = [pool.submit(_one_request, model, i) for i in range(REQUESTS_PER_ARM)]
+        futures = [
+            pool.submit(_one_request, model, round_index * REQUESTS_PER_ARM + i)
+            for i in range(REQUESTS_PER_ARM)
+        ]
         for future in as_completed(futures):
             rows.append(future.result())
     wall = time.perf_counter() - started
@@ -126,6 +131,7 @@ def _benchmark(model: str, concurrency: int) -> dict:
     prompt_tokens = sum(int(row["prompt_tokens"]) for row in passed)
     latencies = [float(row["elapsed_sec"]) for row in passed]
     return {
+        "round": round_index + 1,
         "concurrency": concurrency,
         "requests": len(rows),
         "passed": len(passed),
@@ -141,6 +147,29 @@ def _benchmark(model: str, concurrency: int) -> dict:
     }
 
 
+def _aggregate_rounds(rounds: list[dict]) -> dict:
+    if not rounds:
+        raise ValueError("at least one benchmark round is required")
+    return {
+        "round_count": len(rounds),
+        "requests": sum(int(row["requests"]) for row in rounds),
+        "passed": sum(int(row["passed"]) for row in rounds),
+        "failed": sum(int(row["failed"]) for row in rounds),
+        "median_output_tok_s": statistics.median(float(row["output_tok_s"]) for row in rounds),
+        "mean_output_tok_s": statistics.fmean(float(row["output_tok_s"]) for row in rounds),
+        "min_output_tok_s": min(float(row["output_tok_s"]) for row in rounds),
+        "max_output_tok_s": max(float(row["output_tok_s"]) for row in rounds),
+        "median_total_tok_s": statistics.median(float(row["total_tok_s"]) for row in rounds),
+        "median_mean_e2e_ms": statistics.median(float(row["mean_e2e_ms"]) for row in rounds),
+        "median_p95_e2e_ms": statistics.median(float(row["p95_e2e_ms"]) for row in rounds),
+    }
+
+
+def _benchmark_rounds(model: str, concurrency: int, rounds: int = MEASUREMENT_ROUNDS) -> dict:
+    raw = [_benchmark(model, concurrency, round_index=index) for index in range(rounds)]
+    return {"rounds": raw, "aggregate": _aggregate_rounds(raw)}
+
+
 def _candidate_from_file(path: Path) -> int:
     text = path.read_text(encoding="utf-8")
     match = re.search(r"^CONCURRENCY\s*=\s*(\d+)\s*(?:#.*)?$", text, flags=re.MULTILINE)
@@ -153,12 +182,16 @@ def _candidate_from_file(path: Path) -> int:
 
 
 def _verdict(baseline: dict, candidate: dict) -> tuple[str, dict]:
-    if baseline["passed"] != REQUESTS_PER_ARM or candidate["passed"] != REQUESTS_PER_ARM:
+    if baseline["failed"] or candidate["failed"]:
         return "REJECT", {"reason": "request_failure"}
-    if baseline["output_tok_s"] <= 0:
+    if baseline["median_output_tok_s"] <= 0:
         return "REJECT", {"reason": "invalid_baseline"}
-    gain = candidate["output_tok_s"] / baseline["output_tok_s"] - 1.0
-    p95_ratio = candidate["p95_e2e_ms"] / baseline["p95_e2e_ms"] if baseline["p95_e2e_ms"] > 0 else math.inf
+    gain = candidate["median_output_tok_s"] / baseline["median_output_tok_s"] - 1.0
+    p95_ratio = (
+        candidate["median_p95_e2e_ms"] / baseline["median_p95_e2e_ms"]
+        if baseline["median_p95_e2e_ms"] > 0
+        else math.inf
+    )
     keep = gain >= MIN_GAIN and p95_ratio <= MAX_P95_RATIO
     return (
         "KEEP" if keep else "REJECT",
@@ -168,11 +201,30 @@ def _verdict(baseline: dict, candidate: dict) -> tuple[str, dict]:
             "p95_ratio": p95_ratio,
             "min_gain_fraction": MIN_GAIN,
             "max_p95_ratio": MAX_P95_RATIO,
+            "throughput_metric": "median_output_tok_s",
+            "latency_metric": "median_p95_e2e_ms",
         },
     )
 
 
-async def _agent_choose_candidate(model: str, candidate_path: Path) -> str:
+def _decision_context(baseline: dict) -> str:
+    return (
+        "A real baseline has already been measured at concurrency 1 over "
+        f"{baseline['round_count']} rounds. Median output throughput: "
+        f"{baseline['median_output_tok_s']:.4f} tok/s. Median p95 end-to-end latency: "
+        f"{baseline['median_p95_e2e_ms']:.2f} ms. Failed requests: {baseline['failed']}. "
+        "Choose exactly one candidate concurrency from the bounded set [1, 2]. "
+        "Your objective is to maximize aggregate output throughput while hypothesizing that the "
+        f"candidate can keep p95 latency within {MAX_P95_RATIO:.2f}x of baseline. "
+        "You have not seen candidate benchmark results. Make the choice yourself from the measured "
+        "baseline and the bounded search space. Use write_file exactly once to replace the supplied "
+        "candidate file with the same two comment lines and a valid CONCURRENCY assignment using "
+        "your chosen value. Do not use shell and do not restart any service. Then return a short "
+        "PLAN describing your hypothesis and include SUBMIT_CANDIDATE."
+    )
+
+
+async def _agent_choose_candidate(model: str, candidate_path: Path, baseline: dict) -> dict:
     candidate_path.parent.mkdir(parents=True, exist_ok=True)
     candidate_path.write_text(
         "# Architecture-neutral inference candidate for R9700.\n"
@@ -200,9 +252,10 @@ async def _agent_choose_candidate(model: str, candidate_path: Path) -> str:
         max_turns=6,
     )
     program = (
-        "AMD R9700/gfx1201 local inference E2E. Edit only CONCURRENCY in the supplied file. "
-        "Allowed values: 1 or 2. Do not use shell, restarts, MI300, gfx942, gfx950, or CDNA kernels. "
-        "Return a brief final with SUBMIT_CANDIDATE."
+        "AMD R9700/gfx1201 local inference optimization experiment. Edit only CONCURRENCY in the "
+        "supplied candidate file. Allowed values are 1 or 2. Do not use shell, service restarts, "
+        "MI300, gfx942, gfx950, or CDNA-specific kernel paths. Candidate performance will be measured "
+        "after your turn by a deterministic gate."
     )
     agent_fn = make_agent_fn(
         config,
@@ -214,28 +267,18 @@ async def _agent_choose_candidate(model: str, candidate_path: Path) -> str:
         agent_backend="local-openai",
     )
     session_sink: dict = {}
-    result = await agent_fn(
-        str(candidate_path),
-        "Current candidate file is intentionally invalid with CONCURRENCY = 0. "
-        "Do not read first. Call write_file once. The content should be exactly: "
-        "'# Architecture-neutral inference candidate for R9700.\\n"
-        "# Allowed values are intentionally bounded to 1 or 2.\\n"
-        "CONCURRENCY = 2\\n'. "
-        "Then return final text containing SUBMIT_CANDIDATE.",
-        session_sink,
-    )
-    try:
-        parsed_candidate = _candidate_from_file(candidate_path)
-    except Exception:
-        parsed_candidate = None
-    if parsed_candidate not in ALLOWED_CANDIDATES:
-        print(json.dumps({
-            "ok": False,
-            "reason": "agent_did_not_write_valid_candidate",
-            "agent_text": str(result)[:500],
-            "progress_log": session_sink.get("progress_log", [])[-20:],
-        }, sort_keys=True))
-    return str(result)
+    instruction = _decision_context(baseline)
+    result = await agent_fn(str(candidate_path), instruction, session_sink)
+    selected = _candidate_from_file(candidate_path)
+    return {
+        "selected_concurrency": selected,
+        "selected_by_model": True,
+        "hardcoded_candidate": False,
+        "agent_text": str(result)[:500],
+        "plan": str(session_sink.get("plan") or "")[:300],
+        "progress_log": list(session_sink.get("progress_log") or [])[-20:],
+        "decision_context": instruction,
+    }
 
 
 async def main() -> int:
@@ -244,42 +287,56 @@ async def main() -> int:
     evidence_dir = ROOT / "docs" / "evidence"
     evidence_dir.mkdir(parents=True, exist_ok=True)
 
-    agent_text = await _agent_choose_candidate(model, candidate_path)
-    candidate_concurrency = _candidate_from_file(candidate_path)
+    # Baseline is measured BEFORE the model sees the optimization decision.
+    _one_request(model, -1)  # uncounted warmup
+    baseline_bundle = _benchmark_rounds(model, BASELINE_CONCURRENCY)
+    baseline = baseline_bundle["aggregate"]
 
-    baseline = _benchmark(model, BASELINE_CONCURRENCY)
-    candidate = _benchmark(model, candidate_concurrency)
+    agent = await _agent_choose_candidate(model, candidate_path, baseline)
+    candidate_concurrency = int(agent["selected_concurrency"])
+
+    _one_request(model, -2)  # uncounted warmup before candidate measurement
+    candidate_bundle = _benchmark_rounds(model, candidate_concurrency)
+    candidate = candidate_bundle["aggregate"]
     verdict, gate = _verdict(baseline, candidate)
 
     evidence = {
-        "schema": "hyperloom-r9700-upstream-agent-e2e-v1",
+        "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "hardware_claim": "physical AMD Radeon AI PRO R9700 / gfx1201 experiment",
         "support_status": "experimental; not official AMD Hyperloom support",
-        "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> bounded candidate -> real benchmark -> deterministic KEEP/REJECT",
+        "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> model-selected bounded candidate -> repeated real benchmark -> deterministic KEEP/REJECT",
         "model": model,
         "base_url": BASE_URL,
         "agent_backend": "local-openai",
         "tool_mode": "json",
         "shell_exposed": False,
         "cdna_specific_paths_used": False,
-        "baseline": baseline,
-        "candidate": candidate,
+        "measurement_rounds": MEASUREMENT_ROUNDS,
+        "requests_per_round": REQUESTS_PER_ARM,
+        "baseline_concurrency": BASELINE_CONCURRENCY,
+        "allowed_candidates": sorted(ALLOWED_CANDIDATES),
+        "baseline": baseline_bundle,
+        "agent": agent,
         "candidate_concurrency": candidate_concurrency,
+        "candidate": candidate_bundle,
         "gate": gate,
         "verdict": verdict,
-        "agent_text": agent_text[:500],
+        "truth_boundary": "architecture-neutral experimental R9700 compatibility; no official AMD/upstream Hyperloom R9700 support claim",
     }
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    evidence_path = evidence_dir / f"hyperloom_r9700_upstream_agent_e2e_{stamp}.json"
+    evidence_path = evidence_dir / f"hyperloom_r9700_upstream_autonomous_e2e_{stamp}.json"
     evidence_path.write_text(json.dumps(evidence, indent=2, sort_keys=True), encoding="utf-8")
 
     print(json.dumps({
         "ok": True,
         "model": model,
+        "selected_by_model": True,
+        "hardcoded_candidate": False,
         "candidate_concurrency": candidate_concurrency,
-        "baseline_output_tok_s": baseline["output_tok_s"],
-        "candidate_output_tok_s": candidate["output_tok_s"],
+        "measurement_rounds": MEASUREMENT_ROUNDS,
+        "baseline_median_output_tok_s": baseline["median_output_tok_s"],
+        "candidate_median_output_tok_s": candidate["median_output_tok_s"],
         "gain_percent": gate.get("gain_percent"),
         "p95_ratio": gate.get("p95_ratio"),
         "verdict": verdict,
