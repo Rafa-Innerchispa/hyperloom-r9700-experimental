@@ -82,6 +82,11 @@ class LocalOpenAIBackend:
             raise ValueError("local-openai tool_mode must be one of: auto, native, json")
         return mode
 
+    @property
+    def allow_shell(self) -> bool:
+        """Require an explicit opt-in before exposing subprocess execution."""
+        return bool(self.runtime.options.get("allow_shell", False))
+
     def _request(self, method: str, path: str, payload: dict[str, Any] | None, timeout: float) -> dict[str, Any]:
         data = json.dumps(payload).encode("utf-8") if payload is not None else None
         request = urllib.request.Request(
@@ -153,11 +158,26 @@ class LocalOpenAIBackend:
         return candidate
 
     @staticmethod
+    def _policy_paths(cwd: Path, paths: list[str]) -> set[str]:
+        """Normalize absolute or relative policy paths to workspace-relative form."""
+        root = cwd.resolve()
+        normalized: set[str] = set()
+        for raw in paths:
+            path = Path(raw)
+            if path.is_absolute():
+                try:
+                    path = path.resolve().relative_to(root)
+                except ValueError:
+                    continue
+            normalized.add(str(path).replace(os.sep, "/"))
+        return normalized
+
+    @staticmethod
     def _protected(spec: AgentRunSpec, path: Path, cwd: Path) -> bool:
         import fnmatch
 
         rel = str(path.relative_to(cwd)).replace(os.sep, "/")
-        if rel in {str(Path(p)).replace(os.sep, "/") for p in spec.protected_paths}:
+        if rel in LocalOpenAIBackend._policy_paths(cwd, spec.protected_paths):
             return True
         return any(fnmatch.fnmatch(rel, pattern) for pattern in spec.protected_globs)
 
@@ -200,7 +220,7 @@ class LocalOpenAIBackend:
                 {"path": {"type": "string"}, "content": {"type": "string"}},
                 ["path", "content"],
             )
-        if policy.shell:
+        if policy.shell and self.allow_shell:
             add(
                 "run_command",
                 "Run a bounded argv command in the workspace. Only python/python3/pytest/git/grep/rg are accepted.",
@@ -286,7 +306,7 @@ class LocalOpenAIBackend:
             if self._protected(spec, path, cwd):
                 return f"ERROR: protected path: {path.relative_to(cwd)}", False, ""
             if spec.target_files:
-                allowed = {str(Path(p)).replace(os.sep, "/") for p in spec.target_files}
+                allowed = self._policy_paths(cwd, spec.target_files)
                 rel = str(path.relative_to(cwd)).replace(os.sep, "/")
                 if rel not in allowed:
                     return f"ERROR: path not in target_files: {rel}", False, ""
