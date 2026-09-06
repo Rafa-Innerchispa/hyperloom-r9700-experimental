@@ -13,6 +13,7 @@ import asyncio
 import json
 import math
 import os
+import platform
 import re
 import statistics
 import sys
@@ -305,19 +306,42 @@ async def _agent_choose_candidate(model: str, candidate_path: Path, baseline: di
         task_type="repository",
         agent_backend="local-openai",
     )
-    session_sink: dict = {}
-    instruction = _decision_context(baseline)
-    result = await agent_fn(str(candidate_path), instruction, session_sink)
-    selected = _candidate_from_file(candidate_path)
-    return {
-        "selected_concurrency": selected,
-        "selected_by_model": True,
-        "hardcoded_candidate": False,
-        "agent_text": str(result)[:500],
-        "plan": str(session_sink.get("plan") or "")[:300],
-        "progress_log": list(session_sink.get("progress_log") or [])[-20:],
-        "decision_context": instruction,
-    }
+    original_instruction = _decision_context(baseline)
+    instruction = original_instruction
+    validation_attempts: list[dict] = []
+    for attempt in range(1, 3):
+        session_sink: dict = {}
+        result = await agent_fn(str(candidate_path), instruction, session_sink)
+        try:
+            selected = _candidate_from_file(candidate_path)
+        except (RuntimeError, ValueError, OSError) as exc:
+            reason = str(exc)[:240]
+            validation_attempts.append({"attempt": attempt, "valid": False, "reason": reason})
+            if attempt == 2:
+                raise RuntimeError("candidate_format_retry_exhausted") from exc
+            instruction = (
+                original_instruction
+                + " Your previous candidate failed format validation: " + reason + ". "
+                "One format-repair attempt remains. Use write_file to write exactly one "
+                "uncommented CONCURRENCY assignment with your chosen allowed integer. "
+                "Do NOT put the CONCURRENCY assignment in a comment. Comments are optional, "
+                "and no other code or markdown fences are permitted. Choose the value yourself; "
+                "no candidate measurements have been provided. Then SUBMIT_CANDIDATE."
+            )
+            continue
+        validation_attempts.append({"attempt": attempt, "valid": True})
+        return {
+            "selected_concurrency": selected,
+            "selected_by_model": True,
+            "hardcoded_candidate": False,
+            "agent_text": str(result)[:500],
+            "plan": str(session_sink.get("plan") or "")[:300],
+            "progress_log": list(session_sink.get("progress_log") or [])[-20:],
+            "decision_context": original_instruction,
+            "validation_attempts": validation_attempts,
+            "format_repair_used": attempt > 1,
+        }
+    raise RuntimeError("candidate_validation_exhausted")
 
 
 async def main() -> int:
@@ -342,7 +366,10 @@ async def main() -> int:
     evidence = {
         "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-        "hardware_claim": "physical AMD Radeon AI PRO R9700 / gfx1201 experiment",
+        "hardware_claim": "target AMD Radeon AI PRO R9700 / gfx1201; requires independent physical attestation",
+        "hardware_attested_by_runner": False,
+        "orchestrator_host": platform.node(),
+        "execution_scope": os.environ.get("HYPERLOOM_EXECUTION_SCOPE", "unattested_runtime"),
         "support_status": "experimental; not official AMD Hyperloom support",
         "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> model-selected bounded candidate -> repeated real benchmark -> deterministic KEEP/REJECT",
         "model": model,

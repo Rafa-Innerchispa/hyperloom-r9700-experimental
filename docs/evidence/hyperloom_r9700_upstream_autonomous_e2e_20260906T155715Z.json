@@ -1,0 +1,185 @@
+{
+  "agent": {
+    "agent_text": "SUBMIT_CANDIDATE",
+    "decision_context": "A real baseline has already been measured at concurrency 1 over 3 rounds. Median output throughput: 20.0399 tok/s. Median p95 end-to-end latency: 878.77 ms. Failed requests: 0. Choose exactly one candidate concurrency from the bounded set [1, 2]. Your objective is to maximize aggregate output throughput while hypothesizing that the candidate can keep p95 latency within 1.25x of baseline. You have not seen candidate benchmark results. Make the choice yourself from the measured baseline and the bounded search space. Use write_file exactly once to replace the supplied candidate file with the same two comment lines and a valid CONCURRENCY assignment using your chosen value. Do not use shell and do not restart any service. Then return a short PLAN describing your hypothesis and include SUBMIT_CANDIDATE.",
+    "format_repair_used": true,
+    "hardcoded_candidate": false,
+    "plan": "",
+    "progress_log": [
+      "local-openai: session started model=QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "local-openai: json-action tool mode",
+      "tool: write_file",
+      "local-openai: completed turn 2"
+    ],
+    "selected_by_model": true,
+    "selected_concurrency": 2,
+    "validation_attempts": [
+      {
+        "attempt": 1,
+        "reason": "candidate must contain exactly one CONCURRENCY assignment",
+        "valid": false
+      },
+      {
+        "attempt": 2,
+        "valid": true
+      }
+    ]
+  },
+  "agent_backend": "local-openai",
+  "allowed_candidates": [
+    1,
+    2
+  ],
+  "base_url": "http://127.0.0.1:18000/v1",
+  "baseline": {
+    "aggregate": {
+      "failed": 0,
+      "max_output_tok_s": 20.319419188249377,
+      "mean_output_tok_s": 20.085742733500823,
+      "median_mean_e2e_ms": 738.0846598340819,
+      "median_output_tok_s": 20.039909920320152,
+      "median_p95_e2e_ms": 878.7668810255127,
+      "median_total_tok_s": 61.409800213375895,
+      "min_output_tok_s": 19.89789909193294,
+      "passed": 18,
+      "requests": 18,
+      "round_count": 3
+    },
+    "rounds": [
+      {
+        "concurrency": 1,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 812.3456473404076,
+        "output_tok_s": 19.89789909193294,
+        "output_tokens": 97,
+        "p95_e2e_ms": 977.4926257668994,
+        "passed": 6,
+        "requests": 6,
+        "round": 1,
+        "total_tok_s": 56.821835551189935,
+        "total_tokens": 277,
+        "wall_sec": 4.874886517005507
+      },
+      {
+        "concurrency": 1,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 738.0846598340819,
+        "output_tok_s": 20.319419188249377,
+        "output_tokens": 90,
+        "p95_e2e_ms": 878.7668810255127,
+        "passed": 6,
+        "requests": 6,
+        "round": 2,
+        "total_tok_s": 61.409800213375895,
+        "total_tokens": 272,
+        "wall_sec": 4.4292604609509
+      },
+      {
+        "concurrency": 1,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 681.8259218416642,
+        "output_tok_s": 20.039909920320152,
+        "output_tokens": 82,
+        "p95_e2e_ms": 784.7634999779984,
+        "passed": 6,
+        "requests": 6,
+        "round": 3,
+        "total_tok_s": 65.49629095909513,
+        "total_tokens": 268,
+        "wall_sec": 4.091834760038182
+      }
+    ]
+  },
+  "baseline_concurrency": 1,
+  "candidate": {
+    "aggregate": {
+      "failed": 0,
+      "max_output_tok_s": 36.65432648195322,
+      "mean_output_tok_s": 35.92264814588767,
+      "median_mean_e2e_ms": 793.2023585017305,
+      "median_output_tok_s": 36.373266960868946,
+      "median_p95_e2e_ms": 927.8485977411037,
+      "median_total_tok_s": 109.92809570395947,
+      "min_output_tok_s": 34.74035099484085,
+      "passed": 18,
+      "requests": 18,
+      "round_count": 3
+    },
+    "rounds": [
+      {
+        "concurrency": 2,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 962.0402723473186,
+        "output_tok_s": 34.74035099484085,
+        "output_tokens": 102,
+        "p95_e2e_ms": 1216.4866939856438,
+        "passed": 6,
+        "requests": 6,
+        "round": 1,
+        "total_tok_s": 96.04685275044235,
+        "total_tokens": 282,
+        "wall_sec": 2.936067053989973
+      },
+      {
+        "concurrency": 2,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 793.2023585017305,
+        "output_tok_s": 36.373266960868946,
+        "output_tokens": 90,
+        "p95_e2e_ms": 927.8485977411037,
+        "passed": 6,
+        "requests": 6,
+        "round": 2,
+        "total_tok_s": 109.92809570395947,
+        "total_tokens": 272,
+        "wall_sec": 2.4743446910288185
+      },
+      {
+        "concurrency": 2,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 713.8967136658417,
+        "output_tok_s": 36.65432648195322,
+        "output_tokens": 82,
+        "p95_e2e_ms": 844.1597035125596,
+        "passed": 6,
+        "requests": 6,
+        "round": 3,
+        "total_tok_s": 119.79706703857882,
+        "total_tokens": 268,
+        "wall_sec": 2.237116539035924
+      }
+    ]
+  },
+  "candidate_concurrency": 2,
+  "cdna_specific_paths_used": false,
+  "execution_scope": "primary_orchestrated_existing_proxy_not_amd_worktree_acceptance",
+  "gate": {
+    "gain_fraction": 0.8150414400808772,
+    "gain_percent": 81.50414400808772,
+    "latency_metric": "median_p95_e2e_ms",
+    "max_p95_ratio": 1.25,
+    "min_gain_fraction": 0.1,
+    "p95_ratio": 1.0558529432268922,
+    "throughput_metric": "median_output_tok_s"
+  },
+  "hardware_attested_by_runner": false,
+  "hardware_claim": "target AMD Radeon AI PRO R9700 / gfx1201; requires independent physical attestation",
+  "measurement_rounds": 3,
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "orchestrator_host": "ralphi-ia-ver-10",
+  "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> model-selected bounded candidate -> repeated real benchmark -> deterministic KEEP/REJECT",
+  "requests_per_round": 6,
+  "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
+  "shell_exposed": false,
+  "support_status": "experimental; not official AMD Hyperloom support",
+  "timestamp_utc": "2026-09-06T15:57:15.159314+00:00",
+  "tool_mode": "json",
+  "truth_boundary": "architecture-neutral experimental R9700 compatibility; no official AMD/upstream Hyperloom R9700 support claim",
+  "verdict": "KEEP"
+}

@@ -83,4 +83,7 @@ def test_actual_main_baseline_then_autonomous_choice_then_candidate(monkeypatch,
     assert report["candidate"]["aggregate"]["requests"] == 18
     assert report["shell_exposed"] is False
     assert report["cdna_specific_paths_used"] is False
+    assert report["hardware_attested_by_runner"] is False
+    assert "independent physical attestation" in report["hardware_claim"]
+    assert report["orchestrator_host"]
     assert "not official" in report["support_status"]
