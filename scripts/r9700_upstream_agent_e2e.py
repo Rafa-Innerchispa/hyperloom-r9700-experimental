@@ -344,35 +344,35 @@ async def _agent_choose_candidate(model: str, candidate_path: Path, baseline: di
     raise RuntimeError("candidate_validation_exhausted")
 
 
+def _strict_json_value(value):
+    """Preserve failed-run evidence without emitting non-standard NaN/Infinity."""
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if isinstance(value, dict):
+        return {key: _strict_json_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_strict_json_value(item) for item in value]
+    return value
+
+
 async def main() -> int:
-    model = _discover_model()
     candidate_path = ROOT / "examples" / "r9700_live" / "candidate.py"
     evidence_dir = ROOT / "docs" / "evidence"
     evidence_dir.mkdir(parents=True, exist_ok=True)
-
-    # Baseline is measured BEFORE the model sees the optimization decision.
-    _one_request(model, -1)  # uncounted warmup
-    baseline_bundle = _benchmark_rounds(model, BASELINE_CONCURRENCY)
-    baseline = baseline_bundle["aggregate"]
-
-    agent = await _agent_choose_candidate(model, candidate_path, baseline)
-    candidate_concurrency = int(agent["selected_concurrency"])
-
-    _one_request(model, -2)  # uncounted warmup before candidate measurement
-    candidate_bundle = _benchmark_rounds(model, candidate_concurrency)
-    candidate = candidate_bundle["aggregate"]
-    verdict, gate = _verdict(baseline, candidate)
-
     evidence = {
         "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "ok": False,
+        "run_status": "failed",
+        "failure": None,
+        "nonfinite_serialization": "null; invalid measurements never complete successfully",
         "hardware_claim": "target AMD Radeon AI PRO R9700 / gfx1201; requires independent physical attestation",
         "hardware_attested_by_runner": False,
         "orchestrator_host": platform.node(),
         "execution_scope": os.environ.get("HYPERLOOM_EXECUTION_SCOPE", "unattested_runtime"),
         "support_status": "experimental; not official AMD Hyperloom support",
         "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> model-selected bounded candidate -> repeated real benchmark -> deterministic KEEP/REJECT",
-        "model": model,
+        "model": None,
         "base_url": BASE_URL,
         "agent_backend": "local-openai",
         "tool_mode": "json",
@@ -382,33 +382,78 @@ async def main() -> int:
         "requests_per_round": REQUESTS_PER_ARM,
         "baseline_concurrency": BASELINE_CONCURRENCY,
         "allowed_candidates": sorted(ALLOWED_CANDIDATES),
-        "baseline": baseline_bundle,
-        "agent": agent,
-        "candidate_concurrency": candidate_concurrency,
-        "candidate": candidate_bundle,
-        "gate": gate,
-        "verdict": verdict,
+        "baseline": None,
+        "agent": None,
+        "candidate_concurrency": None,
+        "candidate": None,
+        "gate": {},
+        "verdict": None,
         "truth_boundary": "architecture-neutral experimental R9700 compatibility; no official AMD/upstream Hyperloom R9700 support claim",
     }
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    evidence_path = evidence_dir / f"hyperloom_r9700_upstream_autonomous_e2e_{stamp}.json"
-    evidence_path.write_text(json.dumps(evidence, indent=2, sort_keys=True), encoding="utf-8")
+    stage = "model_discovery"
+    try:
+        model = _discover_model()
+        evidence["model"] = model
+        stage = "baseline_measurement"
+        _one_request(model, -1)  # uncounted warmup
+        evidence["baseline"] = _benchmark_rounds(model, BASELINE_CONCURRENCY)
+        baseline = evidence["baseline"]["aggregate"]
+        # Self-comparison validates completeness, not optimization gain. Never
+        # ask the model to optimize a baseline that failed measurement checks.
+        _, baseline_check = _verdict(baseline, baseline)
+        if baseline_check.get("reason"):
+            evidence["gate"] = baseline_check
+            evidence["failure"] = {"stage": stage, **baseline_check}
+        else:
+            stage = "candidate_selection"
+            agent = await _agent_choose_candidate(model, candidate_path, baseline)
+            evidence["agent"] = agent
+            selected = agent["selected_concurrency"]
+            if type(selected) is not int or selected not in ALLOWED_CANDIDATES:
+                raise ValueError("invalid_candidate_selection")
+            evidence["candidate_concurrency"] = selected
+            stage = "candidate_measurement"
+            _one_request(model, -2)  # uncounted warmup
+            evidence["candidate"] = _benchmark_rounds(model, selected)
+            verdict, gate = _verdict(baseline, evidence["candidate"]["aggregate"])
+            evidence["gate"] = gate
+            if gate.get("reason"):
+                evidence["failure"] = {"stage": stage, **gate}
+            else:
+                # A valid REJECT is a completed experiment; invalid measurements
+                # are not. The process exit code and the report must agree.
+                evidence["verdict"] = verdict
+                evidence["ok"] = True
+                evidence["run_status"] = "completed"
+    except Exception as exc:  # noqa: BLE001
+        # Do not copy arbitrary exception strings (potential URLs or secrets).
+        evidence["failure"] = {"stage": stage, "reason": "execution_error", "error_type": type(exc).__name__}
 
+    evidence = _strict_json_value(evidence)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    evidence_path = evidence_dir / f"hyperloom_r9700_upstream_autonomous_e2e_{stamp}.json"
+    evidence_path.write_text(json.dumps(evidence, indent=2, sort_keys=True, allow_nan=False), encoding="utf-8")
+    baseline = (evidence["baseline"] or {}).get("aggregate", {})
+    candidate = (evidence["candidate"] or {}).get("aggregate", {})
+    agent = evidence["agent"] or {}
+    gate = evidence["gate"]
     print(json.dumps({
-        "ok": True,
-        "model": model,
-        "selected_by_model": True,
+        "ok": evidence["ok"],
+        "run_status": evidence["run_status"],
+        "failure": evidence["failure"],
+        "model": evidence["model"],
+        "selected_by_model": agent.get("selected_by_model", False),
         "hardcoded_candidate": False,
-        "candidate_concurrency": candidate_concurrency,
+        "candidate_concurrency": evidence["candidate_concurrency"],
         "measurement_rounds": MEASUREMENT_ROUNDS,
-        "baseline_median_output_tok_s": baseline["median_output_tok_s"],
-        "candidate_median_output_tok_s": candidate["median_output_tok_s"],
+        "baseline_median_output_tok_s": baseline.get("median_output_tok_s"),
+        "candidate_median_output_tok_s": candidate.get("median_output_tok_s"),
         "gain_percent": gate.get("gain_percent"),
         "p95_ratio": gate.get("p95_ratio"),
-        "verdict": verdict,
+        "verdict": evidence["verdict"],
         "evidence": str(evidence_path.relative_to(ROOT)),
-    }, sort_keys=True))
-    return 0 if verdict in {"KEEP", "REJECT"} else 2
+    }, sort_keys=True, allow_nan=False))
+    return 0 if evidence["ok"] else 2
 
 
 if __name__ == "__main__":
