@@ -31,6 +31,19 @@ def _round(output_tok_s: float, p95_ms: float, *, failed: int = 0) -> dict:
     }
 
 
+def _complete_arm(output_tok_s: float, p95_ms: float, *, failed: int = 0) -> dict:
+    """Supply the complete measurement contract, without weakening gate assertions."""
+    requests = E2E.MEASUREMENT_ROUNDS * E2E.REQUESTS_PER_ARM
+    return {
+        "round_count": E2E.MEASUREMENT_ROUNDS,
+        "requests": requests,
+        "passed": requests - failed,
+        "failed": failed,
+        "median_output_tok_s": output_tok_s,
+        "median_p95_e2e_ms": p95_ms,
+    }
+
+
 def test_aggregate_rounds_uses_medians_and_preserves_failures():
     aggregate = E2E._aggregate_rounds(
         [
@@ -47,16 +60,8 @@ def test_aggregate_rounds_uses_medians_and_preserves_failures():
 
 
 def test_verdict_keeps_only_when_throughput_and_latency_gates_pass():
-    baseline = {
-        "failed": 0,
-        "median_output_tok_s": 20.0,
-        "median_p95_e2e_ms": 1000.0,
-    }
-    candidate = {
-        "failed": 0,
-        "median_output_tok_s": 30.0,
-        "median_p95_e2e_ms": 1200.0,
-    }
+    baseline = _complete_arm(20.0, 1000.0)
+    candidate = _complete_arm(30.0, 1200.0)
     verdict, gate = E2E._verdict(baseline, candidate)
     assert verdict == "KEEP"
     assert gate["gain_percent"] == 50.0
@@ -69,16 +74,8 @@ def test_verdict_keeps_only_when_throughput_and_latency_gates_pass():
 
 
 def test_verdict_fails_closed_on_any_request_failure():
-    baseline = {
-        "failed": 0,
-        "median_output_tok_s": 20.0,
-        "median_p95_e2e_ms": 1000.0,
-    }
-    candidate = {
-        "failed": 1,
-        "median_output_tok_s": 40.0,
-        "median_p95_e2e_ms": 900.0,
-    }
+    baseline = _complete_arm(20.0, 1000.0)
+    candidate = _complete_arm(40.0, 900.0, failed=1)
     verdict, gate = E2E._verdict(baseline, candidate)
     assert verdict == "REJECT"
     assert gate["reason"] == "request_failure"

@@ -81,15 +81,34 @@ def _one_request(model: str, index: int) -> dict:
             timeout=120.0,
         )
         elapsed = time.perf_counter() - started
-        usage = response.get("usage") or {}
-        choices = response.get("choices") or [{}]
-        text = str(((choices[0].get("message") or {}).get("content") or ""))
+        if not isinstance(response, dict):
+            raise ValueError("invalid_response_object")
+        usage = response.get("usage")
+        choices = response.get("choices")
+        if not isinstance(usage, dict) or not isinstance(choices, list) or not choices:
+            raise ValueError("missing_choices_or_usage")
+        choice = choices[0]
+        message = choice.get("message") if isinstance(choice, dict) else None
+        text = message.get("content") if isinstance(message, dict) else None
+        if not isinstance(text, str) or not text.strip():
+            raise ValueError("empty_or_invalid_content")
+        if re.search(r"\bAMD\b", text, flags=re.IGNORECASE) is None:
+            raise ValueError("benchmark_correctness_failed")
+        completion_tokens = usage.get("completion_tokens")
+        prompt_tokens = usage.get("prompt_tokens")
+        if type(completion_tokens) is not int or completion_tokens <= 0:
+            raise ValueError("invalid_completion_tokens")
+        if type(prompt_tokens) is not int or prompt_tokens < 0:
+            raise ValueError("invalid_prompt_tokens")
+        if not math.isfinite(elapsed) or elapsed <= 0:
+            raise ValueError("invalid_elapsed_time")
         return {
             "ok": True,
             "elapsed_sec": elapsed,
-            "completion_tokens": int(usage.get("completion_tokens") or 0),
-            "prompt_tokens": int(usage.get("prompt_tokens") or 0),
+            "completion_tokens": completion_tokens,
+            "prompt_tokens": prompt_tokens,
             "text_len": len(text),
+            "correctness_passed": True,
         }
     except Exception as exc:  # noqa: BLE001
         return {
@@ -171,8 +190,14 @@ def _benchmark_rounds(model: str, concurrency: int, rounds: int = MEASUREMENT_RO
 
 
 def _candidate_from_file(path: Path) -> int:
+    if path.stat().st_size > 4096:
+        raise RuntimeError("candidate exceeds bounded size")
     text = path.read_text(encoding="utf-8")
-    match = re.search(r"^CONCURRENCY\s*=\s*(\d+)\s*(?:#.*)?$", text, flags=re.MULTILINE)
+    statements = [line.split("#", 1)[0].strip() for line in text.splitlines()]
+    statements = [line for line in statements if line]
+    if len(statements) != 1:
+        raise RuntimeError("candidate must contain exactly one CONCURRENCY assignment")
+    match = re.fullmatch(r"CONCURRENCY\s*=\s*([0-9]+)", statements[0])
     if not match:
         raise RuntimeError("agent did not leave a parseable CONCURRENCY assignment")
     value = int(match.group(1))
@@ -182,16 +207,30 @@ def _candidate_from_file(path: Path) -> int:
 
 
 def _verdict(baseline: dict, candidate: dict) -> tuple[str, dict]:
-    if baseline["failed"] or candidate["failed"]:
-        return "REJECT", {"reason": "request_failure"}
-    if baseline["median_output_tok_s"] <= 0:
-        return "REJECT", {"reason": "invalid_baseline"}
+    # Fail closed before calculating ratios: a successful HTTP request or a
+    # plausible median is not evidence of complete, valid measurements.
+    for name, arm in (("baseline", baseline), ("candidate", candidate)):
+        if not isinstance(arm, dict):
+            return "REJECT", {"reason": "invalid_evidence", "arm": name}
+        for key in ("round_count", "requests", "passed", "failed"):
+            if type(arm.get(key)) is not int or arm[key] < 0:
+                return "REJECT", {"reason": "invalid_counts", "arm": name, "field": key}
+        if arm["failed"]:
+            return "REJECT", {"reason": "request_failure", "arm": name}
+        if (
+            arm["round_count"] != MEASUREMENT_ROUNDS
+            or arm["requests"] != MEASUREMENT_ROUNDS * REQUESTS_PER_ARM
+            or arm["passed"] + arm["failed"] != arm["requests"]
+        ):
+            return "REJECT", {"reason": "incomplete_measurements", "arm": name}
+        for key in ("median_output_tok_s", "median_p95_e2e_ms"):
+            value = arm.get(key)
+            if type(value) not in (int, float) or not math.isfinite(value) or value <= 0:
+                return "REJECT", {"reason": "invalid_metric", "arm": name, "field": key}
     gain = candidate["median_output_tok_s"] / baseline["median_output_tok_s"] - 1.0
-    p95_ratio = (
-        candidate["median_p95_e2e_ms"] / baseline["median_p95_e2e_ms"]
-        if baseline["median_p95_e2e_ms"] > 0
-        else math.inf
-    )
+    p95_ratio = candidate["median_p95_e2e_ms"] / baseline["median_p95_e2e_ms"]
+    if not math.isfinite(gain) or not math.isfinite(p95_ratio):
+        return "REJECT", {"reason": "invalid_ratio"}
     keep = gain >= MIN_GAIN and p95_ratio <= MAX_P95_RATIO
     return (
         "KEEP" if keep else "REJECT",
