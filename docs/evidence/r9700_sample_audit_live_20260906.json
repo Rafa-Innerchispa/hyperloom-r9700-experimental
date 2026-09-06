@@ -1,0 +1,19 @@
+{
+  "schema": "r9700-offline-evidence-audit-v1",
+  "ok": true,
+  "metric_replay_verified": true,
+  "physical_execution_verified": false,
+  "global_fabric_verified": false,
+  "authentication_verified": false,
+  "scope": "offline consistency check only; no network or model invocation",
+  "declared_execution_scope": "primary_orchestrated_existing_proxy_not_amd_worktree_acceptance",
+  "evidence_filename": "hyperloom_r9700_upstream_autonomous_e2e_20260906T170726136772Z.json",
+  "evidence_sha256": "0e8c626ee1c69a84f454e373aea5ae0edd17d25ccbfe4a909375a00ef8347034",
+  "runner_source_sha256": "311be5b6bf34c3baa0d77e49f43cb1edff565a386855dbab0d66510649d6374a",
+  "expected_evidence_digest_checked": false,
+  "expected_runner_digest_checked": false,
+  "samples_verified": 36,
+  "recomputed_verdict": "KEEP",
+  "gain_percent": 80.02289217387799,
+  "p95_ratio": 1.0515054664534904
+}
