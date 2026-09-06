@@ -10,6 +10,7 @@ and make a deterministic KEEP/REJECT decision.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import math
 import os
@@ -139,12 +140,15 @@ def _benchmark(model: str, concurrency: int, *, round_index: int = 0) -> dict:
     started = time.perf_counter()
     rows: list[dict] = []
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = [
-            pool.submit(_one_request, model, round_index * REQUESTS_PER_ARM + i)
+        futures = {
+            pool.submit(_one_request, model, round_index * REQUESTS_PER_ARM + i):
+                round_index * REQUESTS_PER_ARM + i
             for i in range(REQUESTS_PER_ARM)
-        ]
+        }
         for future in as_completed(futures):
-            rows.append(future.result())
+            row = dict(future.result())
+            row["request_index"] = futures[future]
+            rows.append(row)
     wall = time.perf_counter() - started
     passed = [row for row in rows if row["ok"]]
     completion_tokens = sum(int(row["completion_tokens"]) for row in passed)
@@ -164,6 +168,7 @@ def _benchmark(model: str, concurrency: int, *, round_index: int = 0) -> dict:
         "mean_e2e_ms": (sum(latencies) / len(latencies) * 1000.0) if latencies else math.inf,
         "p95_e2e_ms": _percentile(latencies, 0.95) * 1000.0 if latencies else math.inf,
         "errors": [row.get("error") for row in rows if not row["ok"]],
+        "samples": sorted(rows, key=lambda row: row["request_index"]),
     }
 
 
@@ -356,11 +361,16 @@ def _strict_json_value(value):
 
 
 async def main() -> int:
+    runner_path = Path(__file__).resolve()
+    source_digest = hashlib.sha256(runner_path.read_bytes()).hexdigest()
     candidate_path = ROOT / "examples" / "r9700_live" / "candidate.py"
     evidence_dir = ROOT / "docs" / "evidence"
     evidence_dir.mkdir(parents=True, exist_ok=True)
     evidence = {
         "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
+        "sample_schema": "r9700-request-metrics-v1",
+        "runner_source_sha256_start": source_digest,
+        "runner_source_sha256_end": None,
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "ok": False,
         "run_status": "failed",
@@ -429,6 +439,11 @@ async def main() -> int:
         # Do not copy arbitrary exception strings (potential URLs or secrets).
         evidence["failure"] = {"stage": stage, "reason": "execution_error", "error_type": type(exc).__name__}
 
+    evidence["runner_source_sha256_end"] = hashlib.sha256(runner_path.read_bytes()).hexdigest()
+    if evidence["runner_source_sha256_end"] != source_digest:
+        evidence.update(ok=False, run_status="failed", verdict=None)
+        evidence["failure"] = {"stage": "evidence", "reason": "runner_changed_during_run"}
+    evidence["finished_at_utc"] = datetime.now(timezone.utc).isoformat()
     evidence = _strict_json_value(evidence)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     evidence_path = evidence_dir / f"hyperloom_r9700_upstream_autonomous_e2e_{stamp}.json"
