@@ -1,0 +1,32 @@
+{
+  "base_url": "http://127.0.0.1:8000/v1",
+  "live_execution_gate": {
+    "default": "blocked",
+    "reason": "requires an explicit benchmark window because concurrent client spawns can consume the resident R9700/vLLM service",
+    "requires_service_restart": false,
+    "safe_to_run_without_vllm_restart": true
+  },
+  "mode": "plan",
+  "per_spawn_contract": {
+    "allowed_candidates": [
+      1,
+      2
+    ],
+    "baseline_rounds": 3,
+    "candidate_rounds": 3,
+    "requests_per_round": 6,
+    "required_metrics": [
+      "output_tok_s",
+      "total_tok_s",
+      "mean_e2e_ms",
+      "p95_e2e_ms",
+      "prompt_tokens",
+      "completion_tokens",
+      "failures"
+    ],
+    "warmup": "one uncounted request before each measured arm"
+  },
+  "runner": "scripts/r9700_upstream_agent_e2e.py",
+  "schema": "hyperloom.r9700.multispawn_harness.v1",
+  "spawn_count": 5
+}
