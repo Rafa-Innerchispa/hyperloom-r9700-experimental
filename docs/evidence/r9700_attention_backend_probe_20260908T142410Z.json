@@ -1,0 +1,142 @@
+{
+  "captured_at_utc": "2026-09-08T14:24:02.076174+00:00",
+  "container": {
+    "available": true,
+    "candidate_count": 1,
+    "cmd": [
+      "python3",
+      "-m",
+      "vllm.entrypoints.openai.api_server",
+      "--model",
+      "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--served-model-name",
+      "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8000",
+      "--max-model-len",
+      "8192",
+      "--gpu-memory-utilization",
+      "0.82",
+      "--dtype",
+      "float16",
+      "--trust-remote-code"
+    ],
+    "data_parallel_size": "1",
+    "dtype": "float16",
+    "env_signals": [
+      "PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/bin:/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/llvm/bin:/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/bin:/opt/python/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "PYTORCH_ROCM_ARCH=gfx90a;gfx942;gfx950;gfx1100;gfx1101;gfx1102;gfx1103;gfx1150;gfx1151;gfx1152;gfx1153;gfx1200;gfx1201",
+      "AITER_ROCM_ARCH=gfx942;gfx950",
+      "PIP_EXTRA_INDEX_URL=https://stable.repo.amd.com/rocm/whl-next",
+      "ROCM_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+      "ROCM_HOME=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+      "HIP_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+      "HIP_CLANG_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/llvm/bin",
+      "HIP_DEVICE_LIB_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/lib/llvm/amdgcn/bitcode",
+      "LD_LIBRARY_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib:/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/rocm_sysdeps/lib:/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/lib:/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/lib/rocm_sysdeps/lib",
+      "PYTHONPATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/share/amd_smi:",
+      "CMAKE_PREFIX_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/cmake:",
+      "CMAKE_HIP_COMPILER_ROCM_ROOT=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+      "RAY_EXPERIMENTAL_NOSET_HIP_VISIBLE_DEVICES=1",
+      "ROCM_VERSION=10.0.0",
+      "HIP_FORCE_DEV_KERNARG=1"
+    ],
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "max_model_len": "8192",
+    "model_path": "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+    "name": "inneros-vllm-canary-rocm10",
+    "served_model_name": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+    "tensor_parallel_size": "1"
+  },
+  "endpoint": {
+    "available": true,
+    "model_ids": [
+      "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+    ],
+    "url": "http://127.0.0.1:8000/v1/models"
+  },
+  "evidence_status": "proved",
+  "probe_sha256": "2d31cfdae1ff1752e86c2cbdc0ef36f0e6515301cb81c39a7ae140cd5d680bf8",
+  "schema": "hyperloom.r9700.attention_backend_observability.v1",
+  "selection_probe": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "selection_summary": {
+    "aiter_vllm_supported": false,
+    "priority_prediction": {
+      "name": "ROCM_ATTN",
+      "path": "vllm.v1.attention.backends.rocm_attn.RocmAttentionBackend",
+      "priority": 0
+    },
+    "selected_backend": {
+      "class": "vllm.v1.attention.backends.rocm_attn.RocmAttentionBackend",
+      "name": "ROCM_ATTN"
+    }
+  },
+  "truth_boundary": {
+    "claim": "runtime-bound installed-vLLM attention selector evidence; not official HyperLoom R9700 support",
+    "second_model_copy_loaded": false,
+    "service_restarted": false
+  },
+  "vllm_selection": {
+    "aiter": {
+      "env": {
+        "AITER_ROCM_ARCH": "gfx942;gfx950",
+        "VLLM_USE_TRITON_AWQ": "1"
+      },
+      "module_found": true,
+      "support_function_source": "def is_aiter_found_and_supported() -> bool:\n    \"\"\"Check if AITER library is available and platform supports it.\n\n    Checks: platform (ROCm), device arch is CDNA 3 or better, and library existence.\n    Does NOT check environment variables - that's handled by rocm_aiter_ops.is_enabled().\n\n    This function determines if aiter CAN be used, not if it SHOULD be used.\n\n    Separation of concerns:\n    - This function: Can aiter work on this system? (platform + library availability)\n    - rocm_aiter_ops.is_enabled(): Should aiter be used by default? (adds env var check)\n    - Backend selection: Can explicitly request aiter regardless of env var\n\n    This allows explicit backend selection via attention_config to work even when\n    VLLM_ROCM_USE_AITER=0, while preventing unwanted JIT warnings for auto-discovery.\n    \"\"\"\n    if current_platform.is_rocm() and IS_AITER_FOUND:\n        from vllm.platforms.rocm import get_cdna_version\n\n        return get_cdna_version() > 2\n    return False\n",
+      "vllm_supported": false
+    },
+    "model_config": {
+      "architecture": [
+        "Qwen3MoeForCausalLM"
+      ],
+      "block_size_for_selector": null,
+      "cache_dtype": "auto",
+      "dtype": "torch.float16",
+      "head_size": 128,
+      "max_model_len": 8192,
+      "num_attention_heads": 32,
+      "num_key_value_heads": 4
+    },
+    "platform": {
+      "capability": "DeviceCapability(major=12, minor=0)",
+      "class": "vllm.platforms.rocm.RocmPlatform",
+      "device_name": "AMD_Radeon_R9700",
+      "is_rocm": true
+    },
+    "selected_backend": {
+      "class": "vllm.v1.attention.backends.rocm_attn.RocmAttentionBackend",
+      "name": "ROCM_ATTN"
+    },
+    "selector": {
+      "config": "AttentionSelectorConfig(head_size=128, dtype=torch.float16, kv_cache_dtype=auto, block_size=None, use_mla=False, has_sink=False, use_sparse=False, use_mm_prefix=False, use_per_head_quant_scales=False, attn_type=decoder, has_sliding_window=False, use_non_causal=False, use_batch_invariant=False, use_kv_connector=False, use_pcp=False)",
+      "invalid": {
+        "TURBOQUANT": [
+          "kv_cache_dtype not supported"
+        ]
+      },
+      "valid": [
+        {
+          "name": "ROCM_ATTN",
+          "path": "vllm.v1.attention.backends.rocm_attn.RocmAttentionBackend",
+          "priority": 0
+        },
+        {
+          "name": "TRITON_ATTN",
+          "path": "vllm.v1.attention.backends.triton_attn.TritonAttentionBackend",
+          "priority": 1
+        }
+      ]
+    },
+    "versions": {
+      "torch": "2.12.0+rocm10.0.0",
+      "torch_hip": "7.15.26333",
+      "vllm": "0.27.1.dev5+gf46a9dfe2.d20260827"
+    }
+  }
+}

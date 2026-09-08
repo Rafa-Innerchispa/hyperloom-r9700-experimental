@@ -1,0 +1,25 @@
+{
+  "base_url": "http://127.0.0.1:8000/v1",
+  "container": "inneros-vllm-canary-rocm10",
+  "mode": "plan",
+  "per_process_contract": {
+    "baseline_candidate_paired_in_same_process": true,
+    "docker_restart_before_measurement": true,
+    "health_wait": true,
+    "runner_baseline_rounds": 3,
+    "runner_candidate_rounds": 3,
+    "runner_requests_per_round": 6,
+    "runtime_telemetry_sampled": true,
+    "same_container_image_and_launch": true
+  },
+  "process_count": 3,
+  "purpose": "pair baseline and candidate inside independent vLLM process spawns to reduce ROCm #6347 process-state confounding",
+  "runner": "scripts/r9700_upstream_agent_e2e.py",
+  "schema": "hyperloom.r9700.independent_vllm_process_harness.v1",
+  "truth_boundary": {
+    "not_kernel_optimization_proof": true,
+    "not_official_hyperloom_support": true,
+    "restart_changes_process_spawn_state": true,
+    "small_sample_warning": "three independent process spawns address the community 3-repeat recommendation but do not statistically characterize every possible ROCm #6347 state"
+  }
+}

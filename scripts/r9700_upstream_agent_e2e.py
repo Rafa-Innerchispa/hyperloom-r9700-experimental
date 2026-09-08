@@ -70,31 +70,54 @@ def _one_request(model: str, index: int) -> dict:
     )
     started = time.perf_counter()
     try:
-        response = _request_json(
-            "POST",
-            "/chat/completions",
-            {
-                "model": model,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0,
-                "max_tokens": MAX_TOKENS,
-                "stream": False,
-            },
-            timeout=120.0,
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0,
+            "max_tokens": MAX_TOKENS,
+            "stream": True,
+            "stream_options": {"include_usage": True},
+        }
+        req = urllib.request.Request(
+            BASE_URL + "/chat/completions",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json", "Authorization": "Bearer local"},
+            method="POST",
         )
+        parts: list[str] = []
+        usage: dict = {}
+        ttft_sec: float | None = None
+        with urllib.request.urlopen(req, timeout=120.0) as response:
+            for raw_line in response:
+                line = raw_line.decode("utf-8", errors="replace").strip()
+                if not line.startswith("data:"):
+                    continue
+                data = line[5:].strip()
+                if not data or data == "[DONE]":
+                    if data == "[DONE]":
+                        break
+                    continue
+                chunk = json.loads(data)
+                if not isinstance(chunk, dict):
+                    continue
+                maybe_usage = chunk.get("usage")
+                if isinstance(maybe_usage, dict):
+                    usage = maybe_usage
+                choices = chunk.get("choices")
+                if not isinstance(choices, list) or not choices:
+                    continue
+                choice = choices[0]
+                delta = choice.get("delta") if isinstance(choice, dict) else None
+                content = delta.get("content") if isinstance(delta, dict) else None
+                if isinstance(content, str) and content:
+                    if ttft_sec is None:
+                        ttft_sec = time.perf_counter() - started
+                    parts.append(content)
         elapsed = time.perf_counter() - started
-        if not isinstance(response, dict):
-            raise ValueError("invalid_response_object")
-        usage = response.get("usage")
-        choices = response.get("choices")
-        if not isinstance(usage, dict) or not isinstance(choices, list) or not choices:
-            raise ValueError("missing_choices_or_usage")
-        choice = choices[0]
-        message = choice.get("message") if isinstance(choice, dict) else None
-        text = message.get("content") if isinstance(message, dict) else None
-        if not isinstance(text, str) or not text.strip():
+        text_out = "".join(parts)
+        if not text_out.strip():
             raise ValueError("empty_or_invalid_content")
-        if re.search(r"\bAMD\b", text, flags=re.IGNORECASE) is None:
+        if re.search(r"\bAMD\b", text_out, flags=re.IGNORECASE) is None:
             raise ValueError("benchmark_correctness_failed")
         completion_tokens = usage.get("completion_tokens")
         prompt_tokens = usage.get("prompt_tokens")
@@ -104,18 +127,22 @@ def _one_request(model: str, index: int) -> dict:
             raise ValueError("invalid_prompt_tokens")
         if not math.isfinite(elapsed) or elapsed <= 0:
             raise ValueError("invalid_elapsed_time")
+        if ttft_sec is None or not math.isfinite(ttft_sec) or ttft_sec <= 0 or ttft_sec > elapsed:
+            raise ValueError("invalid_ttft")
         return {
             "ok": True,
             "elapsed_sec": elapsed,
+            "ttft_sec": ttft_sec,
             "completion_tokens": completion_tokens,
             "prompt_tokens": prompt_tokens,
-            "text_len": len(text),
+            "text_len": len(text_out),
             "correctness_passed": True,
         }
     except Exception as exc:  # noqa: BLE001
         return {
             "ok": False,
             "elapsed_sec": time.perf_counter() - started,
+            "ttft_sec": None,
             "completion_tokens": 0,
             "prompt_tokens": 0,
             "error": f"{type(exc).__name__}: {str(exc)[:240]}",
@@ -154,6 +181,7 @@ def _benchmark(model: str, concurrency: int, *, round_index: int = 0) -> dict:
     completion_tokens = sum(int(row["completion_tokens"]) for row in passed)
     prompt_tokens = sum(int(row["prompt_tokens"]) for row in passed)
     latencies = [float(row["elapsed_sec"]) for row in passed]
+    ttfts = [float(row["ttft_sec"]) for row in passed]
     return {
         "round": round_index + 1,
         "concurrency": concurrency,
@@ -167,6 +195,8 @@ def _benchmark(model: str, concurrency: int, *, round_index: int = 0) -> dict:
         "total_tok_s": (completion_tokens + prompt_tokens) / wall if wall > 0 else 0.0,
         "mean_e2e_ms": (sum(latencies) / len(latencies) * 1000.0) if latencies else math.inf,
         "p95_e2e_ms": _percentile(latencies, 0.95) * 1000.0 if latencies else math.inf,
+        "mean_ttft_ms": (sum(ttfts) / len(ttfts) * 1000.0) if ttfts else math.inf,
+        "p95_ttft_ms": _percentile(ttfts, 0.95) * 1000.0 if ttfts else math.inf,
         "errors": [row.get("error") for row in rows if not row["ok"]],
         "samples": sorted(rows, key=lambda row: row["request_index"]),
     }
@@ -187,6 +217,8 @@ def _aggregate_rounds(rounds: list[dict]) -> dict:
         "median_total_tok_s": statistics.median(float(row["total_tok_s"]) for row in rounds),
         "median_mean_e2e_ms": statistics.median(float(row["mean_e2e_ms"]) for row in rounds),
         "median_p95_e2e_ms": statistics.median(float(row["p95_e2e_ms"]) for row in rounds),
+        "median_mean_ttft_ms": statistics.median(float(row["mean_ttft_ms"]) for row in rounds),
+        "median_p95_ttft_ms": statistics.median(float(row["p95_ttft_ms"]) for row in rounds),
     }
 
 
@@ -229,7 +261,7 @@ def _verdict(baseline: dict, candidate: dict) -> tuple[str, dict]:
             or arm["passed"] + arm["failed"] != arm["requests"]
         ):
             return "REJECT", {"reason": "incomplete_measurements", "arm": name}
-        for key in ("median_output_tok_s", "median_p95_e2e_ms"):
+        for key in ("median_output_tok_s", "median_p95_e2e_ms", "median_p95_ttft_ms"):
             value = arm.get(key)
             if type(value) not in (int, float) or not math.isfinite(value) or value <= 0:
                 return "REJECT", {"reason": "invalid_metric", "arm": name, "field": key}
@@ -367,8 +399,8 @@ async def main() -> int:
     evidence_dir = ROOT / "docs" / "evidence"
     evidence_dir.mkdir(parents=True, exist_ok=True)
     evidence = {
-        "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
-        "sample_schema": "r9700-request-metrics-v1",
+        "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v3",
+        "sample_schema": "r9700-request-metrics-v2",
         "runner_source_sha256_start": source_digest,
         "runner_source_sha256_end": None,
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
@@ -463,6 +495,12 @@ async def main() -> int:
         "measurement_rounds": MEASUREMENT_ROUNDS,
         "baseline_median_output_tok_s": baseline.get("median_output_tok_s"),
         "candidate_median_output_tok_s": candidate.get("median_output_tok_s"),
+        "baseline_median_p95_ttft_ms": baseline.get("median_p95_ttft_ms"),
+        "candidate_median_p95_ttft_ms": candidate.get("median_p95_ttft_ms"),
+        "baseline_median_mean_e2e_ms": baseline.get("median_mean_e2e_ms"),
+        "candidate_median_mean_e2e_ms": candidate.get("median_mean_e2e_ms"),
+        "baseline_median_p95_e2e_ms": baseline.get("median_p95_e2e_ms"),
+        "candidate_median_p95_e2e_ms": candidate.get("median_p95_e2e_ms"),
         "gain_percent": gate.get("gain_percent"),
         "p95_ratio": gate.get("p95_ratio"),
         "verdict": evidence["verdict"],

@@ -1,0 +1,917 @@
+{
+  "aggregate": {
+    "all_processes_candidate_faster": true,
+    "all_processes_gain_ge_10pct": true,
+    "baseline_output_tok_s_max": 19.986791993694613,
+    "baseline_output_tok_s_median_across_processes": 19.94233560636564,
+    "baseline_output_tok_s_min": 19.89341030738109,
+    "baseline_process_spread_percent": 0.46941014572487144,
+    "baseline_ttft_p95_ms_median_across_processes": 119.26318499899935,
+    "candidate_output_tok_s_max": 36.19398608400836,
+    "candidate_output_tok_s_median_across_processes": 36.078393905146164,
+    "candidate_output_tok_s_min": 36.00413281384562,
+    "candidate_ttft_p95_ms_median_across_processes": 168.92867448041216,
+    "decisions": [
+      "KEEP",
+      "KEEP",
+      "KEEP"
+    ],
+    "keep_count": 3,
+    "p95_ratio_median": 1.020773215267388,
+    "paired_gain_percent_max": 81.49321523029207,
+    "paired_gain_percent_median": 80.98522202845703,
+    "paired_gain_percent_min": 80.51117916536128,
+    "reject_count": 0
+  },
+  "audit": {
+    "independent_process_count": 3,
+    "ok": true,
+    "unique_started_at": [
+      "2026-09-08T16:50:37.585207696Z",
+      "2026-09-08T16:52:36.14867267Z",
+      "2026-09-08T16:54:25.634833158Z"
+    ]
+  },
+  "base_url": "http://127.0.0.1:8000/v1",
+  "captured_at_utc": "2026-09-08T16:56:09.654452+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "container_before": {
+    "cmd": [
+      "python3",
+      "-m",
+      "vllm.entrypoints.openai.api_server",
+      "--model",
+      "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--served-model-name",
+      "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8000",
+      "--max-model-len",
+      "8192",
+      "--gpu-memory-utilization",
+      "0.82",
+      "--dtype",
+      "float16",
+      "--trust-remote-code"
+    ],
+    "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "ok": true,
+    "pid": 170391,
+    "running": true,
+    "started_at": "2026-09-08T16:46:26.150493548Z"
+  },
+  "execution_error": null,
+  "expected_model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "final_service_health": {
+    "model_ids": [
+      "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+    ],
+    "ok": true,
+    "status": 200
+  },
+  "mode": "executed",
+  "per_process_contract": {
+    "baseline_candidate_paired_in_same_process": true,
+    "docker_restart_before_measurement": true,
+    "health_wait": true,
+    "runner_baseline_rounds": 3,
+    "runner_candidate_rounds": 3,
+    "runner_requests_per_round": 6,
+    "runtime_telemetry_sampled": true,
+    "same_container_image_and_launch": true
+  },
+  "process_count": 3,
+  "processes": [
+    {
+      "completed_at_utc": "2026-09-08T16:52:34.974621+00:00",
+      "health": {
+        "attempts": 44,
+        "health": {
+          "model_ids": [
+            "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+          ],
+          "ok": true,
+          "status": 200
+        },
+        "ok": true,
+        "ready_sec": 86.0186831280007
+      },
+      "identity_after_restart": {
+        "cmd": [
+          "python3",
+          "-m",
+          "vllm.entrypoints.openai.api_server",
+          "--model",
+          "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--served-model-name",
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--max-model-len",
+          "8192",
+          "--gpu-memory-utilization",
+          "0.82",
+          "--dtype",
+          "float16",
+          "--trust-remote-code"
+        ],
+        "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+        "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "ok": true,
+        "pid": 179522,
+        "running": true,
+        "started_at": "2026-09-08T16:50:37.585207696Z"
+      },
+      "identity_before_restart": {
+        "cmd": [
+          "python3",
+          "-m",
+          "vllm.entrypoints.openai.api_server",
+          "--model",
+          "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--served-model-name",
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--max-model-len",
+          "8192",
+          "--gpu-memory-utilization",
+          "0.82",
+          "--dtype",
+          "float16",
+          "--trust-remote-code"
+        ],
+        "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+        "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "ok": true,
+        "pid": 170391,
+        "running": true,
+        "started_at": "2026-09-08T16:46:26.150493548Z"
+      },
+      "process_index": 0,
+      "restart_returncode": 0,
+      "restart_stderr": "",
+      "restart_stdout": "Flag --time has been deprecated, use --timeout instead\ninneros-vllm-canary-rocm10\n",
+      "runner_returncode": 0,
+      "runner_stderr_tail": "",
+      "runner_stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_mean_e2e_ms\": 763.253457165168, \"baseline_median_output_tok_s\": 19.94233560636564, \"baseline_median_p95_e2e_ms\": 909.3767914891941, \"baseline_median_p95_ttft_ms\": 119.26318499899935, \"candidate_concurrency\": 2, \"candidate_median_mean_e2e_ms\": 797.0428651509186, \"candidate_median_output_tok_s\": 36.19398608400836, \"candidate_median_p95_e2e_ms\": 927.5110415037489, \"candidate_median_p95_ttft_ms\": 168.78282396646682, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T165234955895Z.json\", \"failure\": null, \"gain_percent\": 81.49321523029207, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.01994140402996, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "runner_summary": {
+        "baseline_median_mean_e2e_ms": 763.253457165168,
+        "baseline_median_output_tok_s": 19.94233560636564,
+        "baseline_median_p95_e2e_ms": 909.3767914891941,
+        "baseline_median_p95_ttft_ms": 119.26318499899935,
+        "candidate_concurrency": 2,
+        "candidate_median_mean_e2e_ms": 797.0428651509186,
+        "candidate_median_output_tok_s": 36.19398608400836,
+        "candidate_median_p95_e2e_ms": 927.5110415037489,
+        "candidate_median_p95_ttft_ms": 168.78282396646682,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T165234955895Z.json",
+        "failure": null,
+        "gain_percent": 81.49321523029207,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.01994140402996,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      },
+      "started_at_utc": "2026-09-08T16:50:33.054383+00:00",
+      "telemetry_idle": {
+        "at_utc": "2026-09-08T16:52:04.131389+00:00",
+        "gpu0_power_w": 12.0,
+        "gpu0_sclk_lines": [
+          "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+        ],
+        "gpu0_use_percent": 3.0,
+        "returncode": 0
+      },
+      "telemetry_samples": [
+        {
+          "at_utc": "2026-09-08T16:52:04.248328+00:00",
+          "gpu0_power_w": 13.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+          ],
+          "gpu0_use_percent": 3.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:06.363798+00:00",
+          "gpu0_power_w": 151.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3251Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:08.480309+00:00",
+          "gpu0_power_w": 160.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3360Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:10.601954+00:00",
+          "gpu0_power_w": 156.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3336Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:12.716758+00:00",
+          "gpu0_power_w": 178.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3355Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:14.836409+00:00",
+          "gpu0_power_w": 151.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3354Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:16.956702+00:00",
+          "gpu0_power_w": 231.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3036Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:19.078101+00:00",
+          "gpu0_power_w": 301.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (2889Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:21.195385+00:00",
+          "gpu0_power_w": 167.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3343Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:23.312151+00:00",
+          "gpu0_power_w": 152.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3317Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:25.428576+00:00",
+          "gpu0_power_w": 163.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3353Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:27.545114+00:00",
+          "gpu0_power_w": 144.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3291Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:29.660593+00:00",
+          "gpu0_power_w": 177.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3337Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:31.779757+00:00",
+          "gpu0_power_w": 182.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3294Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:52:33.895955+00:00",
+          "gpu0_power_w": 164.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3307Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        }
+      ],
+      "telemetry_under_load": {
+        "gpu0_power_w_max": 301.0,
+        "gpu0_power_w_median": 163.0,
+        "gpu0_use_percent_max": 100.0,
+        "gpu0_use_percent_median": 100.0,
+        "sample_count": 15,
+        "sclk_observed_lines": [
+          "GPU[0]\t\t: sclk clock level: S: (41Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3251Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3360Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3336Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3355Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3354Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3036Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (2889Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3343Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3317Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3353Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3291Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3337Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3294Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3307Mhz)"
+        ]
+      }
+    },
+    {
+      "completed_at_utc": "2026-09-08T16:54:24.510672+00:00",
+      "health": {
+        "attempts": 39,
+        "health": {
+          "model_ids": [
+            "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+          ],
+          "ok": true,
+          "status": 200
+        },
+        "ok": true,
+        "ready_sec": 76.01644793001469
+      },
+      "identity_after_restart": {
+        "cmd": [
+          "python3",
+          "-m",
+          "vllm.entrypoints.openai.api_server",
+          "--model",
+          "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--served-model-name",
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--max-model-len",
+          "8192",
+          "--gpu-memory-utilization",
+          "0.82",
+          "--dtype",
+          "float16",
+          "--trust-remote-code"
+        ],
+        "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+        "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "ok": true,
+        "pid": 184296,
+        "running": true,
+        "started_at": "2026-09-08T16:52:36.14867267Z"
+      },
+      "identity_before_restart": {
+        "cmd": [
+          "python3",
+          "-m",
+          "vllm.entrypoints.openai.api_server",
+          "--model",
+          "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--served-model-name",
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--max-model-len",
+          "8192",
+          "--gpu-memory-utilization",
+          "0.82",
+          "--dtype",
+          "float16",
+          "--trust-remote-code"
+        ],
+        "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+        "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "ok": true,
+        "pid": 179522,
+        "running": true,
+        "started_at": "2026-09-08T16:50:37.585207696Z"
+      },
+      "process_index": 1,
+      "restart_returncode": 0,
+      "restart_stderr": "",
+      "restart_stdout": "Flag --time has been deprecated, use --timeout instead\ninneros-vllm-canary-rocm10\n",
+      "runner_returncode": 0,
+      "runner_stderr_tail": "",
+      "runner_stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_mean_e2e_ms\": 770.6859673295791, \"baseline_median_output_tok_s\": 19.89341030738109, \"baseline_median_p95_e2e_ms\": 917.6572817668784, \"baseline_median_p95_ttft_ms\": 119.83089524437673, \"candidate_concurrency\": 2, \"candidate_median_mean_e2e_ms\": 801.3439148392839, \"candidate_median_output_tok_s\": 36.00413281384562, \"candidate_median_p95_e2e_ms\": 936.7199740227079, \"candidate_median_p95_ttft_ms\": 169.17267099779565, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T165424416802Z.json\", \"failure\": null, \"gain_percent\": 80.98522202845703, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.020773215267388, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "runner_summary": {
+        "baseline_median_mean_e2e_ms": 770.6859673295791,
+        "baseline_median_output_tok_s": 19.89341030738109,
+        "baseline_median_p95_e2e_ms": 917.6572817668784,
+        "baseline_median_p95_ttft_ms": 119.83089524437673,
+        "candidate_concurrency": 2,
+        "candidate_median_mean_e2e_ms": 801.3439148392839,
+        "candidate_median_output_tok_s": 36.00413281384562,
+        "candidate_median_p95_e2e_ms": 936.7199740227079,
+        "candidate_median_p95_ttft_ms": 169.17267099779565,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T165424416802Z.json",
+        "failure": null,
+        "gain_percent": 80.98522202845703,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.020773215267388,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      },
+      "started_at_utc": "2026-09-08T16:52:34.974635+00:00",
+      "telemetry_idle": {
+        "at_utc": "2026-09-08T16:53:52.662748+00:00",
+        "gpu0_power_w": 15.0,
+        "gpu0_sclk_lines": [
+          "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+        ],
+        "gpu0_use_percent": 3.0,
+        "returncode": 0
+      },
+      "telemetry_samples": [
+        {
+          "at_utc": "2026-09-08T16:53:52.785585+00:00",
+          "gpu0_power_w": 15.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+          ],
+          "gpu0_use_percent": 3.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:53:54.898121+00:00",
+          "gpu0_power_w": 138.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3225Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:53:57.012346+00:00",
+          "gpu0_power_w": 160.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3336Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:53:59.127282+00:00",
+          "gpu0_power_w": 162.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3325Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:01.241690+00:00",
+          "gpu0_power_w": 171.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3338Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:03.357049+00:00",
+          "gpu0_power_w": 179.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3340Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:05.470831+00:00",
+          "gpu0_power_w": 166.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3342Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:07.583904+00:00",
+          "gpu0_power_w": 163.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3340Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:09.698930+00:00",
+          "gpu0_power_w": 174.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3338Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:11.815627+00:00",
+          "gpu0_power_w": 144.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3338Mhz)"
+          ],
+          "gpu0_use_percent": 53.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:13.931148+00:00",
+          "gpu0_power_w": 164.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3334Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:16.046479+00:00",
+          "gpu0_power_w": 174.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3330Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:18.160884+00:00",
+          "gpu0_power_w": 187.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3332Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:20.275776+00:00",
+          "gpu0_power_w": 162.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3329Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:22.390561+00:00",
+          "gpu0_power_w": 172.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3275Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:54:24.510539+00:00",
+          "gpu0_power_w": 51.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+          ],
+          "gpu0_use_percent": 3.0,
+          "returncode": 0
+        }
+      ],
+      "telemetry_under_load": {
+        "gpu0_power_w_max": 187.0,
+        "gpu0_power_w_median": 163.5,
+        "gpu0_use_percent_max": 100.0,
+        "gpu0_use_percent_median": 100.0,
+        "sample_count": 16,
+        "sclk_observed_lines": [
+          "GPU[0]\t\t: sclk clock level: S: (41Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3225Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3336Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3325Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3338Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3340Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3342Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3334Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3330Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3332Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3329Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3275Mhz)"
+        ]
+      }
+    },
+    {
+      "completed_at_utc": "2026-09-08T16:56:09.653211+00:00",
+      "health": {
+        "attempts": 37,
+        "health": {
+          "model_ids": [
+            "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+          ],
+          "ok": true,
+          "status": 200
+        },
+        "ok": true,
+        "ready_sec": 72.015265703958
+      },
+      "identity_after_restart": {
+        "cmd": [
+          "python3",
+          "-m",
+          "vllm.entrypoints.openai.api_server",
+          "--model",
+          "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--served-model-name",
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--max-model-len",
+          "8192",
+          "--gpu-memory-utilization",
+          "0.82",
+          "--dtype",
+          "float16",
+          "--trust-remote-code"
+        ],
+        "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+        "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "ok": true,
+        "pid": 188286,
+        "running": true,
+        "started_at": "2026-09-08T16:54:25.634833158Z"
+      },
+      "identity_before_restart": {
+        "cmd": [
+          "python3",
+          "-m",
+          "vllm.entrypoints.openai.api_server",
+          "--model",
+          "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--served-model-name",
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000",
+          "--max-model-len",
+          "8192",
+          "--gpu-memory-utilization",
+          "0.82",
+          "--dtype",
+          "float16",
+          "--trust-remote-code"
+        ],
+        "container_id": "281a8937c3650cef19ae587c37fefdfb5f52d2bc693ab37571bcc8fdb65ef66b",
+        "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "ok": true,
+        "pid": 184296,
+        "running": true,
+        "started_at": "2026-09-08T16:52:36.14867267Z"
+      },
+      "process_index": 2,
+      "restart_returncode": 0,
+      "restart_stderr": "",
+      "restart_stdout": "Flag --time has been deprecated, use --timeout instead\ninneros-vllm-canary-rocm10\n",
+      "runner_returncode": 0,
+      "runner_stderr_tail": "",
+      "runner_stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_mean_e2e_ms\": 767.0777693371443, \"baseline_median_output_tok_s\": 19.986791993694613, \"baseline_median_p95_e2e_ms\": 909.878541744547, \"baseline_median_p95_ttft_ms\": 118.9537392638158, \"candidate_concurrency\": 2, \"candidate_median_mean_e2e_ms\": 800.2336596643241, \"candidate_median_output_tok_s\": 36.078393905146164, \"candidate_median_p95_e2e_ms\": 931.7174587486079, \"candidate_median_p95_ttft_ms\": 168.92867448041216, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T165609636122Z.json\", \"failure\": null, \"gain_percent\": 80.51117916536128, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.0240020134579593, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "runner_summary": {
+        "baseline_median_mean_e2e_ms": 767.0777693371443,
+        "baseline_median_output_tok_s": 19.986791993694613,
+        "baseline_median_p95_e2e_ms": 909.878541744547,
+        "baseline_median_p95_ttft_ms": 118.9537392638158,
+        "candidate_concurrency": 2,
+        "candidate_median_mean_e2e_ms": 800.2336596643241,
+        "candidate_median_output_tok_s": 36.078393905146164,
+        "candidate_median_p95_e2e_ms": 931.7174587486079,
+        "candidate_median_p95_ttft_ms": 168.92867448041216,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T165609636122Z.json",
+        "failure": null,
+        "gain_percent": 80.51117916536128,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.0240020134579593,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      },
+      "started_at_utc": "2026-09-08T16:54:24.510679+00:00",
+      "telemetry_idle": {
+        "at_utc": "2026-09-08T16:55:38.134484+00:00",
+        "gpu0_power_w": 16.0,
+        "gpu0_sclk_lines": [
+          "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+        ],
+        "gpu0_use_percent": 3.0,
+        "returncode": 0
+      },
+      "telemetry_samples": [
+        {
+          "at_utc": "2026-09-08T16:55:38.251897+00:00",
+          "gpu0_power_w": 15.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: S: (41Mhz)"
+          ],
+          "gpu0_use_percent": 3.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:40.366204+00:00",
+          "gpu0_power_w": 180.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3215Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:42.480488+00:00",
+          "gpu0_power_w": 156.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3329Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:44.597077+00:00",
+          "gpu0_power_w": 168.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3320Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:46.711883+00:00",
+          "gpu0_power_w": 156.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3338Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:48.829295+00:00",
+          "gpu0_power_w": 182.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3344Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:50.945052+00:00",
+          "gpu0_power_w": 390.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3372Mhz)"
+          ],
+          "gpu0_use_percent": 82.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:53.061319+00:00",
+          "gpu0_power_w": 174.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3320Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:55.176411+00:00",
+          "gpu0_power_w": 177.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3332Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:57.292028+00:00",
+          "gpu0_power_w": 244.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3094Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:55:59.409311+00:00",
+          "gpu0_power_w": 163.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3332Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:56:01.524485+00:00",
+          "gpu0_power_w": 196.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3325Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:56:03.640794+00:00",
+          "gpu0_power_w": 167.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3327Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:56:05.758051+00:00",
+          "gpu0_power_w": 167.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3314Mhz)"
+          ],
+          "gpu0_use_percent": 62.0,
+          "returncode": 0
+        },
+        {
+          "at_utc": "2026-09-08T16:56:07.876135+00:00",
+          "gpu0_power_w": 199.0,
+          "gpu0_sclk_lines": [
+            "GPU[0]\t\t: sclk clock level: 1: (3303Mhz)"
+          ],
+          "gpu0_use_percent": 100.0,
+          "returncode": 0
+        }
+      ],
+      "telemetry_under_load": {
+        "gpu0_power_w_max": 390.0,
+        "gpu0_power_w_median": 174.0,
+        "gpu0_use_percent_max": 100.0,
+        "gpu0_use_percent_median": 100.0,
+        "sample_count": 15,
+        "sclk_observed_lines": [
+          "GPU[0]\t\t: sclk clock level: S: (41Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3215Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3329Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3320Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3338Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3344Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3372Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3332Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3094Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3325Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3327Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3314Mhz)",
+          "GPU[0]\t\t: sclk clock level: 1: (3303Mhz)"
+        ]
+      }
+    }
+  ],
+  "purpose": "pair baseline and candidate inside independent vLLM process spawns to reduce ROCm #6347 process-state confounding",
+  "recovery": null,
+  "runner": "scripts/r9700_upstream_agent_e2e.py",
+  "schema": "hyperloom.r9700.independent_vllm_process_harness.v1",
+  "truth_boundary": {
+    "not_kernel_optimization_proof": true,
+    "not_official_hyperloom_support": true,
+    "restart_changes_process_spawn_state": true,
+    "small_sample_warning": "three independent process spawns address the community 3-repeat recommendation but do not statistically characterize every possible ROCm #6347 state"
+  },
+  "wall_sec": 336.6000814020517
+}
