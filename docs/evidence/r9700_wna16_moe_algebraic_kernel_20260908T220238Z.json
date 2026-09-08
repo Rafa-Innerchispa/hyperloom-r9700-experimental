@@ -1,0 +1,194 @@
+{
+  "captured_at_utc": "2026-09-08T22:02:29.359319+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "best": {
+      "config": {
+        "BM": 16,
+        "BN": 64,
+        "num_warps": 2,
+        "waves_per_eu": 4
+      },
+      "finite": true,
+      "ms": 0.05474895588122308
+    },
+    "comparisons": [
+      {
+        "M": 1,
+        "algebraic_ms": 0.052160059567540884,
+        "allclose": true,
+        "cosine": 0.9999949336051941,
+        "emulation_bf16_ms": 0.06339925312204286,
+        "latency_reduction_percent": 17.72764346745009,
+        "max_abs_error": 0.0078125,
+        "speedup_vs_emulation_x": 1.2154750904750904
+      },
+      {
+        "M": 2,
+        "algebraic_ms": 0.051379873184487224,
+        "allclose": true,
+        "cosine": 0.9999949336051941,
+        "emulation_bf16_ms": 0.05146813055034727,
+        "latency_reduction_percent": 0.1714796417050929,
+        "max_abs_error": 0.0078125,
+        "speedup_vs_emulation_x": 1.001717741994869
+      },
+      {
+        "M": 4,
+        "algebraic_ms": 0.05092274659546092,
+        "allclose": true,
+        "cosine": 0.9999949932098389,
+        "emulation_bf16_ms": 0.051479997637216,
+        "latency_reduction_percent": 1.082461280752335,
+        "max_abs_error": 0.0078125,
+        "speedup_vs_emulation_x": 1.0109430672736877
+      },
+      {
+        "M": 8,
+        "algebraic_ms": 0.05591337685473263,
+        "allclose": true,
+        "cosine": 0.9999949336051941,
+        "emulation_bf16_ms": 0.05760148633271456,
+        "latency_reduction_percent": 2.930669997352428,
+        "max_abs_error": 0.0078125,
+        "speedup_vs_emulation_x": 1.0301915136044772
+      },
+      {
+        "M": 16,
+        "algebraic_ms": 0.06720825331285596,
+        "allclose": true,
+        "cosine": 0.9999948143959045,
+        "emulation_bf16_ms": 0.06694273906759918,
+        "latency_reduction_percent": -0.39662889352146724,
+        "max_abs_error": 0.0078125,
+        "speedup_vs_emulation_x": 0.9960493803637359
+      },
+      {
+        "M": 32,
+        "algebraic_ms": 0.10531675070524216,
+        "allclose": true,
+        "cosine": 0.9999948143959045,
+        "emulation_bf16_ms": 0.06856076652184129,
+        "latency_reduction_percent": -53.61081278414759,
+        "max_abs_error": 0.0078125,
+        "speedup_vs_emulation_x": 0.6509958393392464
+      }
+    ],
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "pass": true,
+    "shape": {
+      "E_reduced": 8,
+      "K": 2048,
+      "N": 1536,
+      "group_size": 128,
+      "top_k": 8
+    },
+    "summary": {
+      "beats_emulation_any": true,
+      "beats_emulation_median": true,
+      "max_speedup_vs_emulation_x": 1.2154750904750904,
+      "median_speedup_vs_emulation_x": 1.0063304046342783,
+      "min_speedup_vs_emulation_x": 0.6509958393392464
+    },
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "routed synthetic Qwen3-shaped MoE first GEMM; emulation reference uses pre-dequantized BF16 weights; no serving or official-support claim",
+    "tuning": [
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "finite": true,
+        "ms": 0.061215501045808196
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 2,
+          "waves_per_eu": 1
+        },
+        "finite": true,
+        "ms": 0.05942914867773652
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 2,
+          "waves_per_eu": 2
+        },
+        "finite": true,
+        "ms": 0.05616554990410805
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 2,
+          "waves_per_eu": 4
+        },
+        "finite": true,
+        "ms": 0.05474895588122308
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "finite": true,
+        "ms": 0.05841624806635082
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 4,
+          "waves_per_eu": 1
+        },
+        "finite": true,
+        "ms": 0.0598594022449106
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "finite": true,
+        "ms": 0.060280703473836184
+      },
+      {
+        "config": {
+          "BM": 16,
+          "BN": 64,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "finite": true,
+        "ms": 0.060052803019061685
+      }
+    ]
+  },
+  "probe_sha256": "800719bb12d0db6f8fb017e58045847207a1abed253866a962922b3d46561771",
+  "schema": "hyperloom.r9700.wna16_moe_algebraic_kernel.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}
