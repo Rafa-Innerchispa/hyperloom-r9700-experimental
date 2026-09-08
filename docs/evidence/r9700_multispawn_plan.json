@@ -1,0 +1,162 @@
+{
+  "audit": {
+    "evidence_paths": [
+      "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035235773281Z.json",
+      "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035310633550Z.json",
+      "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035355104232Z.json",
+      "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035434219313Z.json",
+      "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035519562264Z.json"
+    ],
+    "ok": true,
+    "spawn_count": 5
+  },
+  "base_url": "http://127.0.0.1:8000/v1",
+  "captured_at_utc": "2026-09-08T03:55:19.587849+00:00",
+  "live_execution_gate": {
+    "default": "blocked",
+    "reason": "requires an explicit benchmark window because concurrent client spawns can consume the resident R9700/vLLM service",
+    "requires_service_restart": false,
+    "safe_to_run_without_vllm_restart": true
+  },
+  "mode": "executed",
+  "per_spawn_contract": {
+    "allowed_candidates": [
+      1,
+      2
+    ],
+    "baseline_rounds": 3,
+    "candidate_rounds": 3,
+    "requests_per_round": 6,
+    "required_metrics": [
+      "output_tok_s",
+      "total_tok_s",
+      "mean_e2e_ms",
+      "p95_e2e_ms",
+      "prompt_tokens",
+      "completion_tokens",
+      "failures"
+    ],
+    "warmup": "one uncounted request before each measured arm"
+  },
+  "runner": "scripts/r9700_upstream_agent_e2e.py",
+  "schema": "hyperloom.r9700.multispawn_harness.v1",
+  "spawn_count": 5,
+  "spawns": [
+    {
+      "returncode": 0,
+      "spawn_index": 0,
+      "started_at_utc": "2026-09-08T03:52:05.118117+00:00",
+      "stderr_tail": "",
+      "stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_output_tok_s\": 19.76423036915248, \"candidate_concurrency\": 2, \"candidate_median_output_tok_s\": 35.93484348814421, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035235773281Z.json\", \"failure\": null, \"gain_percent\": 81.81757051481459, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.0158965147825838, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "summary": {
+        "baseline_median_output_tok_s": 19.76423036915248,
+        "candidate_concurrency": 2,
+        "candidate_median_output_tok_s": 35.93484348814421,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035235773281Z.json",
+        "failure": null,
+        "gain_percent": 81.81757051481459,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.0158965147825838,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      }
+    },
+    {
+      "returncode": 0,
+      "spawn_index": 1,
+      "started_at_utc": "2026-09-08T03:52:35.791969+00:00",
+      "stderr_tail": "",
+      "stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_output_tok_s\": 19.876890714323217, \"candidate_concurrency\": 2, \"candidate_median_output_tok_s\": 28.707067945365523, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035310633550Z.json\", \"failure\": null, \"gain_percent\": 44.42433858470285, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.3072363263120181, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"REJECT\"}\n",
+      "summary": {
+        "baseline_median_output_tok_s": 19.876890714323217,
+        "candidate_concurrency": 2,
+        "candidate_median_output_tok_s": 28.707067945365523,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035310633550Z.json",
+        "failure": null,
+        "gain_percent": 44.42433858470285,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.3072363263120181,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "REJECT"
+      }
+    },
+    {
+      "returncode": 0,
+      "spawn_index": 2,
+      "started_at_utc": "2026-09-08T03:53:10.651539+00:00",
+      "stderr_tail": "",
+      "stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_output_tok_s\": 15.79515816771603, \"candidate_concurrency\": 2, \"candidate_median_output_tok_s\": 36.309600284701055, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035355104232Z.json\", \"failure\": null, \"gain_percent\": 129.8780417337942, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 0.8320837566224206, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "summary": {
+        "baseline_median_output_tok_s": 15.79515816771603,
+        "candidate_concurrency": 2,
+        "candidate_median_output_tok_s": 36.309600284701055,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035355104232Z.json",
+        "failure": null,
+        "gain_percent": 129.8780417337942,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 0.8320837566224206,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      }
+    },
+    {
+      "returncode": 0,
+      "spawn_index": 3,
+      "started_at_utc": "2026-09-08T03:53:55.122305+00:00",
+      "stderr_tail": "",
+      "stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_output_tok_s\": 20.007244912497114, \"candidate_concurrency\": 2, \"candidate_median_output_tok_s\": 36.19670996371571, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035434219313Z.json\", \"failure\": null, \"gain_percent\": 80.91801305989001, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.0489258048017045, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "summary": {
+        "baseline_median_output_tok_s": 20.007244912497114,
+        "candidate_concurrency": 2,
+        "candidate_median_output_tok_s": 36.19670996371571,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035434219313Z.json",
+        "failure": null,
+        "gain_percent": 80.91801305989001,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.0489258048017045,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      }
+    },
+    {
+      "returncode": 0,
+      "spawn_index": 4,
+      "started_at_utc": "2026-09-08T03:54:34.237053+00:00",
+      "stderr_tail": "",
+      "stdout_tail": "  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n  [session-end] backend=local-openai reason=agent_stopped edits=1 turns=2 pass=-\n{\"baseline_median_output_tok_s\": 17.4981142914299, \"candidate_concurrency\": 2, \"candidate_median_output_tok_s\": 28.549645192247272, \"evidence\": \"docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035519562264Z.json\", \"failure\": null, \"gain_percent\": 63.158410767896925, \"hardcoded_candidate\": false, \"measurement_rounds\": 3, \"model\": \"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\", \"ok\": true, \"p95_ratio\": 1.18537136016208, \"run_status\": \"completed\", \"selected_by_model\": true, \"verdict\": \"KEEP\"}\n",
+      "summary": {
+        "baseline_median_output_tok_s": 17.4981142914299,
+        "candidate_concurrency": 2,
+        "candidate_median_output_tok_s": 28.549645192247272,
+        "evidence": "docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035519562264Z.json",
+        "failure": null,
+        "gain_percent": 63.158410767896925,
+        "hardcoded_candidate": false,
+        "measurement_rounds": 3,
+        "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "ok": true,
+        "p95_ratio": 1.18537136016208,
+        "run_status": "completed",
+        "selected_by_model": true,
+        "verdict": "KEEP"
+      }
+    }
+  ],
+  "wall_sec": 194.46975072595524
+}

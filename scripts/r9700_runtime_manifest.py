@@ -20,7 +20,7 @@ from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_BASE_URL = "http://127.0.0.1:8000/v1"
-SCHEMA = "hyperloom.r9700.vllm_rocm10.launch_manifest.v1"
+SCHEMA = "hyperloom.r9700.vllm_rocm10.launch_manifest.v2"
 
 _SECRET_RE = re.compile(
     r"(?i)(api[-_]?key|token|secret|password|authorization)(=|\s+)[^\s]+|"
@@ -30,7 +30,10 @@ _SECRET_RE = re.compile(
 
 def redact(text: str) -> str:
     """Remove obvious credentials from process or command text."""
-    return _SECRET_RE.sub(lambda match: match.group(1) + match.group(2) + "REDACTED" if match.group(2) else "REDACTED", text)
+    return _SECRET_RE.sub(
+        lambda match: match.group(1) + match.group(2) + "REDACTED" if match.group(2) else "REDACTED",
+        text,
+    )
 
 
 def stable_json_sha256(payload: dict[str, Any]) -> str:
@@ -152,15 +155,41 @@ def collect_container_versions(
         return {"available": False, "probe": result}
 
 
+def collect_awq_backend_observability(
+    *,
+    base_url: str,
+    run: Callable[..., dict[str, Any]] = _run,
+) -> dict[str, Any]:
+    """Run the permanent backend observer; never replace missing proof with a guess."""
+    try:
+        try:
+            from r9700_awq_backend_probe import collect_backend_evidence
+        except ImportError:
+            from scripts.r9700_awq_backend_probe import collect_backend_evidence
+        return collect_backend_evidence(base_url=base_url, run=run)
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "schema": "hyperloom.r9700.awq_backend_observability.v1",
+            "evidence_status": "unproved_probe_exception",
+            "error": type(exc).__name__,
+        }
+
+
 def build_manifest(
     *,
     base_url: str = DEFAULT_BASE_URL,
     request_json: Callable[[str], dict[str, Any]] | None = None,
     run: Callable[[list[str]], dict[str, Any]] = _run,
+    awq_probe: Callable[..., dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     model = discover_model(base_url, request_json=request_json)
     containers = collect_docker_vllm(run=run)
     container_name = next((row["Names"] for row in containers if "vllm" in row.get("Names", "").lower()), "")
+    awq_observability = (
+        awq_probe(base_url=base_url, run=run)
+        if awq_probe is not None
+        else collect_awq_backend_observability(base_url=base_url, run=run)
+    )
     manifest: dict[str, Any] = {
         "schema": SCHEMA,
         "captured_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -177,15 +206,12 @@ def build_manifest(
         "runtime_versions": collect_container_versions(container_name, run=run) if container_name else {"available": False},
         "gpu": collect_rocm_smi(run=run),
         "launch_processes": collect_vllm_processes(run=run),
-        "awq_observability": {
-            "model_name_contains_awq": "AWQ" in str(model.get("selected_model") or "").upper(),
-            "backend_observed": "not directly exposed by OpenAI /models; inspect vLLM logs or profiler before claiming a specific AWQ kernel",
-            "vllm_use_triton_awq_required": "unknown_from_manifest",
-        },
+        "awq_observability": awq_observability,
         "safety": {
             "service_restarted": False,
             "secrets_redacted": True,
             "network_scope": "local endpoint only",
+            "second_model_copy_loaded": False,
         },
     }
     manifest["manifest_sha256"] = stable_json_sha256(manifest)
@@ -206,10 +232,15 @@ def main() -> int:
     output = Path(args.output) if args.output else default_output_path()
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(manifest, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
+    awq = manifest.get("awq_observability") or {}
+    selection = awq.get("vllm_selection") or {}
     print(json.dumps({
         "ok": True,
         "schema": manifest["schema"],
         "model": manifest["model"].get("selected_model"),
+        "awq_evidence_status": awq.get("evidence_status"),
+        "linear_awq_backend": (selection.get("linear_awq") or {}).get("backend"),
+        "moe_awq_backend": (selection.get("moe_awq") or {}).get("backend"),
         "manifest_sha256": manifest["manifest_sha256"],
         "output": str(output.relative_to(ROOT) if output.is_relative_to(ROOT) else output),
     }, sort_keys=True))

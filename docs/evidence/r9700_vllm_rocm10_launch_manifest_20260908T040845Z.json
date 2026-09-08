@@ -1,0 +1,264 @@
+{
+  "awq_observability": {
+    "captured_at_utc": "2026-09-08T04:08:33.186812+00:00",
+    "container": {
+      "available": true,
+      "candidate_count": 1,
+      "cmd": [
+        "python3",
+        "-m",
+        "vllm.entrypoints.openai.api_server",
+        "--model",
+        "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "--served-model-name",
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000",
+        "--max-model-len",
+        "8192",
+        "--gpu-memory-utilization",
+        "0.82",
+        "--dtype",
+        "float16",
+        "--trust-remote-code"
+      ],
+      "data_parallel_size": "1",
+      "dtype": "float16",
+      "env_signals": [
+        "PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/bin:/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/llvm/bin:/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/bin:/opt/python/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "PYTORCH_ROCM_ARCH=gfx90a;gfx942;gfx950;gfx1100;gfx1101;gfx1102;gfx1103;gfx1150;gfx1151;gfx1152;gfx1153;gfx1200;gfx1201",
+        "AITER_ROCM_ARCH=gfx942;gfx950",
+        "PIP_EXTRA_INDEX_URL=https://stable.repo.amd.com/rocm/whl-next",
+        "ROCM_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+        "ROCM_HOME=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+        "HIP_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+        "HIP_CLANG_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/llvm/bin",
+        "HIP_DEVICE_LIB_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/lib/llvm/amdgcn/bitcode",
+        "LD_LIBRARY_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib:/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/rocm_sysdeps/lib:/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/lib:/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/lib/rocm_sysdeps/lib",
+        "PYTHONPATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_core/share/amd_smi:",
+        "CMAKE_PREFIX_PATH=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel/lib/cmake:",
+        "CMAKE_HIP_COMPILER_ROCM_ROOT=/opt/python/lib/python3.14/site-packages/_rocm_sdk_devel",
+        "RAY_EXPERIMENTAL_NOSET_HIP_VISIBLE_DEVICES=1",
+        "ROCM_VERSION=10.0.0",
+        "HIP_FORCE_DEV_KERNARG=1"
+      ],
+      "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+      "max_model_len": "8192",
+      "model_path": "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "name": "inneros-vllm-canary-rocm10",
+      "served_model_name": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "tensor_parallel_size": "1"
+    },
+    "endpoint": {
+      "available": true,
+      "model_ids": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "url": "http://127.0.0.1:8000/v1/models"
+    },
+    "evidence_status": "proved",
+    "probe_sha256": "b283c4a94b9483187952895f778b6531f2f0b3031875713fd81ae4fcd1461e89",
+    "proof_checks": {
+      "inside_probe_error": null,
+      "linear_awq_backend": true,
+      "moe_backend_or_not_applicable": true,
+      "rocm_platform": true,
+      "runtime_bound": true
+    },
+    "runtime_log_signals": [],
+    "schema": "hyperloom.r9700.awq_backend_observability.v1",
+    "selection_probe": {
+      "returncode": 0,
+      "stderr_tail": ""
+    },
+    "truth_boundary": {
+      "claim": "runtime-bound vLLM backend selection evidence; not official upstream HyperLoom R9700 support",
+      "second_model_copy_loaded": false,
+      "service_restarted": false
+    },
+    "vllm_selection": {
+      "linear_awq": {
+        "awq_dequantize_source": "def awq_dequantize(\n    qweight: torch.Tensor,\n    scales: torch.Tensor,\n    zeros: torch.Tensor,\n    split_k_iters: int,\n    thx: int,\n    thy: int,\n) -> torch.Tensor:\n    if envs.VLLM_USE_TRITON_AWQ:\n        from vllm.model_executor.layers.quantization.awq_triton import (\n            awq_dequantize_triton,\n        )\n\n        return awq_dequantize_triton(qweight, scales, zeros)\n    return torch.ops._C.awq_dequantize(qweight, scales, zeros, split_k_iters, thx, thy)\n",
+        "awq_gemm_source": "def awq_gemm(\n    input: torch.Tensor,\n    qweight: torch.Tensor,\n    scales: torch.Tensor,\n    qzeros: torch.Tensor,\n    split_k_iters: int,\n) -> torch.Tensor:\n    if envs.VLLM_USE_TRITON_AWQ:\n        from vllm.model_executor.layers.quantization.awq_triton import awq_gemm_triton\n\n        return awq_gemm_triton(input, qweight, scales, qzeros, split_k_iters)\n    return torch.ops._C.awq_gemm(input, qweight, scales, qzeros, split_k_iters)\n",
+        "backend": "VLLM_CUSTOM_OP__C_AWQ",
+        "kernel_entry": "torch.ops._C.awq_gemm",
+        "proved": true,
+        "use_triton_awq": false
+      },
+      "model_config": {
+        "architecture": [
+          "Qwen3MoeForCausalLM"
+        ],
+        "hidden_size": 2048,
+        "moe_intermediate_size": 768,
+        "norm_topk_prob": true,
+        "num_experts_per_tok": 8,
+        "num_local_experts": 128,
+        "quant_config_class": "vllm.model_executor.layers.quantization.auto_awq.AutoAWQConfig",
+        "quant_name": "auto_awq",
+        "quant_repr": "AutoAWQConfig(quant_type=uint4, group_size=128, zero_point=True, lm_head_quantized=False, modules_to_not_convert=['.mlp.gate'])"
+      },
+      "moe_awq": {
+        "all2all_backend": "allgather_reducescatter",
+        "applicable": true,
+        "backend": "EMULATION",
+        "dp_size": 1,
+        "ep_size": 1,
+        "experts_cls": "vllm.model_executor.layers.fused_moe.experts.int4_emulation_moe.Int4EmulationTritonExperts",
+        "max_num_tokens": 2048,
+        "routing_method": "RenormalizeNaive",
+        "tp_size": 1,
+        "use_ep": false
+      },
+      "platform": {
+        "capability": "DeviceCapability(major=12, minor=0)",
+        "class": "vllm.platforms.rocm.RocmPlatform",
+        "device_name": "AMD_Radeon_R9700",
+        "is_cuda": false,
+        "is_rocm": true
+      },
+      "versions": {
+        "torch": "2.12.0+rocm10.0.0",
+        "torch_hip": "7.15.26333",
+        "vllm": "0.27.1.dev5+gf46a9dfe2.d20260827"
+      }
+    }
+  },
+  "captured_at_utc": "2026-09-08T04:08:42.220236+00:00",
+  "docker": {
+    "selected_container": "inneros-vllm-canary-rocm10",
+    "vllm_containers": [
+      {
+        "Command": "\"python3 -m vllm.ent\u2026\"",
+        "ID": "281a8937c365",
+        "Image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+        "Names": "inneros-vllm-canary-rocm10",
+        "Ports": ""
+      }
+    ]
+  },
+  "endpoint": {
+    "base_url": "http://127.0.0.1:8000/v1",
+    "models_path": "/models"
+  },
+  "gpu": {
+    "available": true,
+    "payload": {
+      "card0": {
+        "Average Graphics Package Power (W)": "12.0",
+        "Avg. Memory Bandwidth": "0",
+        "Card Model": "0x7551",
+        "Card SKU": "48WD6SHD1",
+        "Card Series": "AMD Radeon AI PRO R9700",
+        "Card Vendor": "Advanced Micro Devices, Inc. [AMD/ATI]",
+        "Device Rev": "0xc0",
+        "GFX Version": "gfx1201",
+        "GPU Memory Allocated (VRAM%)": "83",
+        "GPU Memory Read/Write Activity (%)": "0",
+        "GPU use (%)": "3",
+        "GUID": "17620",
+        "Memory Activity": "N/A",
+        "Node ID": "1",
+        "Subsystem ID": "-0x67ff",
+        "Temperature (Sensor edge) (C)": "41.0",
+        "Temperature (Sensor junction) (C)": "43.0",
+        "Temperature (Sensor memory) (C)": "40.0"
+      },
+      "card1": {
+        "Card Model": "0x1638",
+        "Card SKU": "CEZANNE",
+        "Card Series": "AMD Radeon Graphics",
+        "Card Vendor": "Advanced Micro Devices, Inc. [AMD/ATI]",
+        "Current Socket Graphics Package Power (W)": "24.0",
+        "Device Rev": "0xc8",
+        "GFX Version": "gfx90c",
+        "GPU Memory Allocated (VRAM%)": "5",
+        "GPU use (%)": "0",
+        "GUID": "32181",
+        "Memory Activity": "N/A",
+        "Node ID": "2",
+        "Subsystem ID": "-0x77f7",
+        "Temperature (Sensor edge) (C)": "37.0"
+      },
+      "system": {
+        "Driver version": "7.0.0-30-generic"
+      }
+    }
+  },
+  "host": {
+    "hostname": "ralfiia-amd",
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43"
+  },
+  "launch_processes": [
+    {
+      "cmd": "python3 -m vllm.entrypoints.openai.api_server --model /models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ --served-model-name QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ --host 127.0.0.1 --port 8000 --max-model-len 8192 --gpu-memory-utilization 0.82 --dtype float16 --trust-remote-code",
+      "pid": "2451292",
+      "ppid": "2451269"
+    },
+    {
+      "cmd": "/usr/bin/docker run --rm --name inneros-vllm-canary-rocm10 --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --network host -v /home/rlopez/inneros/inneros_core/var/local_models:/models rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0 python3 -m vllm.entrypoints.openai.api_server --model /models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ --served-model-name QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ --host 127.0.0.1 --port 8000 --max-model-len 8192 --gpu-memory-utilization 0.82 --dtype float16 --trust-remote-code",
+      "pid": "2451180",
+      "ppid": "1857"
+    }
+  ],
+  "manifest_sha256": "c674caea87dc5efe4281c620d30a12eeebbe9662cfddd57de5d0d886e6c9c513",
+  "model": {
+    "max_model_len": 8192,
+    "raw": {
+      "data": [
+        {
+          "created": 1788840512,
+          "id": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+          "max_model_len": 8192,
+          "object": "model",
+          "owned_by": "vllm",
+          "parent": null,
+          "permission": [
+            {
+              "allow_create_engine": false,
+              "allow_fine_tuning": false,
+              "allow_logprobs": true,
+              "allow_sampling": true,
+              "allow_search_indices": false,
+              "allow_view": true,
+              "created": 1788840512,
+              "group": null,
+              "id": "modelperm-b85809992b9be6bc",
+              "is_blocking": false,
+              "object": "model_permission",
+              "organization": "*"
+            }
+          ],
+          "root": "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ"
+        }
+      ],
+      "object": "list"
+    },
+    "root": "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+    "selected_model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+  },
+  "runtime_versions": {
+    "available": true,
+    "payload": {
+      "python": "3.14.7",
+      "torch_hip": "7.15.26333",
+      "torch_version": "2.12.0+rocm10.0.0",
+      "vllm_version": "0.27.1.dev5+gf46a9dfe2.d20260827"
+    }
+  },
+  "safety": {
+    "network_scope": "local endpoint only",
+    "second_model_copy_loaded": false,
+    "secrets_redacted": true,
+    "service_restarted": false
+  },
+  "schema": "hyperloom.r9700.vllm_rocm10.launch_manifest.v2",
+  "truth_boundary": {
+    "claim_status": "measured_runtime_manifest",
+    "concurrency_result_class": "serving/concurrency scaling, not a GEAK/Arbor kernel optimization claim",
+    "hardware_label": "AMD Radeon AI PRO R9700 workstation GPU, gfx1201",
+    "support_status": "experimental InnerChispa compatibility path; not official AMD Hyperloom R9700 support"
+  }
+}

@@ -1,0 +1,529 @@
+{
+  "agent": {
+    "agent_text": "Submitted candidate with CONCURRENCY = 2. Hypothesis: Increasing concurrency from 1 to 2 should improve throughput while keeping p95 latency within 1.25x of the baseline (887.69 ms * 1.25 = 1110.86 ms",
+    "decision_context": "A real baseline has already been measured at concurrency 1 over 3 rounds. Median output throughput: 20.0072 tok/s. Median p95 end-to-end latency: 887.69 ms. Failed requests: 0. Choose exactly one candidate concurrency from the bounded set [1, 2]. Your objective is to maximize aggregate output throughput while hypothesizing that the candidate can keep p95 latency within 1.25x of baseline. You have not seen candidate benchmark results. Make the choice yourself from the measured baseline and the bounded search space. Use write_file exactly once to replace the supplied candidate file with the same two comment lines and a valid CONCURRENCY assignment using your chosen value. Do not use shell and do not restart any service. Then return a short PLAN describing your hypothesis and include SUBMIT_CANDIDATE.",
+    "format_repair_used": true,
+    "hardcoded_candidate": false,
+    "plan": "",
+    "progress_log": [
+      "local-openai: session started model=QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "local-openai: json-action tool mode",
+      "tool: write_file",
+      "local-openai: completed turn 2"
+    ],
+    "selected_by_model": true,
+    "selected_concurrency": 2,
+    "validation_attempts": [
+      {
+        "attempt": 1,
+        "reason": "candidate must contain exactly one CONCURRENCY assignment",
+        "valid": false
+      },
+      {
+        "attempt": 2,
+        "valid": true
+      }
+    ]
+  },
+  "agent_backend": "local-openai",
+  "allowed_candidates": [
+    1,
+    2
+  ],
+  "base_url": "http://127.0.0.1:8000/v1",
+  "baseline": {
+    "aggregate": {
+      "failed": 0,
+      "max_output_tok_s": 20.142908310924064,
+      "mean_output_tok_s": 20.007912106434492,
+      "median_mean_e2e_ms": 749.6399420003096,
+      "median_output_tok_s": 20.007244912497114,
+      "median_p95_e2e_ms": 887.6880900206743,
+      "median_total_tok_s": 60.466340179991285,
+      "min_output_tok_s": 19.873583095882296,
+      "passed": 18,
+      "requests": 18,
+      "round_count": 3
+    },
+    "rounds": [
+      {
+        "concurrency": 1,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 802.4828014992332,
+        "output_tok_s": 20.142908310924064,
+        "output_tokens": 97,
+        "p95_e2e_ms": 906.0355542314937,
+        "passed": 6,
+        "requests": 6,
+        "round": 1,
+        "samples": [
+          {
+            "completion_tokens": 14,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7051027420093305,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 0,
+            "text_len": 89
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7504537670174614,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 1,
+            "text_len": 98
+          },
+          {
+            "completion_tokens": 17,
+            "correctness_passed": true,
+            "elapsed_sec": 0.8422167469980195,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 2,
+            "text_len": 114
+          },
+          {
+            "completion_tokens": 17,
+            "correctness_passed": true,
+            "elapsed_sec": 0.841493915009778,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 3,
+            "text_len": 99
+          },
+          {
+            "completion_tokens": 19,
+            "correctness_passed": true,
+            "elapsed_sec": 0.9273084899759851,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 4,
+            "text_len": 127
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7483211479848251,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 5,
+            "text_len": 96
+          }
+        ],
+        "total_tok_s": 57.52150105284501,
+        "total_tokens": 277,
+        "wall_sec": 4.815590604033787
+      },
+      {
+        "concurrency": 1,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 749.6399420003096,
+        "output_tok_s": 20.007244912497114,
+        "output_tokens": 90,
+        "p95_e2e_ms": 887.6880900206743,
+        "passed": 6,
+        "requests": 6,
+        "round": 2,
+        "samples": [
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7495836680172943,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 6,
+            "text_len": 96
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7497282290132716,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 7,
+            "text_len": 96
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7506698400247842,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 8,
+            "text_len": 96
+          },
+          {
+            "completion_tokens": 19,
+            "correctness_passed": true,
+            "elapsed_sec": 0.9333608400193043,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 9,
+            "text_len": 124
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.657476833963301,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 10,
+            "text_len": 89
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6570202409639023,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 11,
+            "text_len": 87
+          }
+        ],
+        "total_tok_s": 60.466340179991285,
+        "total_tokens": 272,
+        "wall_sec": 4.498370484972838
+      },
+      {
+        "concurrency": 1,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 687.5898786626445,
+        "output_tok_s": 19.873583095882296,
+        "output_tokens": 82,
+        "p95_e2e_ms": 794.2941537621664,
+        "passed": 6,
+        "requests": 6,
+        "round": 3,
+        "samples": [
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6555810489808209,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 12,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6573129979660735,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 13,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6586354220053181,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 14,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6570614069933072,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 15,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 17,
+            "correctness_passed": true,
+            "elapsed_sec": 0.8395137310144491,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 16,
+            "text_len": 115
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6574346650158986,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 17,
+            "text_len": 86
+          }
+        ],
+        "total_tok_s": 64.95268621581043,
+        "total_tokens": 268,
+        "wall_sec": 4.126080314978026
+      }
+    ]
+  },
+  "baseline_concurrency": 1,
+  "candidate": {
+    "aggregate": {
+      "failed": 0,
+      "max_output_tok_s": 36.83173387455203,
+      "mean_output_tok_s": 35.92373999335405,
+      "median_mean_e2e_ms": 796.9977003231179,
+      "median_output_tok_s": 36.19670996371571,
+      "median_p95_e2e_ms": 931.1189442378236,
+      "median_total_tok_s": 109.39450122367414,
+      "min_output_tok_s": 34.7427761417944,
+      "passed": 18,
+      "requests": 18,
+      "round_count": 3
+    },
+    "rounds": [
+      {
+        "concurrency": 2,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 962.0236361806747,
+        "output_tok_s": 34.7427761417944,
+        "output_tokens": 102,
+        "p95_e2e_ms": 1212.450670747785,
+        "passed": 6,
+        "requests": 6,
+        "round": 1,
+        "samples": [
+          {
+            "completion_tokens": 14,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7172894660034217,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 0,
+            "text_len": 89
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7686060570413247,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 1,
+            "text_len": 98
+          },
+          {
+            "completion_tokens": 21,
+            "correctness_passed": true,
+            "elapsed_sec": 1.2305306069902144,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 2,
+            "text_len": 144
+          },
+          {
+            "completion_tokens": 17,
+            "correctness_passed": true,
+            "elapsed_sec": 1.0083151719882153,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 3,
+            "text_len": 99
+          },
+          {
+            "completion_tokens": 20,
+            "correctness_passed": true,
+            "elapsed_sec": 1.1582108620204963,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 4,
+            "text_len": 131
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.8891896530403756,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 5,
+            "text_len": 96
+          }
+        ],
+        "total_tok_s": 96.0535575684904,
+        "total_tokens": 282,
+        "wall_sec": 2.9358621079591103
+      },
+      {
+        "concurrency": 2,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 796.9977003231179,
+        "output_tok_s": 36.19670996371571,
+        "output_tokens": 90,
+        "p95_e2e_ms": 931.1189442378236,
+        "passed": 6,
+        "requests": 6,
+        "round": 2,
+        "samples": [
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.743767780950293,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 6,
+            "text_len": 96
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.743324932991527,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 7,
+            "text_len": 96
+          },
+          {
+            "completion_tokens": 15,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7550429989933036,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 8,
+            "text_len": 96
+          },
+          {
+            "completion_tokens": 19,
+            "correctness_passed": true,
+            "elapsed_sec": 0.975624157988932,
+            "ok": true,
+            "prompt_tokens": 30,
+            "request_index": 9,
+            "text_len": 124
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7976033029844984,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 10,
+            "text_len": 89
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7666230280301534,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 11,
+            "text_len": 87
+          }
+        ],
+        "total_tok_s": 109.39450122367414,
+        "total_tokens": 272,
+        "wall_sec": 2.4864138229750097
+      },
+      {
+        "concurrency": 2,
+        "errors": [],
+        "failed": 0,
+        "mean_e2e_ms": 710.2177781537952,
+        "output_tok_s": 36.83173387455203,
+        "output_tokens": 82,
+        "p95_e2e_ms": 857.147927992628,
+        "passed": 6,
+        "requests": 6,
+        "round": 3,
+        "samples": [
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6603799239965156,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 12,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.660370466997847,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 13,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6609669029712677,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 14,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.6605102389585227,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 15,
+            "text_len": 86
+          },
+          {
+            "completion_tokens": 17,
+            "correctness_passed": true,
+            "elapsed_sec": 0.904756287985947,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 16,
+            "text_len": 115
+          },
+          {
+            "completion_tokens": 13,
+            "correctness_passed": true,
+            "elapsed_sec": 0.7143228480126709,
+            "ok": true,
+            "prompt_tokens": 31,
+            "request_index": 17,
+            "text_len": 86
+          }
+        ],
+        "total_tok_s": 120.37688632170664,
+        "total_tokens": 268,
+        "wall_sec": 2.2263410210143775
+      }
+    ]
+  },
+  "candidate_concurrency": 2,
+  "cdna_specific_paths_used": false,
+  "execution_scope": "r9700_multispawn_harness",
+  "failure": null,
+  "finished_at_utc": "2026-09-08T03:54:34.219152+00:00",
+  "gate": {
+    "gain_fraction": 0.8091801305989001,
+    "gain_percent": 80.91801305989001,
+    "latency_metric": "median_p95_e2e_ms",
+    "max_p95_ratio": 1.25,
+    "min_gain_fraction": 0.1,
+    "p95_ratio": 1.0489258048017045,
+    "throughput_metric": "median_output_tok_s"
+  },
+  "hardware_attested_by_runner": false,
+  "hardware_claim": "target AMD Radeon AI PRO R9700 / gfx1201; requires independent physical attestation",
+  "measurement_rounds": 3,
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "nonfinite_serialization": "null; invalid measurements never complete successfully",
+  "ok": true,
+  "orchestrator_host": "ralfiia-amd",
+  "path": "KernelForge make_agent_fn -> registered local-openai -> local Qwen/vLLM -> model-selected bounded candidate -> repeated real benchmark -> deterministic KEEP/REJECT",
+  "requests_per_round": 6,
+  "run_status": "completed",
+  "runner_source_sha256_end": "311be5b6bf34c3baa0d77e49f43cb1edff565a386855dbab0d66510649d6374a",
+  "runner_source_sha256_start": "311be5b6bf34c3baa0d77e49f43cb1edff565a386855dbab0d66510649d6374a",
+  "sample_schema": "r9700-request-metrics-v1",
+  "schema": "hyperloom-r9700-upstream-autonomous-agent-e2e-v2",
+  "shell_exposed": false,
+  "support_status": "experimental; not official AMD Hyperloom support",
+  "timestamp_utc": "2026-09-08T03:53:55.207054+00:00",
+  "tool_mode": "json",
+  "truth_boundary": "architecture-neutral experimental R9700 compatibility; no official AMD/upstream Hyperloom R9700 support claim",
+  "verdict": "KEEP"
+}
