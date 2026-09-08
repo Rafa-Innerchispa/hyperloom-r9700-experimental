@@ -1,0 +1,74 @@
+{
+  "captured_at_utc": "2026-09-08T18:43:14.178144+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_state": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "2026-09-08T16:54:25.323070795Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 188286,
+    "Restarting": false,
+    "Running": true,
+    "StartedAt": "2026-09-08T16:54:25.634833158Z",
+    "Status": "running"
+  },
+  "docker_stats": {
+    "BlockIO": "2.15GB / 870MB",
+    "CPUPerc": "100.95%",
+    "Container": "inneros-vllm-canary-rocm10",
+    "ID": "281a8937c365",
+    "MemPerc": "13.21%",
+    "MemUsage": "3.982GiB / 30.14GiB",
+    "Name": "inneros-vllm-canary-rocm10",
+    "NetIO": "0B / 0B",
+    "PIDs": "161"
+  },
+  "model_config": {
+    "decoder_sparse_step": 1,
+    "hidden_size": 2048,
+    "intermediate_size": 5472,
+    "mlp_only_layers": [],
+    "model_type": "qwen3_moe",
+    "moe_intermediate_size": 768,
+    "num_experts": 128,
+    "num_experts_per_tok": 8,
+    "num_hidden_layers": 48,
+    "shared_expert_intermediate_size": 0
+  },
+  "pass": true,
+  "probe_sha256": "0d29e4f3278fc211b7521c2a24274bf7d6376dde64d913ea3359675fd7170e09",
+  "rocm_smi": {
+    "card0": {
+      "VRAM Total Memory (B)": "34208743424",
+      "VRAM Total Used Memory (B)": "28272697344"
+    },
+    "card1": {
+      "VRAM Total Memory (B)": "536870912",
+      "VRAM Total Used Memory (B)": "30965760"
+    }
+  },
+  "schema": "hyperloom.r9700.int4_emulation_memory_probe.v1",
+  "theoretical_moe_expert_storage": {
+    "bf16_dequant_bytes": 57982058496,
+    "bf16_dequant_gib": 54.0,
+    "bf16_vs_packed_ratio": 3.8496240601503757,
+    "expert_params_total": 28991029248,
+    "experts_per_layer": 128,
+    "hidden_size": 2048,
+    "incremental_bytes_if_fully_dequantized": 42920312832,
+    "incremental_gib_if_fully_dequantized": 39.97265625,
+    "moe_intermediate_size": 768,
+    "moe_layers": 48,
+    "note": "Theoretical expert-weight storage only; actual runtime may use HMM/host spill, temporary buffers, or layer-specific handling.",
+    "packed_awq_bytes_approx": 15061745664,
+    "packed_awq_gib_approx": 14.02734375
+  },
+  "truth_boundary": {
+    "gpu_tensor_allocations": false,
+    "official_support_claim": false,
+    "read_only": true,
+    "service_restarted": false
+  }
+}

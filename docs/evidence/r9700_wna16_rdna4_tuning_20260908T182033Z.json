@@ -1,0 +1,226 @@
+{
+  "captured_at_utc": "2026-09-08T18:20:24.486215+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "best": {
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1
+      },
+      "cosine": 0.9999939203262329,
+      "max_abs_error": 0.0078125,
+      "mean_abs_error": 0.0007838468882255256,
+      "ms": 0.08591812365921214,
+      "valid": true
+    },
+    "best_vs_emulation": [
+      {
+        "M": 1,
+        "allclose": true,
+        "cosine": 0.9999942183494568,
+        "emulation_ms": 0.057378997250149645,
+        "latency_reduction_percent": -53.968057252397564,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.08834532733696203,
+        "speedup_x": 0.6494853658903513
+      },
+      {
+        "M": 8,
+        "allclose": true,
+        "cosine": 0.9999942183494568,
+        "emulation_ms": 0.06024266864793996,
+        "latency_reduction_percent": -46.973340545627565,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.0885406625457108,
+        "speedup_x": 0.6803955032168246
+      },
+      {
+        "M": 16,
+        "allclose": true,
+        "cosine": 0.999994158744812,
+        "emulation_ms": 0.059618158653999366,
+        "latency_reduction_percent": -49.40330097684559,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.08907149701068799,
+        "speedup_x": 0.6693292540805235
+      },
+      {
+        "M": 32,
+        "allclose": true,
+        "cosine": 0.999994158744812,
+        "emulation_ms": 0.06811400332177679,
+        "latency_reduction_percent": -121.52910254719389,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.15089234026769796,
+        "speedup_x": 0.4514079588197506
+      },
+      {
+        "M": 64,
+        "allclose": true,
+        "cosine": 0.9999940991401672,
+        "emulation_ms": 0.08299533510580659,
+        "latency_reduction_percent": -204.100223796489,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.2523889997974038,
+        "speedup_x": 0.3288389556297149
+      }
+    ],
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "pass": true,
+    "shape": {
+      "E_reduced": 8,
+      "K": 2048,
+      "N": 1536,
+      "group_size": 128,
+      "top_k": 8
+    },
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "bounded block tuning for first MoE GEMM only; synthetic Qwen3 dimensions, no serving claim",
+    "tuning_at_M8": [
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.09960387978935614,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.10061949433293194,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.24008900072658435,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.08591812365921214,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.15306262503145263,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.5464583737193607,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.1698941268841736,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.9999939203262329,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 0.0007838468882255256,
+        "ms": 0.6440947545343079,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "cosine": 0.3401745557785034,
+        "max_abs_error": 1.781494140625,
+        "mean_abs_error": 0.27498096227645874,
+        "ms": 1.4256791255320422,
+        "valid": false
+      }
+    ]
+  },
+  "probe_sha256": "25ae89759ff9897671b3b791572187c359ab3cf9f5bb56f7d7605480bd81aa76",
+  "schema": "hyperloom.r9700.wna16_rdna4_tuning.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}

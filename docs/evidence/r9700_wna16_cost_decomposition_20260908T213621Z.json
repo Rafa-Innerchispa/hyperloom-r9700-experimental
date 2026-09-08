@@ -1,0 +1,24 @@
+{
+  "captured_at_utc": "2026-09-08T21:36:19.161793+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": false,
+  "probe": {
+    "error": "CompilationError:at 2:40:\ndef bf16_k(A,W,C,M:tl.constexpr,N:tl.constexpr,K:tl.constexpr):\n    pn=tl.program_id(0); om=tl.arange(0,BM); on=pn*BN+tl.arange(0,BN); ok=tl.arange(0,BK)\n                                        ^\nNameError(\"Cannot access global variable BM from within @jit'ed function. Triton kernels can only access global variables that are instanstiated as constexpr (`x = triton.language.constexpr(42)`). Note that this is different from annotating a variable as constexpr (`x: triton.language.constexpr = 42`), which is not supported.  Alternatively, set the envvar TRITON_ALLOW_NON_CONSTEXPR_GLOBALS=1, but we do not promise to support this forever.\")",
+    "pass": false,
+    "trace": "Traceback (most recent call last):\n  File \"<string>\", line 76, in main\n    f0();f1();f2();torch.cuda.synchronize()\n    ~~^^\n  File \"<string>\", line 73, in <lambda>\n    f0=lambda: bf16_k[grid](A,W,C0,M=M,N=N,K=K,num_warps=2,num_stages=1,waves_per_eu=2)\n               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/python/lib/python3.14/site-packages/triton/runtime/jit.py\", line 374, in <lambda>\n    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)\n                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/python/lib/python3.14/site-packages/triton/runtime/jit.py\", line 757, in run\n    kernel = self._do_compile(key, signature, device, constexprs, options, attrs, warmup)\n  File \"/opt/python/lib/python3.14/site-packages/triton/runtime/jit.py\", line 902, in _do_compile\n    kernel = self.compile(src, target=target, options=options.__dict__)\n  File \"/opt/python/lib/python3.14/site-packages/triton/compiler/compiler.py\", line 307, in compile\n    module = src.make_ir(target, options, codegen_fns, module_map, context)\n  File \"/opt/python/lib/python3.14/site-packages/triton/compiler/compiler.py\", line 80, in make_ir\n    return ast_to_ttir(self.fn, self, context=context, options=options, codegen_fns=codegen_fns,\n                       module_map=module_map)\ntriton.compiler.errors.CompilationError: at 2:40:\ndef bf16_k(A,W,C,M:tl.constexpr,N:tl.constexpr,K:tl.constexpr):\n    pn=tl.program_id(0); om=tl.arange(0,BM); on=pn*BN+tl.arange(0,BN); ok=tl.arange(0,BK)\n                                        ^\nNameError(\"Cannot access global variable BM from within @jit'ed function. Triton kernels can only access global variables that are instanstiated as constexpr (`x = triton.language.constexpr(42)`). Note that this is different from annotating a variable as constexpr (`x: triton.language.constexpr = 42`), which is not supported.  Alternatively, set the envvar TRITON_ALLOW_NON_CONSTEXPR_GLOBALS=1, but we do not promise to support this forever.\")\n"
+  },
+  "probe_sha256": "084df8d01cb754f2422cd2124d62b1452487514c9a0b3deebb033544bdc49f1e",
+  "schema": "hyperloom.r9700.wna16_cost_decomposition.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}

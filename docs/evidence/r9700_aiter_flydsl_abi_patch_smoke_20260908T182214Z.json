@@ -1,0 +1,27 @@
+{
+  "captured_at_utc": "2026-09-08T18:22:07.444579+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": "[aiter] import [module_aiter_core] under /opt/python/lib/python3.14/site-packages/aiter/jit/module_aiter_core.so\n[aiter] import [module_moe_sorting_opus] under /opt/python/lib/python3.14/site-packages/aiter/jit/module_moe_sorting_opus.so\n"
+  },
+  "forced_env": {
+    "AITER_GPU_ARCHS": "gfx1201",
+    "GPU_ARCHS": "gfx1201"
+  },
+  "pass": false,
+  "probe": {
+    "error": "TypeError:moe_sorting_opus_fwd(): incompatible function arguments. The following argument types are supported:\n    1. (topk_ids: aiter_tensor_t, topk_weights: aiter_tensor_t, sorted_token_ids: aiter_tensor_t, sorted_weights: aiter_tensor_t, sorted_expert_ids: aiter_tensor_t, num_valid_ids: aiter_tensor_t, moe_buf: aiter_tensor_t, num_experts: typing.SupportsInt | typing.SupportsIndex, unit_size: typing.SupportsInt | typing.SupportsIndex, local_expert_mask: aiter_tensor_t | None = None, num_local_tokens: aiter_tensor_t | None = None, workspace: aiter_tensor_t | None = None, dispatch_policy: typing.SupportsInt | typing.SupportsIndex = 0, local_topk_ids: aiter_tensor_t | None = None, m_indices: aiter_tensor_t | None = None, reverse_sorted: aiter_tensor_t | None = None) -> None\n\nInvoked with: <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d6b0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4c2f0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d7f0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4c770>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d1f0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d530>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d230>, 8, 16",
+    "pass": false,
+    "trace": "Traceback (most recent call last):\n  File \"<string>\", line 16, in <module>\n    torch.ops.aiter.moe_sorting_opus_fwd(ids,tw,sid,sw,se,nv,mbuf,E,bm,None,None,workspace,0,None,None,None);torch.cuda.synchronize();nv1=nv[:1].contiguous();ss=int(sid.numel())\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/python/lib/python3.14/site-packages/torch/_ops.py\", line 1275, in __call__\n    return self._op(*args, **kwargs)\n           ~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/opt/python/lib/python3.14/site-packages/aiter/jit/utils/torch_guard.py\", line 317, in outer_wrapper\n    wrapper(*args, **kwargs)\n    ~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/opt/python/lib/python3.14/site-packages/aiter/jit/utils/torch_guard.py\", line 211, in wrapper\n    return func(*args, **kwargs)\n  File \"/opt/python/lib/python3.14/site-packages/aiter/jit/core.py\", line 1930, in custom_wrapper\n    return wrapper(*args, **kwargs)\n  File \"/opt/python/lib/python3.14/site-packages/aiter/jit/core.py\", line 1926, in wrapper\n    return op(*args, **kwargs)\nTypeError: moe_sorting_opus_fwd(): incompatible function arguments. The following argument types are supported:\n    1. (topk_ids: aiter_tensor_t, topk_weights: aiter_tensor_t, sorted_token_ids: aiter_tensor_t, sorted_weights: aiter_tensor_t, sorted_expert_ids: aiter_tensor_t, num_valid_ids: aiter_tensor_t, moe_buf: aiter_tensor_t, num_experts: typing.SupportsInt | typing.SupportsIndex, unit_size: typing.SupportsInt | typing.SupportsIndex, local_expert_mask: aiter_tensor_t | None = None, num_local_tokens: aiter_tensor_t | None = None, workspace: aiter_tensor_t | None = None, dispatch_policy: typing.SupportsInt | typing.SupportsIndex = 0, local_topk_ids: aiter_tensor_t | None = None, m_indices: aiter_tensor_t | None = None, reverse_sorted: aiter_tensor_t | None = None) -> None\n\nInvoked with: <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d6b0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4c2f0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d7f0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4c770>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d1f0>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d530>, <aiter.jit.module_aiter_core.aiter_tensor_t object at 0x77bc5bf4d230>, 8, 16\n"
+  },
+  "probe_sha256": "f4ac29180e8c4a10edabb6a92742568ee8878076c65c3a9c176994b3bc77ffa2",
+  "schema": "hyperloom.r9700.aiter_flydsl_abi_patch_smoke.v1",
+  "truth_boundary": {
+    "autoawq_zero_points_supported": false,
+    "experimental_wrapper_bypass": true,
+    "persistent_runtime_changed": false,
+    "service_restarted": false,
+    "synthetic_symmetric_int4": true
+  }
+}

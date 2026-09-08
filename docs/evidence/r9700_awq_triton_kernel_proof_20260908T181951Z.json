@@ -1,0 +1,67 @@
+{
+  "captured_at_utc": "2026-09-08T18:19:40.782356+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "config": {
+      "BLOCK_SIZE_M": 16,
+      "GROUP_SIZE_M": 1,
+      "SPLIT_K": 1
+    },
+    "config_name": "int4_w4a16",
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "interpretation": "real Triton WNA16 kernel matches dequantized AutoAWQ reference within BF16 tolerance",
+    "numeric": {
+      "allclose_rtol_0p08_atol_0p08": true,
+      "cosine": 0.999997615814209,
+      "finite": true,
+      "max_abs_error": 0.003354191780090332,
+      "mean_abs_error": 0.0004186253936495632,
+      "mean_relative_error": 0.006574166473001242,
+      "p99_abs_error": 0.0019868528470396996
+    },
+    "pass": true,
+    "routing": {
+      "expert_ids_count": 4,
+      "sorted_count": 64,
+      "topk_ids": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ]
+    },
+    "shape": {
+      "E": 4,
+      "K": 256,
+      "M": 4,
+      "N": 384,
+      "group_size": 128,
+      "top_k": 1
+    },
+    "torch": "2.12.0+rocm10.0.0"
+  },
+  "probe_sha256": "7542af59488611ffeb465951ba6ae49deb0d38e32e9baa104b5beeae0d9c6593",
+  "schema": "hyperloom.r9700.awq_triton_kernel_proof.v1",
+  "truth_boundary": {
+    "live_model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_gpu_kernel": true,
+    "service_restarted": false,
+    "synthetic_kernel_test": true
+  }
+}

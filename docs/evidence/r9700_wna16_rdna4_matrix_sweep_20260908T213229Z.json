@@ -1,0 +1,20 @@
+{
+  "captured_at_utc": "2026-09-08T21:29:28.849023+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 143,
+    "stderr_tail": ""
+  },
+  "pass": false,
+  "probe": {},
+  "probe_sha256": "ce7bfd9b3535419610c363822a093642bf8261e971d9a492d8976a0c4ed43ebe",
+  "schema": "hyperloom.r9700.wna16_rdna4_matrix_sweep.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}

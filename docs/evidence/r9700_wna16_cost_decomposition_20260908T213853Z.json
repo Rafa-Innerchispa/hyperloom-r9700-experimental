@@ -1,0 +1,80 @@
+{
+  "captured_at_utc": "2026-09-08T21:38:49.460047+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "interpretation": "packed_vs_unpacked isolates nibble-unpack overhead; unpacked_vs_bf16 isolates zp/scale dequant overhead plus uint8 loads",
+    "ms": {
+      "bf16_predequant": 0.02897219965234399,
+      "int4_packed_dequant": 0.038311650860123336,
+      "int4_unpacked_dequant": 0.03665679832920432
+    },
+    "numeric": {
+      "packed": {
+        "allclose": true,
+        "cosine": 1.0,
+        "max_abs_error": 0.0
+      },
+      "unpacked": {
+        "allclose": true,
+        "cosine": 1.0,
+        "max_abs_error": 0.0
+      }
+    },
+    "pass": true,
+    "ratios": {
+      "dequant_plus_unpacked_over_bf16_percent": 26.52404294141543,
+      "packed_vs_bf16_x": 0.7562242555958268,
+      "packed_vs_unpacked_x": 0.9568055018834631,
+      "unpack_extra_percent": 4.514449178177684,
+      "unpacked_vs_bf16_x": 0.7903636152877529
+    },
+    "samples_ms": {
+      "bf16": [
+        0.02949842601083219,
+        0.028679374372586608,
+        0.030510799842886627,
+        0.028936375747434795,
+        0.02897219965234399
+      ],
+      "packed": [
+        0.03835822572000325,
+        0.03805920132435858,
+        0.038262573070824146,
+        0.038311650860123336,
+        0.03832492511719465
+      ],
+      "unpacked": [
+        0.03660347429104149,
+        0.03665679832920432,
+        0.03675952320918441,
+        0.03661825030576438,
+        0.036663797800429165
+      ]
+    },
+    "shape": {
+      "K": 2048,
+      "M": 16,
+      "N": 1536,
+      "group_size": 128
+    },
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "single-expert synthetic Qwen3-shaped kernel decomposition; no serving claim"
+  },
+  "probe_sha256": "c1c79a4e8edcb6a256d258f85fd3e567d4cf7a1f0356069ec47ff54785d53dbe",
+  "schema": "hyperloom.r9700.wna16_cost_decomposition.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "captured_at_utc": "2026-09-08T18:39:44.528998+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 134,
+    "stderr_tail": "[aiter] import [module_aiter_core] under /opt/python/lib/python3.14/site-packages/aiter/jit/module_aiter_core.so\nWarning: Queue error - HSA_STATUS_ERROR_MEMORY_FAULT\nVGPU(0x2b9b85b0) hang analysis:\nSWq=0x7172b3e08000, HWq=0x716f75c00000, id=1, priority=1, Dispatch Header = 0xd02 (type=2, barrier=1, acquire=2, release=1), setup=3, grid=[4352, 1, 1], workgroup=[256, 1, 1], private_seg_size=0, group_seg_size=416, kernel_obj=0x7172b3d9cb80, kernarg_address=0x716f73800b00, completion_signal=0x0, rptr=6, wptr=8\n:0:rocdevice.cpp            :3905: 514908000820 us:  Memory Fault Error [host: ralfiia-amd, GPU index: 0, faulting addr: 0x717077e00000, kernel: moe_sorting_oneshot_kernel_0]\nMemory access fault by GPU node-1 (Agent handle: 0x28ad8270) on address 0x717077e00000. Reason: Page not present or supervisor privilege.\nGPU coredump: Pipe handler '/usr/share/apport/apport' not found or not executable.\nFalling back to file-based dump. Set HSA_COREDUMP_PATTERN to override.\n"
+  },
+  "pass": false,
+  "probe": {},
+  "probe_sha256": "9d3978dd28e633f3b3abd5bd25920114963def0dd607b93472c7cae646c33a90",
+  "schema": "hyperloom.r9700.aiter_flydsl_sorting_bypass.v1",
+  "truth_boundary": {
+    "isolated_child_process": true,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "service_restarted": false
+  }
+}

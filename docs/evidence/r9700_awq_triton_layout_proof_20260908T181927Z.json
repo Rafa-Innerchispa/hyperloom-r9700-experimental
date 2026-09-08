@@ -1,0 +1,116 @@
+{
+  "captured_at_utc": "2026-09-08T18:19:19.621600+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "cases": [
+      {
+        "allclose": true,
+        "device": "cuda",
+        "exact": true,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0,
+        "name": "w13_like",
+        "scale_shape": [
+          2,
+          384,
+          2
+        ],
+        "shape": {
+          "E": 2,
+          "K": 256,
+          "N": 384,
+          "group_size": 128
+        },
+        "weight_bytes_shape": [
+          2,
+          384,
+          128
+        ],
+        "zero_bytes_shape": [
+          2,
+          192,
+          2
+        ]
+      },
+      {
+        "allclose": true,
+        "device": "cuda",
+        "exact": true,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0,
+        "name": "w2_like",
+        "scale_shape": [
+          2,
+          256,
+          3
+        ],
+        "shape": {
+          "E": 2,
+          "K": 384,
+          "N": 256,
+          "group_size": 128
+        },
+        "weight_bytes_shape": [
+          2,
+          256,
+          192
+        ],
+        "zero_bytes_shape": [
+          2,
+          128,
+          3
+        ]
+      },
+      {
+        "allclose": true,
+        "device": "cuda",
+        "exact": true,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0,
+        "name": "qwen3_r9700_reduced_ratio",
+        "scale_shape": [
+          1,
+          768,
+          16
+        ],
+        "shape": {
+          "E": 1,
+          "K": 2048,
+          "N": 768,
+          "group_size": 128
+        },
+        "weight_bytes_shape": [
+          1,
+          768,
+          1024
+        ],
+        "zero_bytes_shape": [
+          1,
+          384,
+          16
+        ]
+      }
+    ],
+    "interpretation": "candidate AWQ->Triton packed layout preserves vLLM AutoAWQ dequantized values",
+    "pass": true,
+    "torch": {
+      "device": "cuda",
+      "hip": "7.15.26333",
+      "version": "2.12.0+rocm10.0.0"
+    }
+  },
+  "probe_sha256": "7bc61cecf348b589a4b1132250fd39d9ea86cf23cbdaff76a2b60eab5c843807",
+  "schema": "hyperloom.r9700.awq_triton_layout_proof.v1",
+  "truth_boundary": {
+    "kernel_enabled": false,
+    "live_model_weights_touched": false,
+    "official_support_claim": false,
+    "service_restarted": false,
+    "synthetic_layout_test": true
+  }
+}

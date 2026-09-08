@@ -1,0 +1,239 @@
+{
+  "captured_at_utc": "2026-09-08T17:51:33.543928+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "pass": true,
+    "rows": [
+      {
+        "M": 1,
+        "correctness": {
+          "allclose": true,
+          "cosine": 0.9999945163726807,
+          "max_abs_error": 0.0078125,
+          "mean_abs_error": 0.0007935896283015609
+        },
+        "emulation_bf16_median_ms": 0.05104716789598266,
+        "emulation_bf16_ms_rounds": [
+          0.0511284451931715,
+          0.05104716789598266,
+          0.05071766726258728
+        ],
+        "emulation_config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4
+        },
+        "latency_reduction_percent": -79.802227407504,
+        "pass": true,
+        "qconfig": {
+          "BLOCK_SIZE_M": 16,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "reps_per_round": 18,
+        "speedup_x": 0.5561666362083484,
+        "triton_wna16_median_ms": 0.09178394490542512,
+        "triton_wna16_ms_rounds": [
+          0.11644672162623869,
+          0.09178394490542512,
+          0.09154572358561887
+        ]
+      },
+      {
+        "M": 2,
+        "correctness": {
+          "allclose": true,
+          "cosine": 0.9999943375587463,
+          "max_abs_error": 0.0078125,
+          "mean_abs_error": 0.0008265139767900109
+        },
+        "emulation_bf16_median_ms": 0.05052727970501615,
+        "emulation_bf16_ms_rounds": [
+          0.05097144296289318,
+          0.050275777337244816,
+          0.05052727970501615
+        ],
+        "emulation_config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4
+        },
+        "latency_reduction_percent": -55.18360810030786,
+        "pass": true,
+        "qconfig": {
+          "BLOCK_SIZE_M": 16,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "reps_per_round": 18,
+        "speedup_x": 0.6443979568728794,
+        "triton_wna16_median_ms": 0.07841005572117865,
+        "triton_wna16_ms_rounds": [
+          0.09185739003846215,
+          0.07841005572117865,
+          0.07796472184256548
+        ]
+      },
+      {
+        "M": 4,
+        "correctness": {
+          "allclose": true,
+          "cosine": 0.9999943971633911,
+          "max_abs_error": 0.0078125,
+          "mean_abs_error": 0.0008329283446073532
+        },
+        "emulation_bf16_median_ms": 0.05072655686591235,
+        "emulation_bf16_ms_rounds": [
+          0.05138499869240655,
+          0.05072655686591235,
+          0.049953998920197286
+        ],
+        "emulation_config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4
+        },
+        "latency_reduction_percent": -52.354234940341605,
+        "pass": true,
+        "qconfig": {
+          "BLOCK_SIZE_M": 16,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "reps_per_round": 18,
+        "speedup_x": 0.6563650825929301,
+        "triton_wna16_median_ms": 0.07728405762463808,
+        "triton_wna16_ms_rounds": [
+          0.07728405762463808,
+          0.07784122458866073,
+          0.07722450148624678
+        ]
+      },
+      {
+        "M": 8,
+        "correctness": {
+          "allclose": true,
+          "cosine": 0.9999942779541016,
+          "max_abs_error": 0.0078125,
+          "mean_abs_error": 0.0008159763528965414
+        },
+        "emulation_bf16_median_ms": 0.05636544665321708,
+        "emulation_bf16_ms_rounds": [
+          0.05636544665321708,
+          0.058833328593108386,
+          0.05532788862991664
+        ],
+        "emulation_config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4
+        },
+        "latency_reduction_percent": -49.016432172952904,
+        "pass": true,
+        "qconfig": {
+          "BLOCK_SIZE_M": 16,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "reps_per_round": 9,
+        "speedup_x": 0.6710669322960103,
+        "triton_wna16_median_ms": 0.08399377758097318,
+        "triton_wna16_ms_rounds": [
+          0.08581600074345867,
+          0.08399377758097318,
+          0.08377232976878683
+        ]
+      },
+      {
+        "M": 16,
+        "correctness": {
+          "allclose": true,
+          "cosine": 0.9999940991401672,
+          "max_abs_error": 0.0078125,
+          "mean_abs_error": 0.0008029364980757236
+        },
+        "emulation_bf16_median_ms": 0.06021599983796477,
+        "emulation_bf16_ms_rounds": [
+          0.1009271654766053,
+          0.0600106626128157,
+          0.06021599983796477
+        ],
+        "emulation_config": {
+          "BLOCK_SIZE_K": 128,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4
+        },
+        "latency_reduction_percent": -45.33845398869474,
+        "pass": true,
+        "qconfig": {
+          "BLOCK_SIZE_M": 16,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1
+        },
+        "reps_per_round": 6,
+        "speedup_x": 0.6880491518629926,
+        "triton_wna16_median_ms": 0.08751700321833293,
+        "triton_wna16_ms_rounds": [
+          0.08867766397694747,
+          0.08664716733619571,
+          0.08751700321833293
+        ]
+      }
+    ],
+    "scope": "first MoE expert GEMM microbenchmark; not end-to-end serving",
+    "shape": {
+      "E_reduced": 8,
+      "K": 2048,
+      "N_down": 768,
+      "N_gate_up": 1536,
+      "group_size": 128,
+      "top_k": 8
+    },
+    "summary": {
+      "max_speedup_x": 0.6880491518629926,
+      "median_latency_reduction_percent": -52.354234940341605,
+      "median_speedup_x": 0.6563650825929301,
+      "min_speedup_x": 0.5561666362083484
+    },
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "Compares real WNA16 Triton int4 GEMM against current emulation backend's pre-dequantized BF16 Triton GEMM on synthetic Qwen3-shaped data. Does not include model load or serving scheduler."
+  },
+  "probe_sha256": "fb0bec335e1865ec830f8006d196a6ddebc578639a27d8744c5d2649a29a9041",
+  "schema": "hyperloom.r9700.wna16_vs_emulation_microbench.v1",
+  "truth_boundary": {
+    "live_model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_gpu_kernel": true,
+    "service_restarted": false,
+    "serving_benchmark": false,
+    "synthetic_qwen3_shaped_data": true
+  }
+}

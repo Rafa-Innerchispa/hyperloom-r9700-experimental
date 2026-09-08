@@ -1,0 +1,39 @@
+{
+  "captured_at_utc": "2026-09-08T18:21:07.067342+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": "[aiter] import [module_aiter_core] under /opt/python/lib/python3.14/site-packages/aiter/jit/module_aiter_core.so\n"
+  },
+  "pass": false,
+  "probe": {
+    "aiter_flags": {
+      "is_fused_moe_enabled": false,
+      "is_triton_gemm_enabled": false
+    },
+    "flydsl_import": {
+      "gemm1": "<function flydsl_a16w4_gemm1 at 0x7a14aa78e610>",
+      "gemm2": "<function flydsl_a16w4_gemm2 at 0x7a14aa78e770>",
+      "ok": true
+    },
+    "pass": false,
+    "runtime": {
+      "aiter_found_supported": false,
+      "aiter_version": null,
+      "device": "AMD Radeon AI PRO R9700",
+      "hip": "7.15.26333",
+      "torch": "2.12.0+rocm10.0.0"
+    },
+    "vllm_flydsl": {
+      "error": "ModuleNotFoundError:No module named 'aiter.ops.flydsl.kernels.moe_gemm_2stage'",
+      "ok": false
+    }
+  },
+  "probe_sha256": "a85cab3c6e7ee25223509cd08f4057f3f22e2289186a961bae39a39313aa00a3",
+  "schema": "hyperloom.r9700.aiter_flydsl_probe.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "read_only": true,
+    "service_restarted": false
+  }
+}

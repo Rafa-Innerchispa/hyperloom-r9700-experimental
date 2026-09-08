@@ -1,0 +1,330 @@
+{
+  "captured_at_utc": "2026-09-08T18:20:46.417129+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "best": {
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 0
+      },
+      "cosine": 0.9999939203262329,
+      "latency_reduction_percent": -4.780002902493155,
+      "max_abs_error": 0.0078125,
+      "ms": 0.08468225132673979,
+      "speedup_vs_emulation_x": 0.9543805805489302,
+      "valid": true
+    },
+    "device": "AMD Radeon AI PRO R9700",
+    "emulation_ms": 0.08081909618340433,
+    "pass": true,
+    "rows": [
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 1,
+          "waves_per_eu": 0
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -1115.1732060989807,
+        "max_abs_error": 0.0078125,
+        "ms": 0.9820920022320934,
+        "speedup_vs_emulation_x": 0.08229279537937294,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 1,
+          "waves_per_eu": 1
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -955.6610860293929,
+        "max_abs_error": 0.0078125,
+        "ms": 0.8531757484888658,
+        "speedup_vs_emulation_x": 0.0947273716189778,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 1,
+          "waves_per_eu": 2
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -882.4692294312806,
+        "max_abs_error": 0.0078125,
+        "ms": 0.794022751506418,
+        "speedup_vs_emulation_x": 0.10178435823164328,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 1,
+          "waves_per_eu": 4
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -873.800948027727,
+        "max_abs_error": 0.0078125,
+        "ms": 0.7870171248214319,
+        "speedup_vs_emulation_x": 0.1026903908879258,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -79.41613793396503,
+        "max_abs_error": 0.0078125,
+        "ms": 0.14500250108540058,
+        "speedup_vs_emulation_x": 0.557363463239887,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 1
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -130.0246891973598,
+        "max_abs_error": 0.0078125,
+        "ms": 0.1859038748079911,
+        "speedup_vs_emulation_x": 0.4347359422544447,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 2
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -102.87331517654611,
+        "max_abs_error": 0.0078125,
+        "ms": 0.16396037972299382,
+        "speedup_vs_emulation_x": 0.4929184496885515,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 4
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -111.97233412665746,
+        "max_abs_error": 0.0078125,
+        "ms": 0.17131412460003048,
+        "speedup_vs_emulation_x": 0.47175967756362075,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -4.780002902493155,
+        "max_abs_error": 0.0078125,
+        "ms": 0.08468225132673979,
+        "speedup_vs_emulation_x": 0.9543805805489302,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 1
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -35.08456122117899,
+        "max_abs_error": 0.0078125,
+        "ms": 0.10917412146227434,
+        "speedup_vs_emulation_x": 0.7402770464366115,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -34.097641526250456,
+        "max_abs_error": 0.0078125,
+        "ms": 0.1083765018847771,
+        "speedup_vs_emulation_x": 0.7457252704957109,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -33.83423847186256,
+        "max_abs_error": 0.0078125,
+        "ms": 0.10816362191690132,
+        "speedup_vs_emulation_x": 0.7471929540737372,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -44.41621175668177,
+        "max_abs_error": 0.0078125,
+        "ms": 0.1167158770840615,
+        "speedup_vs_emulation_x": 0.6924430351938882,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 1
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -45.177017871939555,
+        "max_abs_error": 0.0078125,
+        "ms": 0.11733075371012092,
+        "speedup_vs_emulation_x": 0.6888142590737734,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 2
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -52.927961992464326,
+        "max_abs_error": 0.0078125,
+        "ms": 0.12359499669400975,
+        "speedup_vs_emulation_x": 0.6539026525765615,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 4
+        },
+        "cosine": 0.9999939203262329,
+        "latency_reduction_percent": -52.148448120455626,
+        "max_abs_error": 0.0078125,
+        "ms": 0.12296500062802806,
+        "speedup_vs_emulation_x": 0.6572528424399715,
+        "valid": true
+      }
+    ],
+    "truth_boundary": "M=8 first Qwen3-shaped MoE GEMM; AMD ROCm tuning knobs only; no serving claim"
+  },
+  "probe_sha256": "8ec851bc47073f74bab687cff24c9e8d601bcd82e64ec5f63586c77134a753d6",
+  "schema": "hyperloom.r9700.wna16_rocm_wave_tuning.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "production_runtime_modified": false,
+    "service_restarted": false
+  }
+}

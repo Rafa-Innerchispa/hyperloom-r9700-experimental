@@ -1,0 +1,321 @@
+{
+  "captured_at_utc": "2026-09-08T18:27:20.660555+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "best_tuning": {
+      "config": {
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "num_stages": 1,
+        "num_warps": 2,
+        "waves_per_eu": 0
+      },
+      "ms": 0.08999999651374917,
+      "valid": true
+    },
+    "comparisons": [
+      {
+        "M": 1,
+        "allclose": true,
+        "cosine": 0.9999945163726807,
+        "emulation_ms": 0.05152512312633917,
+        "latency_reduction_percent": -59.00519927885936,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.08192762470571324,
+        "speedup_x": 0.6289102523284317
+      },
+      {
+        "M": 2,
+        "allclose": true,
+        "cosine": 0.9999940395355225,
+        "emulation_ms": 0.05221456376602873,
+        "latency_reduction_percent": -56.722196559097526,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.08183181125787087,
+        "speedup_x": 0.6380717102972171
+      },
+      {
+        "M": 4,
+        "allclose": true,
+        "cosine": 0.9999938011169434,
+        "emulation_ms": 0.05158712519914843,
+        "latency_reduction_percent": -56.92783742018162,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.0809545599622652,
+        "speedup_x": 0.6372355704631635
+      },
+      {
+        "M": 8,
+        "allclose": true,
+        "cosine": 0.9999942779541016,
+        "emulation_ms": 0.05748624971602112,
+        "latency_reduction_percent": -52.15573007967497,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.08746862295083702,
+        "speedup_x": 0.6572213872434243
+      },
+      {
+        "M": 16,
+        "allclose": true,
+        "cosine": 0.999994158744812,
+        "emulation_ms": 0.06595740560442209,
+        "latency_reduction_percent": -43.66150472545483,
+        "max_abs_error": 0.015625,
+        "q_ms": 0.09475540136918426,
+        "speedup_x": 0.6960806946238353
+      },
+      {
+        "M": 32,
+        "allclose": true,
+        "cosine": 0.9999940395355225,
+        "emulation_ms": 0.0615551951341331,
+        "latency_reduction_percent": -102.80920221856962,
+        "max_abs_error": 0.0078125,
+        "q_ms": 0.12483960017561913,
+        "speedup_x": 0.4930742732878015
+      }
+    ],
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "pass": true,
+    "summary": {
+      "max_speedup_x": 0.6960806946238353,
+      "median_speedup_x": 0.6376536403801902,
+      "min_speedup_x": 0.4930742732878015
+    },
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "Standalone specialized Triton kernel on synthetic Qwen3 AutoAWQ-shaped data; running vLLM service not patched.",
+    "tuning_rows": [
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "ms": 0.11151358194183558,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "ms": 0.15767066603681693,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "ms": 0.11897925287485123,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "ms": 0.11863441613968462,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "ms": 0.13065516638259092,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 32,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "ms": 0.13795724953524768,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "ms": 0.08999999651374917,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "ms": 0.3632285030713926,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "ms": 0.10951650134908657,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "ms": 0.13073616719339043,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "ms": 0.13528466418695947,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "ms": 0.13995516443780312,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "ms": 0.13317991882407418,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "ms": 1.476191163722736,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "ms": 0.09543775134564687,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "ms": 0.3554673312464729,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 1,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "ms": 0.11898591765202582,
+        "valid": true
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "num_stages": 2,
+          "num_warps": 8,
+          "waves_per_eu": 0
+        },
+        "ms": 0.1243926672032103,
+        "valid": true
+      }
+    ]
+  },
+  "probe_sha256": "bc10ded64e47eab401adbc3f4636f20abbd8ea7fd4332d9e370e2405c210b792",
+  "schema": "hyperloom.r9700.wna16_group128_rdna4_kernel.v1",
+  "truth_boundary": {
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}

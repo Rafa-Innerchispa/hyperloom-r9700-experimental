@@ -1,0 +1,298 @@
+{
+  "captured_at_utc": "2026-09-08T21:40:38.870598+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": false,
+  "probe": {
+    "best": {
+      "config": {
+        "num_stages": 1,
+        "num_warps": 4,
+        "waves_per_eu": 1
+      },
+      "finite": true,
+      "ms": 0.03086883548854126
+    },
+    "comparisons": [
+      {
+        "M": 1,
+        "algebraic_ms": 0.029811732626209658,
+        "algebraic_vs_bf16_x": 0.9842612196018835,
+        "algebraic_vs_current_packed_x": 1.2996716531563925,
+        "bf16_ms": 0.02934253231311838,
+        "latency_reduction_vs_current_packed_percent": 23.057489361148082,
+        "numeric": {
+          "algebraic": {
+            "allclose": true,
+            "cosine": 0.9999970197677612,
+            "max_abs_error": 0.00390625,
+            "mean_abs_error": 0.00047142308903858066
+          },
+          "packed": {
+            "allclose": true,
+            "cosine": 1.0,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0
+          }
+        },
+        "packed_dequant_ms": 0.03874546382576227
+      },
+      {
+        "M": 2,
+        "algebraic_ms": 0.02976566708336274,
+        "algebraic_vs_bf16_x": 0.9796253308431178,
+        "algebraic_vs_current_packed_x": 1.3100976800371915,
+        "bf16_ms": 0.029159201464305323,
+        "latency_reduction_vs_current_packed_percent": 23.66981369117365,
+        "numeric": {
+          "algebraic": {
+            "allclose": true,
+            "cosine": 0.9999970197677612,
+            "max_abs_error": 0.0078125,
+            "mean_abs_error": 0.0004975410993210971
+          },
+          "packed": {
+            "allclose": true,
+            "cosine": 1.0,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0
+          }
+        },
+        "packed_dequant_ms": 0.03899593139067292
+      },
+      {
+        "M": 4,
+        "algebraic_ms": 0.031103809305932373,
+        "algebraic_vs_bf16_x": 0.9857074183455656,
+        "algebraic_vs_current_packed_x": 1.2934387555191673,
+        "bf16_ms": 0.03065925557166338,
+        "latency_reduction_vs_current_packed_percent": 22.68671433162564,
+        "numeric": {
+          "algebraic": {
+            "allclose": true,
+            "cosine": 0.999997079372406,
+            "max_abs_error": 0.0078125,
+            "mean_abs_error": 0.0004968896973878145
+          },
+          "packed": {
+            "allclose": true,
+            "cosine": 1.0,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0
+          }
+        },
+        "packed_dequant_ms": 0.04023087240057066
+      },
+      {
+        "M": 8,
+        "algebraic_ms": 0.03526224463712424,
+        "algebraic_vs_bf16_x": 0.9550017064191485,
+        "algebraic_vs_current_packed_x": 1.2586551766401741,
+        "bf16_ms": 0.03367550380062312,
+        "latency_reduction_vs_current_packed_percent": 20.550122181249236,
+        "numeric": {
+          "algebraic": {
+            "allclose": true,
+            "cosine": 0.9999969005584717,
+            "max_abs_error": 0.0078125,
+            "mean_abs_error": 0.0005029932362958789
+          },
+          "packed": {
+            "allclose": true,
+            "cosine": 1.0,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0
+          }
+        },
+        "packed_dequant_ms": 0.044383006752468646
+      },
+      {
+        "M": 16,
+        "algebraic_ms": 0.03546763036865741,
+        "algebraic_vs_bf16_x": 0.975777053210559,
+        "algebraic_vs_current_packed_x": 1.2599128467901386,
+        "bf16_ms": 0.03460849984548986,
+        "latency_reduction_vs_current_packed_percent": 20.629430635008976,
+        "numeric": {
+          "algebraic": {
+            "allclose": true,
+            "cosine": 0.9999966621398926,
+            "max_abs_error": 0.0078125,
+            "mean_abs_error": 0.0005085892626084387
+          },
+          "packed": {
+            "allclose": true,
+            "cosine": 1.0,
+            "max_abs_error": 0.0,
+            "mean_abs_error": 0.0
+          }
+        },
+        "packed_dequant_ms": 0.04468612314667553
+      },
+      {
+        "M": 32,
+        "algebraic_ms": 0.0352497590938583,
+        "algebraic_vs_bf16_x": 0.9638292646175504,
+        "algebraic_vs_current_packed_x": 1.2677711060976038,
+        "bf16_ms": 0.033974749385379255,
+        "latency_reduction_vs_current_packed_percent": 21.121407863746384,
+        "numeric": {
+          "algebraic": {
+            "allclose": false,
+            "cosine": 0.8206148147583008,
+            "max_abs_error": 1.7890625,
+            "mean_abs_error": 0.07548283785581589
+          },
+          "packed": {
+            "allclose": false,
+            "cosine": 0.0,
+            "max_abs_error": 1.0384593717069655e+34,
+            "mean_abs_error": 4.2255021266905375e+29
+          }
+        },
+        "packed_dequant_ms": 0.044688626076094806
+      }
+    ],
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "pass": false,
+    "shape": {
+      "K": 2048,
+      "N": 1536,
+      "group_size": 128
+    },
+    "summary": {
+      "beats_bf16_any": false,
+      "beats_current_packed_all": true,
+      "max_speedup_vs_bf16_x": 0.9857074183455656,
+      "max_speedup_vs_current_packed_x": 1.3100976800371915,
+      "median_speedup_vs_bf16_x": 0.9777011920268384,
+      "median_speedup_vs_current_packed_x": 1.2806049308083856
+    },
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "single-expert synthetic Qwen3-shaped algebraic AWQ kernel; no serving or official-support claim",
+    "tuning_rows": [
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 1,
+          "waves_per_eu": 0
+        },
+        "finite": true,
+        "ms": 0.07017183169308636
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 1,
+          "waves_per_eu": 1
+        },
+        "finite": true,
+        "ms": 0.04370172326970431
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 1,
+          "waves_per_eu": 2
+        },
+        "finite": true,
+        "ms": 0.043477998891224466
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 1,
+          "waves_per_eu": 4
+        },
+        "finite": true,
+        "ms": 0.04414144981031617
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 0
+        },
+        "finite": true,
+        "ms": 0.04373455239045951
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 1
+        },
+        "finite": true,
+        "ms": 0.036479892312652536
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 2
+        },
+        "finite": true,
+        "ms": 0.036396390189313226
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 2,
+          "waves_per_eu": 4
+        },
+        "finite": true,
+        "ms": 0.03636022382933232
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 0
+        },
+        "finite": true,
+        "ms": 0.03808511084773474
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 1
+        },
+        "finite": true,
+        "ms": 0.03086883548854126
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "finite": true,
+        "ms": 0.031133777358465724
+      },
+      {
+        "config": {
+          "num_stages": 1,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "finite": true,
+        "ms": 0.0315907204316722
+      }
+    ]
+  },
+  "probe_sha256": "3e43d801ab7113ebcef1d32f7bfc9fa4482f6a73191919db97827d1c0fd7e716",
+  "schema": "hyperloom.r9700.wna16_groupwise_algebraic_kernel.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}

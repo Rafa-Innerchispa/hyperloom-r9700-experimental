@@ -1,0 +1,149 @@
+{
+  "captured_at_utc": "2026-09-08T21:56:36.455338+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "decode_operating_point": {
+      "w1_M": 1,
+      "w2_M": 8
+    },
+    "device": "AMD Radeon AI PRO R9700",
+    "hip": "7.15.26333",
+    "pass": true,
+    "torch": "2.12.0+rocm10.0.0",
+    "truth_boundary": "single-expert synthetic Qwen3 MoE pair benchmark; no running vLLM patch or serving claim",
+    "w1": {
+      "K": 2048,
+      "N": 1536,
+      "label": "w1",
+      "max_speedup_x": 0.9710479098332636,
+      "median_speedup_x": 0.9428381374130854,
+      "min_speedup_x": 0.9306454641186602,
+      "rows": [
+        {
+          "M": 1,
+          "algebraic_ms": 0.031038459079960983,
+          "allclose": true,
+          "bf16_ms": 0.02903345739468932,
+          "cosine": 0.9999969601631165,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.9354026667333454
+        },
+        {
+          "M": 2,
+          "algebraic_ms": 0.030158087611198425,
+          "allclose": true,
+          "bf16_ms": 0.028552540849583846,
+          "cosine": 0.9999970197677612,
+          "max_abs_error": 0.00390625,
+          "speedup_x": 0.9467623152265663
+        },
+        {
+          "M": 4,
+          "algebraic_ms": 0.03139874752378091,
+          "allclose": true,
+          "bf16_ms": 0.02966237661894411,
+          "cosine": 0.9999968409538269,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.9446993577205045
+        },
+        {
+          "M": 8,
+          "algebraic_ms": 0.034906493965536356,
+          "allclose": true,
+          "bf16_ms": 0.033895878004841506,
+          "cosine": 0.9999966621398926,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.9710479098332636
+        },
+        {
+          "M": 16,
+          "algebraic_ms": 0.03993078134953976,
+          "allclose": true,
+          "bf16_ms": 0.03716140054166317,
+          "cosine": 0.9999967813491821,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.9306454641186602
+        },
+        {
+          "M": 32,
+          "algebraic_ms": 0.04043160006403923,
+          "allclose": true,
+          "bf16_ms": 0.038045202381908894,
+          "cosine": 0.9999969005584717,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.9409769171056662
+        }
+      ]
+    },
+    "w2": {
+      "K": 768,
+      "N": 2048,
+      "label": "w2",
+      "max_speedup_x": 0.8295701871868604,
+      "median_speedup_x": 0.6999934549976548,
+      "min_speedup_x": 0.5664545851143062,
+      "rows": [
+        {
+          "M": 8,
+          "algebraic_ms": 0.0236066262004897,
+          "allclose": true,
+          "bf16_ms": 0.018812745111063123,
+          "cosine": 0.9999966621398926,
+          "max_abs_error": 0.00390625,
+          "speedup_x": 0.7969264625655346
+        },
+        {
+          "M": 16,
+          "algebraic_ms": 0.029881997033953667,
+          "allclose": true,
+          "bf16_ms": 0.020917202346026897,
+          "cosine": 0.9999969005584717,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.6999934549976548
+        },
+        {
+          "M": 32,
+          "algebraic_ms": 0.027311011217534542,
+          "allclose": true,
+          "bf16_ms": 0.022656400687992573,
+          "cosine": 0.9999967813491821,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.8295701871868604
+        },
+        {
+          "M": 64,
+          "algebraic_ms": 0.03773260395973921,
+          "allclose": true,
+          "bf16_ms": 0.0213738065212965,
+          "cosine": 0.9999967813491821,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.5664545851143062
+        },
+        {
+          "M": 128,
+          "algebraic_ms": 0.03744999412447214,
+          "allclose": true,
+          "bf16_ms": 0.025653978809714317,
+          "cosine": 0.9999966621398926,
+          "max_abs_error": 0.0078125,
+          "speedup_x": 0.6850195683462182
+        }
+      ]
+    }
+  },
+  "probe_sha256": "99d9b87cc5ac7e50dd1039f918f0502878306bda48c1ca52b27353baee34df45",
+  "schema": "hyperloom.r9700.wna16_moe_pair_algebraic_bench.v1",
+  "truth_boundary": {
+    "model_weights_touched": false,
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_r9700_kernel": true,
+    "service_restarted": false,
+    "synthetic_data": true
+  }
+}
