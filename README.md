@@ -1,20 +1,42 @@
 # Hyperloom R9700 Experimental
 
-Experimental AMD Lab Program Challenge 1 port for running Hyperloom on the AMD Radeon AI PRO R9700 (`gfx1201`, RDNA4, 64 CUs, 32 GiB-class VRAM).
+Experimental AMD Radeon AI PRO R9700 (`gfx1201`, RDNA4, 64 CUs, 32 GiB-class VRAM) work focused on bringing HyperLoom-style optimization and evidence-driven vLLM experimentation to a physical RDNA4 workstation GPU.
 
-## Status
+> **Public Technical Preview — 2026-09-08**
+>
+> This repository documents active experimental engineering. It is **not official AMD HyperLoom support for the R9700** and it is not a production-readiness claim.
 
-**LIVE EXPERIMENTAL PASS** for the architecture-neutral Hyperloom benchmark path.
+## Current status
 
-On 2026-09-04 the patched Hyperloom build executed on the physical R9700 and successfully produced both baseline and candidate `benchmark_report.json` artifacts using Hyperloom's `bypass` backend + InferenceX against the existing ROCm 10 vLLM server.
+**Phase 1: PROVEN** — architecture-neutral HyperLoom execution and independent vLLM serving validation on the physical R9700.
 
-This is **not official AMD Hyperloom support** and does not yet include a Magpie R9700 runner, TraceLens RDNA4 profiling or RDNA4-specific kernel optimization.
+**Phase 2: ACTIVE / PARTIALLY PROVEN** — RDNA4-specific AutoAWQ MoE / WNA16 investigation, real Triton kernel execution, stable small-M W1 optimization, and an experimental hybrid vLLM Experts contract.
 
-## Experimental upstream patch
+The current technical checkpoint is public on:
 
-Base: `AMD-AGI/Hyperloom@9ae79d6a8c9fec7ed041735e70fb19ef39850813`
+- branch: `chatgpt/r9700-rdna4-algebraic-checkpoint-20260908`
+- commit: `42219754f7a7f61b8714fc5c3f63d7927a46b836`
 
-The minimal identity port is:
+Detailed public progress report:
+
+[`docs/R9700_PHASE2_TECHNICAL_PREVIEW.md`](docs/R9700_PHASE2_TECHNICAL_PREVIEW.md)
+
+Technical ledger on the experimental branch:
+
+https://github.com/Rafa-Innerchispa/hyperloom-r9700-experimental/blob/chatgpt/r9700-rdna4-algebraic-checkpoint-20260908/docs/DEVELOPMENT_LEDGER.md
+
+## Hardware and runtime
+
+- GPU: **AMD Radeon AI PRO R9700**
+- architecture: **RDNA4 / gfx1201**
+- VRAM: **32 GiB-class**
+- ROCm: **10.x experimental runtime path**
+- serving: **vLLM**
+- model used for the current MoE work: **Qwen3-Coder-30B-A3B-Instruct-AWQ**
+
+## Experimental HyperLoom identity port
+
+Base work started from an upstream HyperLoom snapshot and adds the minimal R9700 identity mapping:
 
 ```python
 "r9700": ("gfx1201", 64)
@@ -30,66 +52,109 @@ Reproducible patch:
 
 `patches/hyperloom-r9700-gfx1201.patch`
 
-## Live validation
+## Independent serving validation
 
-### Preflight
+A later validation campaign used **three independent vLLM starts** rather than repeated requests against a single process.
 
-- physical GPU: AMD Radeon AI PRO R9700
-- `rocm-smi`: `gfx1201`
-- Hyperloom autodetect: `r9700`
-- dispatch identity: `gfx1201`, 64 CU
-- backend: `bypass`
-- result: **PASS**
+All three process-level verdicts were:
 
-### Baseline
+`KEEP / KEEP / KEEP`
 
-Workload: ISL=32, OSL=32, concurrency=1.
+Median results:
 
-- completed: 10/10
-- output throughput: **21.7953 tok/s**
-- total token throughput: **43.5905 tok/s**
-- mean TTFT: **68.47 ms**
-- mean E2E: **1467.81 ms**
+- baseline output throughput: **19.94 tok/s**
+- candidate output throughput: **36.08 tok/s**
+- paired throughput gain: **+80.99%**
+- baseline TTFT p95: **119.26 ms**
+- candidate TTFT p95: **168.93 ms**
 
-### Candidate
+Important: this is a **serving/concurrency optimization result**. It is not presented as a kernel-level or universal GPU speedup.
 
-Same model/GPU/server, concurrency=2.
+## Phase 2: AutoAWQ MoE / WNA16 on gfx1201
 
-- completed: 20/20
-- output throughput: **36.5927 tok/s**
-- total token throughput: **73.1854 tok/s**
-- mean TTFT: **121.06 ms**
-- mean E2E: **1746.44 ms**
+The current Qwen3-Coder AWQ MoE path exposed a concrete WNA16 backend gap on ROCm/gfx1201. The investigation showed that the tested configuration falls back to INT4 emulation while other available backends are blocked by platform or layout constraints.
 
-Aggregate output throughput changed by **+67.89%**. This is a concurrency/workload tuning result: latency also increased. It is not presented as a universal 67.89% GPU speedup.
+That led to a dedicated packed-INT4 Triton path for RDNA4.
 
-Raw evidence:
+### Real Triton WNA16 kernel
 
-`evidence/live-r9700-results-20260904.json`
+A real Triton kernel now runs on the physical R9700 and passes numerical validation.
 
-## Why the bypass backend first
+Representative gates:
 
-Hyperloom already ships `HYPERLOOM_BENCHMARK_BACKEND=bypass`. It runs serving-framework benchmarks directly in Python and produces the report contract consumed by Hyperloom without requiring a board-specific Magpie shell runner. That makes it the safest first route for an RDNA4 GPU that upstream Hyperloom does not yet recognize.
+- cosine similarity: approximately **0.999995**
+- max absolute error: **0.0078125**
 
-## Tests
+### Stable precomputed-correction result
 
-The upstream-style development worktree passed **11 focused tests**, covering the R9700 identity, parser acceptance, product-name autodetection and `gfx1201` fallback detection.
+The strongest current W1 kernel variant keeps expert weights packed INT4 and precomputes:
 
-## Truth boundary / Phase 2
+`correction = zero_point × scale`
 
-Still intentionally not claimed:
+at weight conversion / load time.
 
-- official AMD support
-- Magpie `vllm_r9700.sh` / `sglang_r9700.sh`
-- TraceLens profiling on RDNA4
-- RDNA4-specific kernel optimization
-- portability of `gfx942/gfx950` compiled artifacts
-- full autonomous Think → Decide → Implement Hyperloom optimization session
+A fixed configuration was measured for **21 alternating paired HIP-event rounds per M** without retuning between rounds.
 
-Those are the next engineering layer after proving the architecture-neutral execution path.
+| M | Paired median speedup vs BF16 routed W1 | Wins |
+|---:|---:|---:|
+| 1 | **1.107x** | 17/21 |
+| 2 | **1.100x** | 15/21 |
+| 4 | **1.133x** | 21/21 |
+| 8 | **1.123x** | 21/21 |
+| 16 | **1.100x** | 20/21 |
 
-## Challenge project
+This is the first stable kernel-level small-M W1 result that clears the BF16 pre-dequantized reference in the paired routed harness.
 
-Judge-facing integration, Builder submission, demo and full evidence map:
+It is **not yet an end-to-end serving claim**.
 
-`Rafa-Innerchispa/amd-ralfiia-hybrid-ops-copilot`
+## Experimental hybrid vLLM backend
+
+An experimental `R9700HybridWNA16Experts` path now instantiates through the real vLLM modular MoE contract.
+
+Synthetic smoke status:
+
+- M=1 custom packed/correction W1 path: **PASS**
+- M=20 generic fallback path: **PASS**
+- real `FusedMoEKernel` construction: **PASS**
+- finite outputs: **PASS**
+
+The resident production-like vLLM process was not patched or restarted for this smoke test.
+
+## Negative results are part of the project
+
+The repository intentionally preserves failed or negative experiments because they narrow the search space and make the work auditable.
+
+Examples:
+
+- activation-group pre-sum: slower, not integrated;
+- bounded AITER/FlyDSL sorting-bypass probe: isolated HSA memory fault, not promoted;
+- direct FP16 runtime-mirroring probe: exposed an unresolved `fp16 × bf16` dtype boundary in the synthetic reference path.
+
+The last item is the current integration gate.
+
+## Immediate next step
+
+Before enabling the hybrid backend in a real model server we will:
+
+1. instrument an **isolated vLLM process**;
+2. record the actual MoE activation dtype/layout on Qwen3-Coder AWQ;
+3. load the hybrid backend against actual model weights;
+4. verify output correctness and fallback behavior;
+5. repeat independent process A/B runs for throughput, TTFT and E2E latency;
+6. prepare an upstream-style patch/PR only if the kernel advantage survives end-to-end.
+
+## Truth boundary
+
+We do **not** claim:
+
+- official AMD HyperLoom support for R9700;
+- an upstream-merged RDNA4 backend;
+- a universal GPU speedup;
+- end-to-end serving gain caused by the new kernel;
+- production readiness.
+
+The goal is an upstream-quality experimental contribution with reproducible evidence on real hardware.
+
+## Challenge / related integration
+
+Judge-facing and broader InnerOS integration work lives separately so this repository can remain focused on the R9700 / HyperLoom / RDNA4 engineering path.
