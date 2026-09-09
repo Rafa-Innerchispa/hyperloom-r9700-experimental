@@ -108,3 +108,65 @@ This resolves the earlier synthetic `fp16 x bf16` concern for the hybrid design 
 ## Next gate after real-weight hybrid PASS
 
 Instrument the actual model call path in a reversible single-model campaign to record live MoE `hidden_states.dtype`, shapes and routing sizes. Then run baseline vs hybrid serving under identical process-spawn controls and capture throughput, TTFT, E2E latency, GPU clock/runtime state and correctness evidence. Only then promote the backend beyond experimental status.
+
+
+## Live Qwen MoE runtime path — PROVEN reversible instrumentation
+
+Evidence: `docs/evidence/r9700_live_moe_dtype_probe_20260909T024321Z.json`
+
+Evidence SHA-256: `1e781ba7f706885f2d96acf900ce5e36ed176418d999ff351f8865ccfa5f322e`
+
+A reversible instrumentation campaign measured the actual MoE path used by the resident Qwen3-Coder-30B-A3B-Instruct-AWQ vLLM process. The probe temporarily instrumented the Triton Experts call site, issued one real OpenAI-compatible chat request, then restored the exact source bytes and restarted the original service.
+
+Observed across 48 MoE calls:
+
+- Experts implementation: `TritonWNA16Experts`.
+- activation dtype: `torch.float16`.
+- quant config: `int4_w4a16`.
+- W1 dtype/shape: `torch.uint8`, `[128,1536,1024]`.
+- W2 dtype/shape: `torch.uint8`, `[128,2048,384]`.
+- top-k: 8, 128 global experts, SILU.
+- real request: HTTP 200, 19 prompt + 21 completion tokens.
+- exact runtime source restore SHA: `8d9c02d01440d09cba9b709aa7af18f47262acc7d159db483cf7f905505f6bee`, verified after restore.
+- restored model endpoint health: PASS.
+
+This supersedes the stale assumption that the current ROCm 10 / vLLM build is using BF16 Int4 emulation for the live Qwen MoE path. The current resident runtime is already using packed Triton WNA16 for both W1 and W2.
+
+## Architecture consequence
+
+The experimental backend should no longer dequantize W2 to BF16 by default. The preferred design is now stock-layout preserving: keep vLLM's official AutoAWQ conversion and packed W2 WNA16 path unchanged, replace only the small-M W1 execution when the custom correction kernel proves a repeatable advantage over the current stock WNA16 W1 kernel, and use stock WNA16 for all other cases.
+
+The next performance gate is therefore custom W1 versus the current stock packed WNA16 W1 using actual checkpoint weights, FP16 activations and paired measurements. BF16 pre-dequantized W1 remains a useful correctness/reference baseline but is no longer the promotion baseline.
+
+
+## Custom W1 vs current stock Triton WNA16 — PROMOTION GATE PASS
+
+Per-run evidence:
+
+- `docs/evidence/r9700_wna16_real_weight_vs_stock_20260909T025547Z.json` — SHA `362a03abb2588ca6e9b179ca7ed52321d7594aef62b0c41456d8847c0e5ddd55`
+- `docs/evidence/r9700_wna16_real_weight_vs_stock_20260909T025706Z.json` — SHA `b3ff493cfe600d1a5b1d897168d1a983eaaf79e6c77c57726af0c54d66c4e23d`
+- `docs/evidence/r9700_wna16_real_weight_vs_stock_20260909T025733Z.json` — SHA `84f5e926e883bb089fbf5542a339dd5cef0ab436068f49cd88826bacdfaf2f9e`
+
+Aggregate evidence: `docs/evidence/r9700_wna16_stock_gate_aggregate_20260909T025832Z.json`
+
+Aggregate SHA-256: `6f1faf903dc62d31b2ef62b60beeb1394f68c9f778366ebd77b38a187a782a5e`
+
+The comparison uses actual Qwen3-Coder layer-0 AutoAWQ W1 checkpoint weights, FP16 activations matching the measured live MoE dtype, identical N-first packed INT4/scales/zero-point layout, identical routing, and the current vLLM Triton WNA16 W1 kernel as the promotion baseline.
+
+Across three consecutive child-process campaigns, each with 21 alternating paired HIP-event rounds per M:
+
+- M1 median across campaigns: `1.74518x` vs stock; minimum campaign `1.73523x`; wins `63/63`.
+- M2: `1.49210x`; wins `63/63`.
+- M4: `1.47445x`; wins `63/63`.
+- M8: `1.44613x`; wins `63/63`.
+- M16: `1.46273x`; wins `63/63`.
+- Median campaign-level speedup across the tested small-M region: `1.47682x`.
+- All custom and stock outputs passed the numerical reference gates; custom-vs-stock cosine remained effectively 1.0.
+
+This is materially stronger than the earlier BF16-reference comparison because the baseline is now the actual stock packed Triton WNA16 kernel used by the current runtime.
+
+Truth boundary: these are repeated real-weight W1 microkernel campaigns, not independent full vLLM process starts and not end-to-end serving proof. The resident server was not patched or restarted for these measurements.
+
+## Promotion architecture after stock gate
+
+Proceed with a stock-layout-preserving backend: custom correction kernel only for W1 when `num_tokens <= 16`; stock Triton WNA16 W1 for larger M; stock packed Triton WNA16 W2 for all cases. Preserve vLLM's official AutoAWQ weight conversion, scales, qzeros, activation, routing and fallback behavior. End-to-end promotion still requires real model-server A/B evidence.

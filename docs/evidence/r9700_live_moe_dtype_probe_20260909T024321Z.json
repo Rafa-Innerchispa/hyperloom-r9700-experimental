@@ -1,0 +1,1777 @@
+{
+  "captured_at_utc": "2026-09-09T02:43:21.317626+00:00",
+  "clear_probe": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "container": "inneros-vllm-canary-rocm10",
+  "instrumented_health": {
+    "attempts": 36,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 70.01534560904838
+  },
+  "instrumented_restart": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "marker": "R9700_LIVE_MOE_DTYPE_PROBE_V3_TRITON_APPLY",
+  "observation_count": 48,
+  "observations": [
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "activation": "MoEActivation.SILU",
+      "apply_router_weight_on_input": false,
+      "experts_class": "TritonWNA16Experts",
+      "global_num_experts": 128,
+      "hidden_states_dtype": "torch.float16",
+      "hidden_states_shape": [
+        2048,
+        2048
+      ],
+      "pid": 64,
+      "quant_config_name": "int4_w4a16",
+      "topk_ids_dtype": "torch.int32",
+      "topk_ids_shape": [
+        2048,
+        8
+      ],
+      "topk_weights_dtype": "torch.float32",
+      "topk_weights_shape": [
+        2048,
+        8
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    }
+  ],
+  "original_sha256": "8d9c02d01440d09cba9b709aa7af18f47262acc7d159db483cf7f905505f6bee",
+  "pass": true,
+  "patched_sha256": "f0aa8c1df06531599691a523cc0f58fd2fc74584d5afc6171a4c6abd1149cb7e",
+  "probe_sha256": "1e781ba7f706885f2d96acf900ce5e36ed176418d999ff351f8865ccfa5f322e",
+  "request": {
+    "elapsed_sec": 1.1807928020134568,
+    "ok": true,
+    "status": 200,
+    "usage": {
+      "completion_tokens": 21,
+      "prompt_tokens": 19,
+      "prompt_tokens_details": null,
+      "total_tokens": 40
+    }
+  },
+  "restore": {
+    "health": {
+      "attempts": 35,
+      "health": {
+        "models": [
+          "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+        ],
+        "ok": true,
+        "status": 200
+      },
+      "ok": true,
+      "ready_sec": 68.01649133407045
+    },
+    "restart_returncode": 0,
+    "restored_sha256": "8d9c02d01440d09cba9b709aa7af18f47262acc7d159db483cf7f905505f6bee",
+    "service_ok": true,
+    "sha_matches_original": true,
+    "write_returncode": 0
+  },
+  "schema": "hyperloom.r9700.live_moe_dtype_probe.v3",
+  "target": "/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/fused_moe/experts/triton_moe.py",
+  "telemetry_after_request": {
+    "gpu0_lines": [
+      "GPU[0]\t\t: dcefclk clock level: 1: (219Mhz)",
+      "GPU[0]\t\t: fclk clock level: 1: (2016Mhz)",
+      "GPU[0]\t\t: mclk clock level: 5: (1258Mhz)",
+      "GPU[0]\t\t: sclk clock level: S: (41Mhz)",
+      "GPU[0]\t\t: socclk clock level: 1: (1280Mhz)",
+      "GPU[0]\t\t: pcie clock level: 1 (8.0GT/s x16)",
+      "GPU[0]\t\t: Average Graphics Package Power (W): 44.0",
+      "GPU[0]\t\t: GPU use (%): 3"
+    ],
+    "returncode": 0
+  },
+  "telemetry_before_request": {
+    "gpu0_lines": [
+      "GPU[0]\t\t: dcefclk clock level: 1: (219Mhz)",
+      "GPU[0]\t\t: fclk clock level: 1: (582Mhz)",
+      "GPU[0]\t\t: mclk clock level: 0: (96Mhz)",
+      "GPU[0]\t\t: sclk clock level: S: (41Mhz)",
+      "GPU[0]\t\t: socclk clock level: 0: (417Mhz)",
+      "GPU[0]\t\t: pcie clock level: 1 (8.0GT/s x16)",
+      "GPU[0]\t\t: Average Graphics Package Power (W): 13.0",
+      "GPU[0]\t\t: GPU use (%): 2"
+    ],
+    "returncode": 0
+  },
+  "truth_boundary": {
+    "exact_source_restore_required": true,
+    "hybrid_backend_enabled": false,
+    "payload_content_recorded": false,
+    "service_restart_required": true,
+    "temporary_site_package_instrumentation": true
+  }
+}

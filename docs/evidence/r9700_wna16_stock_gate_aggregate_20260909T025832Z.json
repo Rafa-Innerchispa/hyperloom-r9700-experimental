@@ -1,0 +1,123 @@
+{
+  "captured_at_utc": "2026-09-09T02:58:32.625729+00:00",
+  "inputs": [
+    "docs/evidence/r9700_wna16_real_weight_vs_stock_20260909T025547Z.json",
+    "docs/evidence/r9700_wna16_real_weight_vs_stock_20260909T025706Z.json",
+    "docs/evidence/r9700_wna16_real_weight_vs_stock_20260909T025733Z.json"
+  ],
+  "pass": true,
+  "probe_sha256": "6f1faf903dc62d31b2ef62b60beeb1394f68c9f778366ebd77b38a187a782a5e",
+  "promotion_gate_pass": true,
+  "rows": [
+    {
+      "M": 1,
+      "all_runs_majority_wins": true,
+      "all_runs_numeric_pass": true,
+      "max_speedup_x": 1.754760251365777,
+      "median_speedup_x": 1.745175561301192,
+      "min_speedup_x": 1.7352318426959255,
+      "run_speedups_x": [
+        1.745175561301192,
+        1.754760251365777,
+        1.7352318426959255
+      ],
+      "run_wins": [
+        21,
+        21,
+        21
+      ]
+    },
+    {
+      "M": 2,
+      "all_runs_majority_wins": true,
+      "all_runs_numeric_pass": true,
+      "max_speedup_x": 1.4960325381719346,
+      "median_speedup_x": 1.4920953191084505,
+      "min_speedup_x": 1.4891963796632373,
+      "run_speedups_x": [
+        1.4891963796632373,
+        1.4960325381719346,
+        1.4920953191084505
+      ],
+      "run_wins": [
+        21,
+        21,
+        21
+      ]
+    },
+    {
+      "M": 4,
+      "all_runs_majority_wins": true,
+      "all_runs_numeric_pass": true,
+      "max_speedup_x": 1.4774143723367628,
+      "median_speedup_x": 1.4744459613782919,
+      "min_speedup_x": 1.472485313897308,
+      "run_speedups_x": [
+        1.4744459613782919,
+        1.472485313897308,
+        1.4774143723367628
+      ],
+      "run_wins": [
+        21,
+        21,
+        21
+      ]
+    },
+    {
+      "M": 8,
+      "all_runs_majority_wins": true,
+      "all_runs_numeric_pass": true,
+      "max_speedup_x": 1.4768150771179958,
+      "median_speedup_x": 1.446131152884609,
+      "min_speedup_x": 1.44292210550629,
+      "run_speedups_x": [
+        1.4768150771179958,
+        1.446131152884609,
+        1.44292210550629
+      ],
+      "run_wins": [
+        21,
+        21,
+        21
+      ]
+    },
+    {
+      "M": 16,
+      "all_runs_majority_wins": true,
+      "all_runs_numeric_pass": true,
+      "max_speedup_x": 1.4757110101624609,
+      "median_speedup_x": 1.4627314333618453,
+      "min_speedup_x": 1.4535194224339798,
+      "run_speedups_x": [
+        1.4627314333618453,
+        1.4535194224339798,
+        1.4757110101624609
+      ],
+      "run_wins": [
+        21,
+        21,
+        21
+      ]
+    }
+  ],
+  "schema": "hyperloom.r9700.wna16_stock_gate_aggregate.v1",
+  "summary": {
+    "M1_median_speedup_x": 1.745175561301192,
+    "M1_min_speedup_x": 1.7352318426959255,
+    "M1_run_speedups_x": [
+      1.745175561301192,
+      1.754760251365777,
+      1.7352318426959255
+    ],
+    "all_three_promotion_pass": true,
+    "campaign_median_speedups_x": [
+      1.4768150771179958,
+      1.472485313897308,
+      1.4774143723367628
+    ],
+    "max_campaign_speedup_x": 1.4774143723367628,
+    "median_campaign_speedup_x": 1.4768150771179958,
+    "min_campaign_speedup_x": 1.472485313897308
+  },
+  "truth_boundary": "aggregate of three consecutive child-process microbench campaigns; actual Qwen AWQ W1 weights and live-compatible FP16 contract; not independent full vLLM process starts and not E2E serving proof"
+}
