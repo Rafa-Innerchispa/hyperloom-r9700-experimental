@@ -6,15 +6,16 @@ Design:
 - A load-time FP16 correction tensor (zero_point * scale) is built once by the
   Experts object and used by the small-token algebraic W1 Triton kernel.
 - W1 small-token policy: custom correction kernel for num_tokens <= 16.
-- W1 larger-token policy: generic vLLM WNA16 Triton fallback using packed INT4.
-- W2 remains BF16 emulation because measured W2 packed/algebraic kernels are
-  slower on the current R9700 workload.
+- W1 larger-token policy: stock vLLM Triton WNA16.
+- W2 always remains on the stock packed Triton WNA16 path.
+- AutoAWQ weight conversion/layout is inherited from stock vLLM unchanged.
 
 The patch is installed only in the current Python process. It does not edit
 vLLM site-packages. Removing the entrypoint/env returns to stock behavior.
 """
 from __future__ import annotations
 
+import json
 import os
 import torch
 import triton
@@ -24,6 +25,7 @@ from vllm.model_executor.layers.fused_moe.activation import MoEActivation
 from vllm.model_executor.layers.fused_moe.experts.triton_moe import (
     TritonWNA16Experts,
     _resize_cache,
+    moe_kernel_quantize_input,
 )
 from vllm.model_executor.layers.fused_moe.fused_moe import (
     invoke_fused_moe_triton_kernel,
@@ -46,8 +48,9 @@ from vllm.model_executor.layers.quantization.auto_awq import (
 from vllm.model_executor.layers.quantization.utils import replace_parameter
 from vllm.scalar_type import scalar_types
 
-PATCH_NAME = "r9700_autoawq_hybrid_v1"
+PATCH_NAME = "r9700_autoawq_stock_layout_hybrid_v2"
 SMALL_TOKEN_LIMIT = int(os.environ.get("HYPERLOOM_R9700_W1_SMALL_TOKEN_LIMIT", "16"))
+EVIDENCE_FILE = os.environ.get("HYPERLOOM_R9700_EVIDENCE_FILE", "")
 
 
 @triton.jit
@@ -215,15 +218,37 @@ def _build_correction(zp_packed: torch.Tensor, scale: torch.Tensor) -> torch.Ten
 
 
 class R9700HybridWNA16Experts(TritonWNA16Experts):
-    """W1 packed/correction + W1 packed fallback + W2 BF16 hybrid experts."""
+    """Stock WNA16 Experts with one guarded RDNA4 small-M W1 substitution."""
 
     def __init__(self, moe_config, quant_config):
         super().__init__(moe_config, quant_config)
         if self.quant_config.w1_zp is None:
-            raise ValueError("R9700 hybrid W1 requires AWQ zero points")
+            raise ValueError("R9700 custom W1 requires asymmetric WNA16 zero points")
         self.w1_correction = _build_correction(
             self.quant_config.w1_zp, self.w1_scale
         )
+        self.last_path = "uninitialized"
+        self._evidence_paths: set[str] = set()
+
+    def _record_path(self, path, hidden_states, w1, w2, topk_ids) -> None:
+        if not EVIDENCE_FILE or path in self._evidence_paths:
+            return
+        self._evidence_paths.add(path)
+        try:
+            row = {
+                "pid": os.getpid(),
+                "path": path,
+                "M": int(hidden_states.size(0)),
+                "hidden_states_dtype": str(hidden_states.dtype),
+                "w1_shape": list(w1.shape),
+                "w2_shape": list(w2.shape),
+                "topk_shape": list(topk_ids.shape),
+                "patch": PATCH_NAME,
+            }
+            with open(EVIDENCE_FILE, "a", encoding="utf-8") as f:
+                f.write(json.dumps(row, sort_keys=True) + "\n")
+        except Exception:
+            pass
 
     def _small_w1(
         self,
@@ -277,6 +302,24 @@ class R9700HybridWNA16Experts(TritonWNA16Experts):
             waves_per_eu=4,
         )
 
+    def _custom_eligible(self, hidden_states, w1, w2, topk_ids, activation) -> bool:
+        return bool(
+            hidden_states.size(0) <= SMALL_TOKEN_LIMIT
+            and activation == MoEActivation.SILU
+            and hidden_states.dtype in (torch.float16, torch.bfloat16)
+            and hidden_states.is_contiguous()
+            and w1.dtype == torch.uint8
+            and w2.dtype == torch.uint8
+            and hidden_states.size(-1) == 2048
+            and w1.size(1) == 1536
+            and topk_ids.dim() == 2
+            and topk_ids.size(1) == 8
+            and self.block_shape is not None
+            and len(self.block_shape) == 2
+            and self.block_shape[0] == 0
+            and self.block_shape[1] == 128
+        )
+
     def apply(
         self,
         output,
@@ -295,189 +338,118 @@ class R9700HybridWNA16Experts(TritonWNA16Experts):
         expert_tokens_meta,
         apply_router_weight_on_input,
     ):
-        if activation != MoEActivation.SILU:
-            raise NotImplementedError(
-                f"{PATCH_NAME} currently validates Qwen/SILU only, got {activation}"
+        # Fail safely to the exact stock implementation for every unproven shape,
+        # dtype, activation or routing contract.
+        if not self._custom_eligible(hidden_states, w1, w2, topk_ids, activation):
+            self.last_path = "stock_full_fallback"
+            self._record_path(self.last_path, hidden_states, w1, w2, topk_ids)
+            return super().apply(
+                output=output,
+                hidden_states=hidden_states,
+                w1=w1,
+                w2=w2,
+                topk_weights=topk_weights,
+                topk_ids=topk_ids,
+                activation=activation,
+                global_num_experts=global_num_experts,
+                expert_map=expert_map,
+                a1q_scale=a1q_scale,
+                a2_scale=a2_scale,
+                workspace13=workspace13,
+                workspace2=workspace2,
+                expert_tokens_meta=expert_tokens_meta,
+                apply_router_weight_on_input=apply_router_weight_on_input,
             )
-        if hidden_states.dtype not in (torch.bfloat16, torch.float16):
-            raise NotImplementedError(
-                f"{PATCH_NAME} supports fp16/bf16 activations, got {hidden_states.dtype}"
-            )
-        if w1.dtype != torch.uint8:
-            raise RuntimeError(f"hybrid W1 must be packed uint8, got {w1.dtype}")
-        if w2.dtype != torch.bfloat16:
-            raise RuntimeError(f"hybrid W2 must be BF16 fallback, got {w2.dtype}")
 
-        E = w1.size(0)
-        num_tokens = hidden_states.size(0)
-        N = w1.size(1)  # gate+up output width
-        K = hidden_states.size(1)
-        top_k_num = topk_ids.size(1)
+        E, num_tokens, N, K, top_k_num = self.moe_problem_size(
+            hidden_states, w1, w2, topk_ids
+        )
         if global_num_experts == -1:
             global_num_experts = E
 
+        config = try_get_optimal_moe_config(
+            w1.size(),
+            w2.size(),
+            top_k_num,
+            self.quant_config.config_name(hidden_states.dtype),
+            num_tokens,
+            block_shape=self.block_shape,
+        )
+        compute_type = tl.float16 if hidden_states.dtype == torch.float16 else tl.bfloat16
+
         intermediate_cache1 = _resize_cache(workspace2, (num_tokens, top_k_num, N))
-        act_dim = self.adjust_N_for_activation(N, activation)
+        activation_out_dim = self.adjust_N_for_activation(N, activation)
         intermediate_cache2 = _resize_cache(
-            workspace13, (num_tokens * top_k_num, act_dim)
+            workspace13, (num_tokens * top_k_num, activation_out_dim)
         )
         intermediate_cache3 = _resize_cache(workspace2, (num_tokens, top_k_num, K))
 
-        # Small-token W1 path. This is the only performance-positive region
-        # currently promoted. Larger blocks stay packed and use vLLM generic WNA16.
-        if num_tokens <= SMALL_TOKEN_LIMIT:
-            sorted1, experts1, padded1 = moe_align_block_size(
-                topk_ids, 16, global_num_experts, expert_map
-            )
-            self._small_w1(
-                hidden_states,
-                w1,
-                intermediate_cache1,
-                sorted1,
-                experts1,
-                padded1,
-                top_k_num,
-            )
-        else:
-            fake_w2_packed_size = torch.Size(
-                (w2.size(0), w2.size(1), w2.size(2) // 2)
-            )
-            config1 = try_get_optimal_moe_config(
-                w1.size(),
-                fake_w2_packed_size,
-                top_k_num,
-                self.quant_config.config_name(hidden_states.dtype),
-                num_tokens,
-                block_shape=self.block_shape,
-            )
-            sorted1, experts1, padded1 = moe_align_block_size(
-                topk_ids, config1["BLOCK_SIZE_M"], global_num_experts, expert_map
-            )
-            compute_type = tl.float16 if hidden_states.dtype == torch.float16 else tl.bfloat16
-            invoke_fused_moe_wna16_triton_kernel(
-                hidden_states,
-                w1,
-                intermediate_cache1,
-                self.w1_scale,
-                self.quant_config.w1_zp,
-                None,
-                sorted1,
-                experts1,
-                padded1,
-                False,
-                top_k_num,
-                config1,
-                compute_type=compute_type,
-                use_int8_w8a16=False,
-                use_int4_w4a16=True,
-                block_shape=self.block_shape,
-            )
-
-        self.activation(activation, intermediate_cache2, intermediate_cache1.view(-1, N))
-
-        # W2 intentionally stays on the current BF16 emulation path.
-        # Use an unquantized Triton config and its own alignment block size.
-        fake_w1_bf16_size = torch.Size((E, N, K))
-        config2 = try_get_optimal_moe_config(
-            fake_w1_bf16_size,
-            w2.size(),
+        # Only W1 is replaced, and only in the validated small-M region.
+        sorted1, experts1, padded1 = moe_align_block_size(
+            topk_ids, 16, global_num_experts, expert_map
+        )
+        self._small_w1(
+            hidden_states,
+            w1,
+            intermediate_cache1,
+            sorted1,
+            experts1,
+            padded1,
             top_k_num,
-            None,
-            num_tokens,
-            block_shape=None,
         )
+        self.last_path = "custom_small_w1_stock_w2"
+        self._record_path(self.last_path, hidden_states, w1, w2, topk_ids)
+
+        self.activation(
+            activation, intermediate_cache2, intermediate_cache1.view(-1, N)
+        )
+        qintermediate_cache2, a2q_scale = moe_kernel_quantize_input(
+            intermediate_cache2,
+            a2_scale,
+            self.quant_dtype,
+            self.per_act_token_quant,
+            self.block_shape,
+        )
+
+        # W2 is byte-for-byte stock WNA16 layout and uses the stock kernel.
         sorted2, experts2, padded2 = moe_align_block_size(
-            topk_ids, config2["BLOCK_SIZE_M"], global_num_experts, expert_map
+            topk_ids, config["BLOCK_SIZE_M"], global_num_experts, expert_map
         )
-        compute_type = tl.bfloat16
-        # Existing Int4EmulationTritonExperts operates on BF16 weights. Keep
-        # this call BF16; if upstream prepare delivers FP16 activations, cast
-        # only the W2 activation cache rather than changing packed W1 storage.
-        w2_input = intermediate_cache2
-        if w2_input.dtype != torch.bfloat16:
-            w2_input = w2_input.to(torch.bfloat16)
-        invoke_fused_moe_triton_kernel(
-            w2_input,
+        invoke_fused_moe_wna16_triton_kernel(
+            qintermediate_cache2,
             w2,
             intermediate_cache3,
-            None,
-            None,
+            self.w2_scale,
+            self.quant_config.w2_zp,
             topk_weights,
             sorted2,
             experts2,
             padded2,
             not apply_router_weight_on_input,
             1,
-            config2,
+            config,
             compute_type=compute_type,
-            use_fp8_w8a8=False,
-            use_int8_w8a8=False,
-            use_int8_w8a16=False,
-            use_int4_w4a16=False,
-            per_channel_quant=False,
-            block_shape=None,
-            B_bias=None,
+            use_int8_w8a16=self.quant_config.use_int8_w8a16,
+            use_int4_w4a16=self.quant_config.use_int4_w4a16,
+            block_shape=self.block_shape,
         )
         self.moe_sum(intermediate_cache3, output)
 
 
 class R9700AutoAWQMoEMethod(AutoAWQMoEMethod):
-    """AutoAWQ method that prepares hybrid W1 packed / W2 BF16 weights."""
+    """Stock AutoAWQ conversion with a guarded R9700 Experts substitution."""
 
     def __init__(self, quant_config, moe):
-        # Avoid stock oracle selection because AutoAWQ is deliberately blocked
-        # from Triton today. Everything else follows AutoAWQ's own setup.
-        from vllm.model_executor.layers.fused_moe import FusedMoEMethodBase
-
-        FusedMoEMethodBase.__init__(self, moe)
-        self.quant_config = quant_config
-        if self.quant_config.weight_bits != 4:
-            raise ValueError("R9700 hybrid currently supports AutoAWQ int4 only")
-        if not self.quant_config.zero_point:
-            raise ValueError("R9700 hybrid currently targets asymmetric AutoAWQ")
-        self.quant_type = scalar_types.uint4
-        self.input_dtype = None
-        self.use_marlin = False
-        self.wna16_moe_backend = WNA16MoEBackend.TRITON
+        # The current ROCm10/vLLM runtime already selects Triton WNA16 for this
+        # R9700/Qwen contract. Keep the complete stock conversion path and only
+        # replace the Experts implementation used by the modular kernel.
+        super().__init__(quant_config, moe)
+        if self.wna16_moe_backend != WNA16MoEBackend.TRITON:
+            raise RuntimeError(
+                f"{PATCH_NAME} requires stock Triton WNA16 selection; got "
+                f"{self.wna16_moe_backend}"
+            )
         self.experts_cls = R9700HybridWNA16Experts
-
-    def process_weights_after_loading(self, layer) -> None:
-        w13, w13_scale, w13_zp = _awq_w13_to_packed_nfirst(
-            layer.w13_qweight,
-            layer.w13_scales,
-            layer.w13_qzeros,
-        )
-        w2 = _awq_w2_to_bf16(
-            layer.w2_qweight,
-            layer.w2_scales,
-            layer.w2_qzeros,
-        )
-        dummy = torch.ones(1, dtype=torch.float16, device=w13.device)
-
-        replace_parameter(layer, "w13_qweight", w13)
-        replace_parameter(layer, "w2_qweight", w2)
-        layer.w13_weight = layer.w13_qweight
-        layer.w2_weight = layer.w2_qweight
-        replace_parameter(layer, "w13_scales", w13_scale)
-        replace_parameter(layer, "w2_scales", dummy)
-        _replace_or_register_parameter(layer, "w13_qzeros", w13_zp)
-
-        # Keep the raw W2 qzero parameter untouched but make it semantically
-        # unreachable from the hybrid quant config. This minimizes invasive
-        # layer surgery during the first isolated prototype.
-        self._setup_kernel(layer)
-
-    def get_fused_moe_quant_config(self, layer):
-        return make_wna16_moe_quant_config(
-            w1_scale=layer.w13_scales,
-            w2_scale=layer.w2_scales,
-            group_size=self.quant_config.group_size,
-            num_bits=self.quant_config.weight_bits,
-            w1_zp=getattr(layer, "w13_qzeros", None),
-            w2_zp=None,
-            w1_bias=None,
-            w2_bias=None,
-        )
 
 
 def install_patch(force: bool = False) -> dict[str, str]:

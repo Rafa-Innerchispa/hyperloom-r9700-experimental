@@ -1,0 +1,101 @@
+{
+  "captured_at_utc": "2026-09-09T03:07:03.752780+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "copy": {
+    "returncode": 0
+  },
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "cases": [
+      {
+        "M": 1,
+        "cosine": 0.9999991655349731,
+        "finite": true,
+        "max_abs_error": 2.64111440628767e-06,
+        "pass": true,
+        "path": "custom_small_w1_stock_w2",
+        "relative_l2": 0.001258891192264855
+      },
+      {
+        "M": 8,
+        "cosine": 0.9999990463256836,
+        "finite": true,
+        "max_abs_error": 2.3659085854887962e-06,
+        "pass": true,
+        "path": "custom_small_w1_stock_w2",
+        "relative_l2": 0.0012419783743098378
+      },
+      {
+        "M": 20,
+        "cosine": 0.9999992847442627,
+        "finite": true,
+        "max_abs_error": 7.803551852703094e-06,
+        "pass": true,
+        "path": "stock_full_fallback",
+        "relative_l2": 0.001203256193548441
+      }
+    ],
+    "converted": {
+      "correction_shape": [
+        8,
+        1536,
+        16
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_scale_shape": [
+        8,
+        1536,
+        16
+      ],
+      "w1_shape": [
+        8,
+        1536,
+        1024
+      ],
+      "w1_zp_shape": [
+        8,
+        768,
+        16
+      ],
+      "w2_dtype": "torch.uint8",
+      "w2_scale_shape": [
+        8,
+        2048,
+        6
+      ],
+      "w2_shape": [
+        8,
+        2048,
+        384
+      ],
+      "w2_zp_shape": [
+        8,
+        1024,
+        6
+      ]
+    },
+    "experts_type": "R9700HybridWNA16Experts",
+    "gpu_memory": {
+      "free_after_bytes": 4726980608,
+      "free_before_bytes": 5601492992,
+      "probe_delta_bytes": 874512384,
+      "total_bytes": 34208743424
+    },
+    "install": {
+      "auto_awq_method": "R9700AutoAWQMoEMethod",
+      "device": "AMD Radeon AI PRO R9700",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "small_token_limit": "16",
+      "triton_experts": "R9700HybridWNA16Experts"
+    },
+    "kernel_type": "FusedMoEKernel",
+    "pass": true,
+    "truth_boundary": "actual Qwen layer-0 AWQ W1/W2 weights; FP16 routed activations; small W1 custom, W2 stock WNA16, M20 complete stock fallback; resident vLLM untouched; no E2E serving performance claim"
+  },
+  "probe_sha256": "7ec25d34cdec2ef94888037a070cd789cd9e43774d20e5657e23b83c56697003",
+  "schema": "hyperloom.r9700.wna16_stock_layout_real_weight_smoke.v1"
+}

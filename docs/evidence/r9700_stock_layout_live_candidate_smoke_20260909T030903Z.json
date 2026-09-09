@@ -1,0 +1,2133 @@
+{
+  "baseline_after": {
+    "elapsed_sec": 0.7194572139997035,
+    "exact_expected": true,
+    "label": "stock_after",
+    "ok": true,
+    "status": 200,
+    "text_len": 18,
+    "text_sha256": "2c76697a18a30b3c871c4ee10f53a9c4a3cfbc779a57aae68f06dd91af4a210a",
+    "usage": {
+      "completion_tokens": 11,
+      "prompt_tokens": 27,
+      "prompt_tokens_details": null,
+      "total_tokens": 38
+    }
+  },
+  "baseline_before": {
+    "elapsed_sec": 0.5406864980468526,
+    "exact_expected": true,
+    "label": "stock_before",
+    "ok": true,
+    "status": 200,
+    "text_len": 18,
+    "text_sha256": "2c76697a18a30b3c871c4ee10f53a9c4a3cfbc779a57aae68f06dd91af4a210a",
+    "usage": {
+      "completion_tokens": 11,
+      "prompt_tokens": 27,
+      "prompt_tokens_details": null,
+      "total_tokens": 38
+    }
+  },
+  "candidate_health": {
+    "attempts": 39,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 76.01860980701167
+  },
+  "candidate_identity": {
+    "ok": true,
+    "pid": 1371060,
+    "running": true,
+    "started_at": "2026-09-09T03:09:05.667829614Z"
+  },
+  "candidate_output_matches_stock_hash": true,
+  "candidate_request": {
+    "elapsed_sec": 0.46374178503174335,
+    "exact_expected": true,
+    "label": "candidate",
+    "ok": true,
+    "status": 200,
+    "text_len": 18,
+    "text_sha256": "2c76697a18a30b3c871c4ee10f53a9c4a3cfbc779a57aae68f06dd91af4a210a",
+    "usage": {
+      "completion_tokens": 11,
+      "prompt_tokens": 27,
+      "prompt_tokens_details": null,
+      "total_tokens": 38
+    }
+  },
+  "candidate_restart": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "captured_at_utc": "2026-09-09T03:09:03.849499+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "custom_path_seen": true,
+  "pass": true,
+  "path_counts": {
+    "custom_small_w1_stock_w2": 48,
+    "stock_full_fallback": 48
+  },
+  "path_evidence": [
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v2",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    }
+  ],
+  "probe_sha256": "98565adc398ecf91c34e4a6f94e8ef7847c3e36b6123b791410878e66091206d",
+  "pth_removed": true,
+  "restore_health": {
+    "attempts": 38,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 74.01610943605192
+  },
+  "restore_neutralize_returncode": 0,
+  "restore_start_returncode": 0,
+  "schema": "hyperloom.r9700.stock_layout_live_candidate_smoke.v1",
+  "stock_fallback_seen": true,
+  "stock_identity_after": {
+    "ok": true,
+    "pid": 1375604,
+    "running": true,
+    "started_at": "2026-09-09T03:10:23.852562639Z"
+  },
+  "stock_identity_before": {
+    "ok": true,
+    "pid": 1322314,
+    "running": true,
+    "started_at": "2026-09-09T02:44:35.637192619Z"
+  },
+  "truth_boundary": {
+    "full_model_candidate_load": true,
+    "not_e2e_performance_campaign": true,
+    "process_local_patch": true,
+    "site_package_source_overwritten": false,
+    "stock_restore_required": true
+  }
+}

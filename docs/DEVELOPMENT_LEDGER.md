@@ -170,3 +170,40 @@ Truth boundary: these are repeated real-weight W1 microkernel campaigns, not ind
 ## Promotion architecture after stock gate
 
 Proceed with a stock-layout-preserving backend: custom correction kernel only for W1 when `num_tokens <= 16`; stock Triton WNA16 W1 for larger M; stock packed Triton WNA16 W2 for all cases. Preserve vLLM's official AutoAWQ weight conversion, scales, qzeros, activation, routing and fallback behavior. End-to-end promotion still requires real model-server A/B evidence.
+
+
+## Stock-layout hybrid real-weight smoke — PASS
+
+Evidence: `docs/evidence/r9700_wna16_stock_layout_real_weight_smoke_20260909T030714Z.json`
+
+Evidence SHA-256: `7ec25d34cdec2ef94888037a070cd789cd9e43774d20e5657e23b83c56697003`
+
+The v2 hybrid preserves packed WNA16 W1/W2 layouts. On actual layer-0 Qwen3-Coder AWQ weights and FP16 routed activations:
+
+- M1: `custom_small_w1_stock_w2`, cosine `0.99999917`, relative L2 `0.001259`.
+- M8: `custom_small_w1_stock_w2`, cosine `0.99999905`, relative L2 `0.001242`.
+- M20: `stock_full_fallback`, cosine `0.99999928`, relative L2 `0.001203`.
+- W1 remains packed uint8 `[8,1536,1024]` with real scales/qzeros.
+- W2 remains packed uint8 `[8,2048,384]` with real scales/qzeros.
+
+This validates the intended architecture: only the proven small-M W1 kernel is substituted; stock WNA16 remains responsible for W2 and all unproven shapes.
+
+## Full-model candidate boot — PASS with automatic stock restore
+
+Evidence: `docs/evidence/r9700_stock_layout_live_candidate_smoke_20260909T030903Z.json`
+
+Evidence SHA-256: `98565adc398ecf91c34e4a6f94e8ef7847c3e36b6123b791410878e66091206d`
+
+The actual 30B Qwen vLLM server was restarted once with an ephemeral Python `.pth` bootstrap that installs the process-local v2 patch before model loading. No vLLM source file was overwritten.
+
+Results:
+
+- candidate model load health: PASS, ready in ~76.0 s;
+- deterministic candidate response hash matched the stock-before response hash;
+- path evidence: `48` observations of `stock_full_fallback` and `48` observations of `custom_small_w1_stock_w2`;
+- the custom path was therefore exercised by all 48 MoE layers during the real request/decode path;
+- bootstrap hook was externally neutralized before restore;
+- stock server restore health: PASS, ready in ~74.0 s;
+- temporary `.pth` removed: PASS.
+
+This closes the full-model load/correctness smoke gate. It does not yet prove end-to-end performance improvement. The next gate is an identical-workload stock-vs-hybrid campaign across multiple independent process starts with TTFT, output throughput, E2E latency and GPU telemetry.
