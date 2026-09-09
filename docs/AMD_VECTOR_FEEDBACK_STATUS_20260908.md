@@ -5,11 +5,11 @@
 **Hardware:** AMD Radeon AI PRO R9700 (`gfx1201`, RDNA4)  
 **Status:** public technical progress snapshot
 
-This document maps the detailed technical feedback received from `Vector.sys [AMD]` in the AMD Developer Discord to the work completed so far. It is intentionally explicit about what is proven, partial, deferred, or still pending.
+This document maps the detailed technical feedback received from `Vector.sys [AMD]` and the ROCm AI Assistant in the AMD Developer Discord to the work completed so far. It is intentionally explicit about what is proven, partial, deferred, or still pending.
 
 ## 1. Repeat baseline/candidate to avoid single-run / bimodal confounding
 
-**Status: VALIDATED**
+**Status: PROCESS-SPAWN VALIDATION COMPLETE; GPU CLOCK/STATE TELEMETRY STILL OPEN**
 
 The original single-run result was superseded by a three-process campaign using independent vLLM process starts.
 
@@ -19,6 +19,8 @@ The original single-run result was superseded by a three-process campaign using 
 - paired gain min/median/max: approximately `80.51% / 80.99% / 81.49%`
 - baseline cross-process spread: approximately `0.47%`
 - `audit.ok = true`
+
+This closes the most important process-spawn repeatability concern. However, the public evidence does **not** yet prove that SCLK/GFXCLK or equivalent GPU runtime state was captured under load for every independent spawn. That sub-point remains open for a future validation campaign.
 
 Truth boundary: this is a serving/concurrency optimization result, not a kernel-level GPU speedup.
 
@@ -93,6 +95,20 @@ Our current differentiating path is specifically:
 
 The current official AMD vLLM optimization guide documents AITER controls, attention backend selection and Radeon fallback paths. The project treats those docs as authoritative guidance while keeping a strict distinction between validated Instinct configurations and experimental Radeon/gfx1201 behavior.
 
+## 8. Test autonomous rediscovery rather than manually seed known optimizations
+
+**Status: OPEN**
+
+Vector's most interesting Phase 2 question remains unanswered: can the HyperLoom-style agent loop independently rediscover a known gfx1201 optimization such as Unified Attention or a missing tuned config, rather than being told exactly what to enable?
+
+The current WNA16 kernel work was driven by measured backend analysis and iterative engineering. It should not be described as proof that GEAK/Arbor autonomously rediscovered the known AITER optimization.
+
+## 9. `VLLM_ROCM_USE_AITER_RMSNORM=0`
+
+**Status: NOT VERIFIED IN THIS REPOSITORY**
+
+The ROCm AI Assistant suggested that disabling AITER RMSNorm is appropriate for gfx12 targets. The current public repository does not contain evidence that this exact environment flag is part of the validated runtime configuration, so it is not marked complete here.
+
 ## Current integration gate
 
 The next gate before any kernel-level end-to-end serving claim is:
@@ -101,8 +117,9 @@ The next gate before any kernel-level end-to-end serving claim is:
 2. record the actual MoE activation dtype/layout on the loaded Qwen3-Coder AWQ model;
 3. load the experimental hybrid WNA16 Experts path with real weights;
 4. verify numerical correctness and fallback behavior;
-5. repeat independent serving A/B runs and capture throughput, TTFT and E2E evidence.
+5. repeat independent serving A/B runs and capture throughput, TTFT and E2E evidence;
+6. add GPU clock/runtime-state telemetry per spawn where practical.
 
 ## Claim boundary
 
-We do not claim official AMD HyperLoom support for R9700, an upstream-merged RDNA4 backend, or an end-to-end serving gain caused by the new WNA16 kernel until the isolated real-model campaign proves it.
+We do not claim official AMD HyperLoom support for R9700, an upstream-merged RDNA4 backend, an autonomous rediscovery of the known AITER optimization, or an end-to-end serving gain caused by the new WNA16 kernel until the relevant isolated real-model campaigns prove those claims.
