@@ -85,3 +85,26 @@ Truth boundary: this closes the real-W1-weight microkernel gate, not the full-mo
 ## Revised immediate integration gate
 
 The next safest step is to validate the hybrid Experts path against real checkpoint W1/W2 layouts in a bounded single-layer harness, then instrument the real vLLM MoE activation dtype/layout in a reversible single-model campaign before any production-like backend switch. Do not claim an end-to-end kernel serving gain until independent process A/B evidence clears that gate.
+
+
+## Hybrid W1/W2 with real Qwen3-Coder AWQ weights — PROVEN bounded smoke
+
+Evidence: `docs/evidence/r9700_wna16_hybrid_real_weight_smoke_20260909T022529Z.json`
+
+Evidence SHA-256: `4e99a5778063db4f6f442afaf8bbb6ab33856322cd0ba8178b8bdf09b51b5b0e`
+
+A bounded layer-0 harness loaded eight real Qwen3-Coder AWQ experts and exercised the full experimental hybrid path: packed/correction W1 -> SILU activation -> BF16 W2 fallback -> router-weighted MoE sum. Outputs were compared against a dequantized FP32 reference. The resident vLLM service stayed live and was not patched or restarted.
+
+All tested cases passed for both activation dtypes:
+
+- BF16 M1/M8/M16 custom-small-W1: cosine `0.9999958..0.9999961`, relative L2 about `0.00281..0.00287`.
+- BF16 M20 generic packed-W1 fallback: cosine `0.9999963`, relative L2 `0.00272`.
+- FP16 M1/M8/M16 custom-small-W1: cosine `0.99999845..0.99999851`, relative L2 about `0.00178..0.00182`.
+- FP16 M20 generic packed-W1 fallback: cosine `0.99999839`, relative L2 `0.00178`.
+- Every output was finite and every numeric gate passed.
+
+This resolves the earlier synthetic `fp16 x bf16` concern for the hybrid design itself: W1 handles FP16/BF16, while W2 is intentionally cast to the validated BF16 fallback boundary. It does not yet prove the dtype emitted by the actual live Qwen MoE call site, nor an end-to-end serving speedup.
+
+## Next gate after real-weight hybrid PASS
+
+Instrument the actual model call path in a reversible single-model campaign to record live MoE `hidden_states.dtype`, shapes and routing sizes. Then run baseline vs hybrid serving under identical process-spawn controls and capture throughput, TTFT, E2E latency, GPU clock/runtime state and correctness evidence. Only then promote the backend beyond experimental status.

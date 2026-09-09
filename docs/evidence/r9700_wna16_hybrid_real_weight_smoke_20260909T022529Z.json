@@ -1,0 +1,230 @@
+{
+  "captured_at_utc": "2026-09-09T02:25:17.031990+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "copy": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "docker_exec": {
+    "returncode": 0,
+    "stderr_tail": ""
+  },
+  "pass": true,
+  "probe": {
+    "cases": [
+      {
+        "M": 1,
+        "cosine": 0.9999961256980896,
+        "finite": true,
+        "input_dtype": "torch.bfloat16",
+        "max_abs_error": 5.957204848527908e-06,
+        "mean_abs_error": 8.135576763379504e-07,
+        "pass": true,
+        "path": "custom_small_w1",
+        "reference_l2": 0.016993708908557892,
+        "reference_max_abs": 0.008118328638374805,
+        "relative_l2": 0.0028133282903581858
+      },
+      {
+        "M": 8,
+        "cosine": 0.9999959468841553,
+        "finite": true,
+        "input_dtype": "torch.bfloat16",
+        "max_abs_error": 1.7428770661354065e-05,
+        "mean_abs_error": 7.538107524851512e-07,
+        "pass": true,
+        "path": "custom_small_w1",
+        "reference_l2": 0.04588513821363449,
+        "reference_max_abs": 0.007766834460198879,
+        "relative_l2": 0.0028503863140940666
+      },
+      {
+        "M": 16,
+        "cosine": 0.999995768070221,
+        "finite": true,
+        "input_dtype": "torch.bfloat16",
+        "max_abs_error": 3.0017457902431488e-05,
+        "mean_abs_error": 7.486298727599205e-07,
+        "pass": true,
+        "path": "custom_small_w1",
+        "reference_l2": 0.06557794660329819,
+        "reference_max_abs": 0.00875250343233347,
+        "relative_l2": 0.0028745431918650866
+      },
+      {
+        "M": 20,
+        "cosine": 0.9999963045120239,
+        "finite": true,
+        "input_dtype": "torch.bfloat16",
+        "max_abs_error": 1.9931234419345856e-05,
+        "mean_abs_error": 7.033261795186263e-07,
+        "pass": true,
+        "path": "generic_wna16_w1_fallback",
+        "reference_l2": 0.07186239957809448,
+        "reference_max_abs": 0.008894634433090687,
+        "relative_l2": 0.0027186160441488028
+      },
+      {
+        "M": 1,
+        "cosine": 0.9999984502792358,
+        "finite": true,
+        "input_dtype": "torch.float16",
+        "max_abs_error": 4.816567525267601e-06,
+        "mean_abs_error": 5.079307356936624e-07,
+        "pass": true,
+        "path": "custom_small_w1",
+        "reference_l2": 0.016654426231980324,
+        "reference_max_abs": 0.007257287390530109,
+        "relative_l2": 0.00181704165879637
+      },
+      {
+        "M": 8,
+        "cosine": 0.9999984502792358,
+        "finite": true,
+        "input_dtype": "torch.float16",
+        "max_abs_error": 6.705522537231445e-06,
+        "mean_abs_error": 4.863803724219906e-07,
+        "pass": true,
+        "path": "custom_small_w1",
+        "reference_l2": 0.045518048107624054,
+        "reference_max_abs": 0.008915484882891178,
+        "relative_l2": 0.001783742685802281
+      },
+      {
+        "M": 16,
+        "cosine": 0.9999985098838806,
+        "finite": true,
+        "input_dtype": "torch.float16",
+        "max_abs_error": 1.3132579624652863e-05,
+        "mean_abs_error": 4.789942522620549e-07,
+        "pass": true,
+        "path": "custom_small_w1",
+        "reference_l2": 0.06358906626701355,
+        "reference_max_abs": 0.008396552875638008,
+        "relative_l2": 0.001790544018149376
+      },
+      {
+        "M": 20,
+        "cosine": 0.9999983906745911,
+        "finite": true,
+        "input_dtype": "torch.float16",
+        "max_abs_error": 7.087830454111099e-06,
+        "mean_abs_error": 4.896534733234148e-07,
+        "pass": true,
+        "path": "generic_wna16_w1_fallback",
+        "reference_l2": 0.07228735834360123,
+        "reference_max_abs": 0.008550197817385197,
+        "relative_l2": 0.0017833728343248367
+      }
+    ],
+    "converted": {
+      "correction_dtype": "torch.float16",
+      "correction_shape": [
+        8,
+        1536,
+        16
+      ],
+      "w1_dtype": "torch.uint8",
+      "w1_scale_shape": [
+        8,
+        1536,
+        16
+      ],
+      "w1_shape": [
+        8,
+        1536,
+        1024
+      ],
+      "w1_zp_shape": [
+        8,
+        768,
+        16
+      ],
+      "w2_dtype": "torch.bfloat16",
+      "w2_shape": [
+        8,
+        2048,
+        768
+      ]
+    },
+    "experts_type": "R9700HybridWNA16Experts",
+    "gpu_memory": {
+      "free_after_bytes": 4653580288,
+      "free_before_bytes": 5553258496,
+      "probe_delta_bytes": 899678208,
+      "total_bytes": 34208743424
+    },
+    "install": {
+      "auto_awq_method": "R9700AutoAWQMoEMethod",
+      "device": "AMD Radeon AI PRO R9700",
+      "patch": "r9700_autoawq_hybrid_v1",
+      "small_token_limit": "16",
+      "triton_experts": "R9700HybridWNA16Experts"
+    },
+    "kernel_type": "FusedMoEKernel",
+    "pass": true,
+    "source": {
+      "checksums": {
+        "w13_qweight_sha256": "358ad170e2ada801f681454b6c52f8c9197e946dfee9d96149749662c5704423",
+        "w13_qzeros_sha256": "7299733ae2708d3e562ab246931fa3ced9529253835aa8bf10e46b24ae4978a8",
+        "w13_scales_sha256": "2aec1a9b286b8f9e3360f13c4e84d8cd8057d215eea63f1c1bdcb65f971215e2",
+        "w2_qweight_sha256": "b47db282ff29f060b53378743d4fb4ff3e001b4e0e71dcbd54b0a25c9c54bd7f",
+        "w2_qzeros_sha256": "5e648f165f5cb243d15ea54c4d5c7ccb74dea334db677fa8d14e268ce40ce25a",
+        "w2_scales_sha256": "134fbd1736a327474cb913c814d3dae609ee1080512569b4ba70a2293268c16d"
+      },
+      "experts": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "layer": 0,
+      "shard": "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ/model-00001-of-00006.safetensors",
+      "w13_qweight_shape": [
+        8,
+        2048,
+        192
+      ],
+      "w13_qzeros_shape": [
+        8,
+        16,
+        192
+      ],
+      "w13_scales_shape": [
+        8,
+        16,
+        1536
+      ],
+      "w2_qweight_shape": [
+        8,
+        768,
+        256
+      ],
+      "w2_qzeros_shape": [
+        8,
+        6,
+        256
+      ],
+      "w2_scales_shape": [
+        8,
+        6,
+        2048
+      ]
+    },
+    "truth_boundary": "real layer-0 Qwen AWQ W1/W2 weights with synthetic routed activations; child-process hybrid Experts correctness smoke; resident vLLM server untouched; no E2E serving performance claim"
+  },
+  "probe_sha256": "4e99a5778063db4f6f442afaf8bbb6ab33856322cd0ba8178b8bdf09b51b5b0e",
+  "schema": "hyperloom.r9700.wna16_hybrid_real_weight_smoke.v1",
+  "truth_boundary": {
+    "official_support_claim": false,
+    "production_runtime_modified": false,
+    "real_checkpoint_weights": true,
+    "server_process_patched": false,
+    "service_restarted": false,
+    "synthetic_routed_activations": true
+  }
+}
