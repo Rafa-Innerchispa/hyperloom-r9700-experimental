@@ -51,3 +51,37 @@ Important interpretation: the failure does **not** invalidate the custom kernel 
 ## Immediate integration gate
 
 Do not patch the resident serving process yet. The next gate is an isolated vLLM model process with instrumentation that records the real MoE `hidden_states.dtype` and verifies the hybrid backend on actual loaded Qwen3-Coder AWQ weights. Only after that passes should the independent process campaign be repeated for end-to-end throughput/TTFT.
+
+
+## Real Qwen3-Coder AWQ W1 weights — PROVEN on physical R9700
+
+Evidence: `docs/evidence/r9700_wna16_real_weight_layer_probe_20260909T021040Z.json`
+
+Evidence SHA-256: `5f0f0a92e07a75677d6fcf3028e7f71fe24a370b854de53f0a893aa42059616b`
+
+The precomputed-correction WNA16 kernel was revalidated using actual layer-0 Qwen3-Coder-30B-A3B-Instruct-AWQ checkpoint weights rather than randomly generated AWQ tensors. Eight real experts were loaded from `model-00001-of-00006.safetensors` while the resident vLLM service remained untouched.
+
+Observed real-weight source shapes:
+
+- combined W1 packed qweight: `[8, 2048, 192]`
+- qzeros: `[8, 16, 192]`
+- scales: `[8, 16, 1536]`, FP16
+- AWQ group size: 128
+
+Paired real-weight results versus the BF16 pre-dequantized routed W1 reference:
+
+- M1: `1.10176x`, 14/21 wins, cosine `0.99999738`, max abs `0.001953125`.
+- M2: `1.09598x`, 15/21 wins, cosine `0.99999744`, max abs `0.001953125`.
+- M4: `1.12649x`, 20/21 wins, cosine `0.99999750`, max abs `0.001953125`.
+- M8: `1.12302x`, 21/21 wins, cosine `0.99999750`, max abs `0.001953125`.
+- M16: `1.12451x`, 21/21 wins, cosine `0.99999738`, max abs `0.00390625`.
+- Median of paired medians across M1..16: `1.12302x`.
+- Numeric gate: PASS for every tested M.
+
+GPU probe allocation was bounded to about 789 MiB and left roughly 4.76 GB free during the measurement, avoiding a second full 30B model load.
+
+Truth boundary: this closes the real-W1-weight microkernel gate, not the full-model serving gate. The benchmark uses actual checkpoint expert weights with synthetic routed activations. The resident vLLM process was not patched or restarted. Actual live MoE activation dtype/layout and end-to-end hybrid serving remain open.
+
+## Revised immediate integration gate
+
+The next safest step is to validate the hybrid Experts path against real checkpoint W1/W2 layouts in a bounded single-layer harness, then instrument the real vLLM MoE activation dtype/layout in a reversible single-model campaign before any production-like backend switch. Do not claim an end-to-end kernel serving gain until independent process A/B evidence clears that gate.
