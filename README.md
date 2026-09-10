@@ -141,3 +141,24 @@ They keep their own licences; [`THIRD_PARTY.md`](THIRD_PARTY.md) lists them and
 For security-relevant issues, see [`SECURITY.md`](SECURITY.md). For
 contribution conventions, see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+
+
+---
+
+## Experimental Radeon AI PRO R9700 / gfx1201 status
+
+This fork contains experimental RDNA4 work validated on a physical AMD Radeon AI PRO R9700 (`gfx1201`) with ROCm 10, vLLM, and `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`.
+
+The current evidence supports these claims:
+
+- three independent process starts reproduced the autonomous serving/concurrency decision (`+80.99%` paired median); this is **not** a kernel-speedup claim;
+- the live Qwen MoE path was measured as FP16 `TritonWNA16Experts` with packed INT4 W4A16 weights;
+- a custom packed-INT4 small-M W1 Triton kernel beat the stock vLLM Triton WNA16 W1 kernel across the tested real-weight microbenchmark region (about `1.477x` median across M1..16; `63/63` paired wins per shape across three campaigns);
+- the complete 30B model booted with `R9700HybridWNA16Experts`, all 48 MoE layers exercised the custom path, deterministic output matched stock, and fallback/rollback passed;
+- the stable concurrency-4 end-to-end comparison remained approximately **5% slower than stock**, so the hybrid backend is **not promoted** as the default serving path.
+
+Final experimental verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED**.
+
+See [`FINAL_STATUS.md`](FINAL_STATUS.md), [`docs/DEVELOPMENT_LEDGER.md`](docs/DEVELOPMENT_LEDGER.md), [`docs/COMMUNITY_FEEDBACK_LEDGER.md`](docs/COMMUNITY_FEEDBACK_LEDGER.md), and [`docs/R9700_PHASE2_TECHNICAL_PREVIEW_20260910.md`](docs/R9700_PHASE2_TECHNICAL_PREVIEW_20260910.md) for the evidence boundaries and preserved negative results.
+
+This work does not claim official AMD support, upstream HyperLoom support for the R9700, a “first port,” or a full-model `1.477x` speedup.

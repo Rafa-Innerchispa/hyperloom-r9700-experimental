@@ -128,3 +128,18 @@ From this checkpoint forward:
 ## Recovery limitation
 
 As of 2026-09-08, the connected InnerOS Discord bot does not index the external Discord server/thread where all community discussions occurred. Historical recovery therefore depends on messages preserved in chats or explicitly supplied by the user. The currently recovered distinct external sources are ROCm AI Assistant, Guo Hongwei, and Vector.sys. This is a known ingestion gap, not evidence that no other commenter exists.
+
+
+## 2026-09-10 final reconciliation
+
+The feedback ledger is now reconciled against the later Phase-2 evidence and final E2E truth boundary.
+
+- **FDBK-007 / bimodal R9700 process state:** CLOSED. The methodology switched to independent process starts for the Phase-1 serving/concurrency result. Concurrency-1 E2E kernel comparisons are not used naively because the R9700 can enter materially different performance states.
+- **FDBK-008 / Unified Attention:** INVESTIGATED / NOT VALIDATED FOR THIS WORKLOAD. The probe observed the platform selecting the Triton attention path and an explicit Unified-Attention attempt did not establish a supported end-to-end path. No UA performance claim is made.
+- **FDBK-009 / gfx1201 AITER status:** UPDATED. AITER now publicly describes Radeon AI PRO R9700 / gfx1201 support as experimental. Our targeted AITER/FlyDSL sorting experiment encountered an isolated HSA memory fault, so it is not promoted into this workload path.
+- **FDBK-010 / AITER quant/sorting:** ATTEMPTED / PARTIAL-FAIL. The failing experiment is preserved as evidence rather than silently retried or presented as success.
+- **FDBK-014 / missing gfx1201 tuning configs:** INVESTIGATED BUT NOT CLOSED. A bounded tuner and live config-override experiment were created after the checkpoint, but their raw JSON/scripts were never committed and are no longer present in the audited worktrees. Their numerical outcome is therefore not reconstructed and cannot support promotion.
+- **Kernel-versus-serving claim separation:** CLOSED AS POLICY. The `+80.99%` Phase-1 result is explicitly a serving/concurrency result. The approximately `1.477x` Phase-2 result is explicitly a small-M routed W1 microkernel result versus stock Triton WNA16. Neither is represented as an end-to-end full-model kernel speedup.
+- **Full-model promotion gate:** NOT PASSED. The hybrid backend boot/correctness/fallback/rollback gate passed, but the more stable concurrency-4 E2E comparison remained approximately 5% below stock after the valid alignment-reuse improvement. Final verdict: `KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED`.
+
+This ledger therefore closes the recommendation-review cycle without manufacturing a favorable benchmark. Future work may revisit gfx1201 tuning or graph-recapture-safe integration, but it starts from this recorded verdict rather than repeating already closed experiments.

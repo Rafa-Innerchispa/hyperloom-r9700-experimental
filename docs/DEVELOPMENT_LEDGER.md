@@ -207,3 +207,27 @@ Results:
 - temporary `.pth` removed: PASS.
 
 This closes the full-model load/correctness smoke gate. It does not yet prove end-to-end performance improvement. The next gate is an identical-workload stock-vs-hybrid campaign across multiple independent process starts with TTFT, output throughput, E2E latency and GPU telemetry.
+
+
+## 2026-09-10 — Final Phase 2 reconciliation
+
+Final experimental verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED**.
+
+The committed evidence through the full-model candidate smoke remains valid:
+
+- live backend/dtype discovery: `TritonWNA16Experts`, FP16, 128 experts, top-k 8;
+- three real-weight custom-W1-vs-stock campaigns: custom small-M W1 won all 63 paired measurements per tested shape, with median speedup across M1..16 about `1.47682x`;
+- full Qwen3-Coder 30B AWQ candidate boot: PASS;
+- all 48 MoE layers observed `custom_small_w1_stock_w2` and stock fallback;
+- deterministic candidate response hash matched stock;
+- temporary bootstrap hook was removed and stock restored.
+
+Post-checkpoint E2E work established a different result at the full serving level. Concurrency-1 measurements are strongly affected by the Radeon AI PRO R9700 bimodal process/start state and are not used as naive speedup evidence. Concurrency 4 was more stable: stock was observed around `159-162 tok/s`; the integrated hybrid candidate around `151-153 tok/s`. Reusing routing/alignment in the v3 integration reduced the earlier roughly 6-7% deficit to roughly 5%, but did not reach parity.
+
+The mmap/SIGUSR1/SIGUSR2 same-process experiment is excluded from performance evidence. Although signals reached EngineCore, path telemetry remained `runtime_gate_stock`, so the custom path did not execute during the apparent `+0.79%` comparison. Graph capture/replay is the working explanation; no same-process speedup claim is allowed.
+
+Later bounded-tuner/tuned-config files were referenced in the uncommitted experimental work but were never committed and are no longer present in the audited worktrees. Their metrics are not reconstructed. This means gfx1201-specific tuning remains an investigated lead, not a closed E2E promotion proof.
+
+Preserved failed/partial results remain part of the engineering record: AITER/FlyDSL sorting HSA fault; activation group pre-sum correct but slower; early FP16/BF16 mismatch superseded by measured FP16 live dtype; custom W2 slower than stock/reference; invalid runtime-gated same-process A/B.
+
+The final truth boundary is therefore explicit: the custom packed-INT4 W1 Triton kernel is worth keeping and is physically proven on `gfx1201`; the hybrid full-model integration is functionally proven but is not the default serving backend because the valid stable E2E comparison did not beat stock.

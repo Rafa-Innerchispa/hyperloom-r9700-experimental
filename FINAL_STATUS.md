@@ -1,122 +1,162 @@
-# Final Status
+# HyperLoom Radeon AI PRO R9700 / RDNA4 Final Experimental Status
 
-## Current Checkpoint
+Date: 2026-09-10
+Correlation: `hyperloom-r9700-finalize-20260910`
+Repository: `Rafa-Innerchispa/hyperloom-r9700-experimental`
+Hardware: AMD Radeon AI PRO R9700 (`gfx1201`, 32 GiB)
+Workload: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ` + vLLM + ROCm 10
 
-Correlation: `hyperloom-awq-observer-20260908`
+## Final verdict
 
-Canonical target branch: `codex/hyperloom-r9700-master-20260907`
+**KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED**
 
-Proof branch: `chatgpt/hyperloom-r9700-awq-proof-20260908`
+HyperLoom has a real experimental RDNA4/R9700 path that executed on the physical `gfx1201` GPU. The custom packed-INT4 W1 Triton kernel is validated against the stock vLLM Triton WNA16 W1 kernel with real Qwen3-Coder AWQ weights and real FP16 activation dtype. The full 30B model also loaded and served a deterministic request with the hybrid backend, exercising the custom path across all 48 MoE layers while preserving stock fallback and rollback.
 
-Status: **CLOSED FOR THIS EXPERIMENTAL CHECKPOINT.** The bounded live R9700 benchmark completed, the runtime AWQ backend observer is implemented, and the measured backend paths are now captured as reproducible evidence. This remains experimental RDNA4/R9700 enablement work, not a claim of official upstream HyperLoom support.
+The integration is **not** promoted as the default serving backend because the most stable end-to-end concurrency-4 comparison remained approximately 5% slower than stock after the valid v3 alignment-overhead reduction. Therefore no full-model speedup claim is allowed.
 
-## What Was Completed
+## What is proven
 
-- Live bounded multi-spawn benchmark: **5/5 spawns completed**.
-- Each arm: **18/18 requests passed**, zero request failures.
-- Candidate concurrency: **2**.
-- Median baseline output throughput: **19.764 output tok/s**.
-- Median candidate output throughput: **35.935 output tok/s**.
-- Median throughput gain: **~80.9%**.
-- Candidate output throughput range: **28.55-36.31 tok/s**.
-- Candidate total throughput range: **86.28-109.74 tok/s**.
-- Candidate p95 E2E range: **926.97-1189.64 ms**.
-- Gate decisions: **4 KEEP / 1 REJECT**.
-- The rejected spawn was functionally successful but exceeded the p95 gate at approximately **1.307x baseline**, so the rejection is expected and correct.
-- Harness audit: `audit_ok: true`.
+### Phase 1: autonomous serving/concurrency decision
 
-## AWQ Backend Evidence
+Three independent vLLM process starts reproduced the selected serving/concurrency improvement:
 
-### Dense / Linear AWQ
+- baseline: `19.893 / 19.942 / 19.987 output tok/s`
+- candidate: `36.004 / 36.078 / 36.194 output tok/s`
+- paired median gain: `+80.99%`
+- baseline inter-process spread: about `0.47%`
+- verdict: `KEEP / KEEP / KEEP`
 
-Measured live configuration:
+Evidence: `docs/evidence/r9700_independent_process_final_20260908.json`
+SHA-256: `dda9128a5ea17728e3eae59488d37952665b30c77e54cb440c225971fdfcf94f`
 
-- `VLLM_USE_TRITON_AWQ=false`
-- Backend classification: `VLLM_CUSTOM_OP__C_AWQ`
-- Primary GEMM entry: `torch.ops._C.awq_gemm`
-- Large-token dequantization path can use `torch.ops._C.awq_dequantize`
+This is a **serving/concurrency result**, not a GPU-kernel speedup.
 
-This classification comes from introspecting the installed live vLLM implementation and runtime environment. It is not inferred merely from the model being AWQ-quantized.
+### Phase 2: live WNA16 discovery
 
-### MoE AWQ
+The live Qwen MoE path was measured as:
 
-Model architecture and routing facts observed:
+- Experts backend: `TritonWNA16Experts`
+- activation dtype: `torch.float16`
+- experts: `128`
+- top-k: `8`
+- quantization: `int4_w4a16`, group size `128`
+- W1 packed dtype/shape: `uint8 [128,1536,1024]`
+- W2 packed dtype/shape: `uint8 [128,2048,384]`
 
-- Architecture: `Qwen3MoeForCausalLM`
-- Hidden size: `2048`
-- MoE intermediate size: `768`
-- Local experts: `128`
-- Experts per token: `8`
-- `norm_topk_prob=true`
+Evidence: `docs/evidence/r9700_live_moe_dtype_probe_20260909T024321Z.json`.
 
-The vLLM WNA16 MoE selector chose:
+### Custom W1 versus stock Triton WNA16
 
-- Backend: `EMULATION`
-- Experts implementation: `vllm.model_executor.layers.fused_moe.experts.int4_emulation_moe.Int4EmulationTritonExperts`
+Three consecutive real-weight child-process campaigns, 21 alternating paired HIP-event measurements per M:
 
-This is now a concrete optimization target: determine why earlier specialized WNA16 backends are not eligible on `gfx1201` / Radeon AI PRO R9700, then test a safe specialized path if feasible.
+- M1: about `1.745x`
+- M2: about `1.492x`
+- M4: about `1.474x`
+- M8: about `1.446x`
+- M16: about `1.463x`
+- median across tested small-M region: about `1.477x`
+- wins: `63/63` per tested shape across the three campaigns
+- custom-vs-stock cosine: effectively `~1.0`
 
-## Evidence Files
+Aggregate evidence: `docs/evidence/r9700_wna16_stock_gate_aggregate_20260909T025832Z.json`.
 
-- `docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035235773281Z.json`
-- `docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035310633550Z.json`
-- `docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035355104232Z.json`
-- `docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035434219313Z.json`
-- `docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20260908T035519562264Z.json`
-- `docs/evidence/r9700_multispawn_plan.json`
-- `docs/evidence/r9700_awq_backend_probe_20260908T040657Z.json`
-- `docs/evidence/r9700_vllm_rocm10_launch_manifest_20260908T040845Z.json`
+This proves the routed W1 microkernel result only. It does **not** mean the complete Qwen model is 1.477x faster.
 
-Observer probe SHA-256:
+### Full-model hybrid integration
 
-- `d654988e2c02f1cebe125e118b5700437b3d0689416ded120c1db73bb290822c`
+`R9700HybridWNA16Experts` loaded the complete Qwen3-Coder 30B AWQ model. A real deterministic request exercised:
 
-Runtime manifest SHA-256:
+- `48` observations of `custom_small_w1_stock_w2`
+- `48` observations of `stock_full_fallback`
+- candidate deterministic response hash matching stock
+- automatic removal of the temporary bootstrap hook
+- healthy stock restoration after the candidate run
 
-- `c674caea87dc5efe4281c620d30a12eeebbe9662cfddd57de5d0d886e6c9c513`
+Evidence: `docs/evidence/r9700_stock_layout_live_candidate_smoke_20260909T030903Z.json`.
 
-## Runtime Observed On AMD
+This proves full-model boot, basic correctness, all-48-layer custom-path reachability, fallback, and rollback.
 
-- Host: `ralfiia-amd`
-- Endpoint: `http://127.0.0.1:8000/v1`
-- Model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
-- GPU: `AMD Radeon AI PRO R9700`, `gfx1201`
-- Docker image: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
-- In-container Python: `3.14.7`
-- In-container torch: `2.12.0+rocm10.0.0`
-- In-container `torch.version.hip`: `7.15.26333`
-- In-container vLLM: `0.27.1.dev5+gf46a9dfe2.d20260827`
+## End-to-end performance verdict
 
-## Validation Performed
+Radeon AI PRO R9700 showed a strong bimodal process/startup state at concurrency 1, with observed decode rates ranging roughly from the low 20s to 70+ tok/s under apparently equivalent conditions. Concurrency 1 is therefore not used as a naive proof of speedup.
 
-- New observer unit tests: **6/6 passed** using standard-library `unittest`.
-- `compileall` for `scripts/r9700_awq_backend_probe.py`: PASS.
-- `compileall` for `scripts/r9700_runtime_manifest.py`: PASS.
-- Live AWQ backend observer: `evidence_status=proved`.
-- Live runtime manifest: AWQ evidence `proved`.
-- Multi-spawn harness audit: `audit_ok: true`.
-- Cached Git diff check before commit: PASS.
+Concurrency 4 was substantially more stable:
 
-A full historical pytest suite is **not** claimed for this checkpoint. A focused pytest attempt encountered the repository-level conftest dependency on `httpx`; the new observer tests were therefore also validated directly with `unittest` instead of pretending a broader suite passed. Humanity survives another truthful test report.
+- stock states observed: approximately `159-162 tok/s`
+- hybrid candidate after the valid alignment-reuse improvement: approximately `151-153 tok/s`
+- resulting integrated regression: approximately `5%`
 
-## Claims Allowed
+The v3 integration reduced duplicate `moe_align_block_size` work and improved the earlier approximately 6-7% regression, but did not recover parity with stock.
 
-- Local OpenAI-compatible vLLM on AMD node `.5` serves `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ` on Radeon AI PRO R9700 / `gfx1201`.
-- The bounded five-spawn benchmark completed successfully and shows reproducible serving/concurrency scaling under the recorded gate.
-- The measured dense AWQ path is the vLLM custom `_C` AWQ path with `VLLM_USE_TRITON_AWQ=false`.
-- The measured WNA16 MoE selector chose `EMULATION` / `Int4EmulationTritonExperts` for the reconstructed live configuration.
-- The current concurrency result is a serving/runtime result, not proof of a custom kernel optimization.
+A same-process runtime-gate experiment using mmap and then `SIGUSR1`/`SIGUSR2` is explicitly **invalid for performance claims**. Signals reached the EngineCore process but path evidence remained `runtime_gate_stock`; the custom path was not activated. The apparent approximately `+0.79%` result is therefore excluded. The behavior is consistent with decode graph capture/replay preventing a Python runtime switch from changing the already-captured path.
 
-## Claims Forbidden
+## Tuning-config experiment record and evidence gap
 
-- Official AMD-AGI/HyperLoom support for Radeon AI PRO R9700.
-- A GEAK, Arbor, Marlin, Machete, or other specialized kernel win unless separately measured and evidenced.
-- That AWQ inherently implies Triton, Marlin, Machete, or any other specific backend.
-- RX 9070 XT and Radeon AI PRO R9700 being the same product.
-- That the MoE `EMULATION` selection is a failure; it is a measured fallback and an optimization target.
+Later uncommitted work referenced these artifacts:
 
-## Next Engineering Targets
+- `docs/evidence/r9700_vllm_wna16_bounded_tuner_20260909T051731Z.json`
+- `docs/evidence/r9700_tuned_config_live_smoke_20260909T052123Z.json`
+- `docs/evidence/r9700_tuned_config_live_smoke_20260909T052523Z.json`
+- `scripts/r9700_vllm_wna16_bounded_tuner.py`
+- `scripts/r9700_vllm_tuned_config_override.py`
+- `scripts/r9700_tuned_config_live_smoke.py`
 
-1. Trace the WNA16 eligibility checks that lead `gfx1201` / R9700 to `EMULATION` rather than a more specialized backend.
-2. If technically safe, enable one specialized MoE backend behind a narrow experimental path and benchmark it against this pinned evidence baseline.
-3. Package the reproducible observer, benchmark evidence, and truth boundaries as the core technical story for the AMD AI Academy Challenge.
+These files were never committed and are no longer present in any of the checked Phase-2/live worktrees. Their exact numerical result is therefore **not reconstructed or claimed**. The historical record shows this work was intended to test gfx1201-specific Triton/vLLM tuning after community feedback about missing RDNA4 configs, but without the raw JSON it cannot close the E2E promotion gate.
+
+This evidence gap does not invalidate the committed microkernel or full-model smoke evidence. It prevents us from claiming that later tuning recovered the approximately 5% integrated deficit.
+
+## Failed/partial experiments preserved as engineering evidence
+
+- AITER/FlyDSL sorting path: isolated HSA memory fault; not promoted.
+- activation group pre-sum: numerically correct but slower; rejected.
+- early FP16/BF16 mirror: exposed a dtype mismatch; superseded after measuring the real FP16 live activation contract.
+- custom algebraic W2: slower than stock/reference; rejected. Stock W2 remains the correct boundary.
+- same-process runtime switching: invalid as an A/B performance proof because custom execution was not observed.
+
+## Community feedback closure
+
+The methodology incorporates the material recommendations received from the ROCm/AMD community and Vector.sys:
+
+- independent process starts were adopted after the R9700 bimodal/spawn-lottery concern;
+- concurrency/serving gains are kept separate from kernel gains;
+- live backend and dtype were measured instead of inferred;
+- Unified Attention was probed but not falsely claimed as validated on this workload;
+- AITER/FlyDSL was investigated and its failing path preserved rather than hidden;
+- gfx1201-specific tuning was investigated, but the uncommitted tuner artifacts are not treated as evidence now that they are unavailable;
+- all public claims remain explicitly experimental and do not imply official AMD support.
+
+## Runtime baseline reconfirmed on 2026-09-10
+
+The AMD node was observed running:
+
+- container: `inneros-vllm-canary-rocm10`
+- model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
+- launch: `--max-model-len 8192 --gpu-memory-utilization 0.82 --dtype float16`
+- PyTorch: `2.12.0+rocm10.0.0`
+- HIP: `7.15.26333`
+- vLLM: `0.27.1.dev5+gf46a9dfe2.d20260827.rocm100`
+- GPU: AMD Radeon AI PRO R9700, `gfx1201`
+
+Final post-documentation health and hook absence must be checked once more after commit/push; that check is operational evidence, not a benchmark result.
+
+## Allowed claims
+
+- Experimental HyperLoom path on Radeon AI PRO R9700 / `gfx1201`.
+- Real Qwen3-Coder 30B AWQ workload on ROCm 10 + vLLM.
+- Three independent process starts validated the Phase-1 serving/concurrency decision.
+- A real packed-INT4 Triton W1 kernel runs on physical `gfx1201`.
+- With real Qwen weights and measured FP16 activation dtype, the custom small-M W1 kernel beat stock Triton WNA16 W1 in the tested microbenchmark region.
+- The complete model booted with the experimental hybrid backend and all 48 MoE layers exercised the custom path.
+- Stock fallback and rollback were validated.
+
+## Forbidden claims
+
+- Official AMD or upstream HyperLoom support for Radeon AI PRO R9700.
+- “First port in the world.”
+- `1.477x` speedup of the complete Qwen model.
+- Any end-to-end speedup from the hybrid kernel integration.
+- Any performance conclusion from the invalid same-process runtime-gate A/B.
+
+## Closure definition
+
+The engineering investigation is considered complete as an **experimental technical result** when this status, the development ledger and community-feedback ledger are committed/pushed and stock serving is reconfirmed healthy. The optimized W1 kernel remains a `KEEP`; the full-model hybrid backend remains research code and is not promoted into the default serving path until a future independent-process E2E campaign reaches stock parity or better with preserved raw evidence.
