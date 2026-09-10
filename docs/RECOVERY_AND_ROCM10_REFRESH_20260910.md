@@ -254,3 +254,20 @@ ROCm issue #6347 remains open and describes process-start bimodality and later d
 ### Consequence for the hackathon
 
 The experimental contribution is no longer 'make ROCm see an R9700'. ROCm 10 already does that officially. The contribution is the agentic optimization and validation system above a rapidly changing RDNA4 software stack: detect capability changes, retire obsolete bypasses, tune missing gfx1201 shapes, benchmark real workloads, preserve negative evidence, and retain only optimizations that survive comparison with the newest safe upstream baseline.
+
+### Live capability probe of the existing ROCm 10 container
+
+A read-only probe against the actually running `inneros-vllm-canary-rocm10` container confirmed:
+
+- R9700 detection: PASS
+- ROCm platform detection: PASS
+- `on_gfx12x()`: true
+- AITER package present: true (`amd-aiter 0.1.20.post1`)
+- generic `is_aiter_found_and_supported()`: false
+- newer `is_aiter_found_and_supported_on_rdna4` helper: absent
+- newer `on_rdna4` platform helper: absent in this build
+- no active `VLLM_ROCM_*` override was present
+
+This proves that the current limitation is specifically the older vLLM capability/gating layer, not failure to detect the R9700 and not absence of AITER. The refreshed upstream path should replace this obsolete gating logic rather than stacking another permanent local bypass on top of it.
+
+Evidence: `docs/evidence/r9700_current_capability_probe_20260910.json`.

@@ -1,0 +1,33 @@
+{
+  "schema": "hyperloom.r9700.current_capability_probe.v1",
+  "captured_date": "2026-09-10",
+  "node": "amd",
+  "container": "inneros-vllm-canary-rocm10",
+  "device_name": "AMD Radeon AI PRO R9700",
+  "platform_device_name": "AMD_Radeon_R9700",
+  "gfx_target": "gfx1201",
+  "platform_is_rocm": true,
+  "on_gfx12x": true,
+  "aiter_found": true,
+  "is_aiter_found_and_supported": false,
+  "has_rdna4_helper": false,
+  "rdna4_helper_result": null,
+  "on_rdna4_import_error": "ImportError: cannot import name 'on_rdna4' from 'vllm.platforms.rocm'",
+  "versions": {
+    "torch": "2.12.0+rocm10.0.0",
+    "torch_hip": "7.15.26333",
+    "vllm": "0.27.1.dev5+gf46a9dfe2.d20260827.rocm100",
+    "amd_aiter": "0.1.20.post1",
+    "triton": "3.8.0+git4cff872c.rocm10.0.0"
+  },
+  "relevant_env": {
+    "PYTORCH_ROCM_ARCH": "gfx90a;gfx942;gfx950;gfx1100;gfx1101;gfx1102;gfx1103;gfx1150;gfx1151;gfx1152;gfx1153;gfx1200;gfx1201"
+  },
+  "interpretation": {
+    "gpu_detection": "PASS",
+    "rocm10_detection": "PASS",
+    "aiter_package_present": "PASS",
+    "current_vllm_rdna4_aiter_gate": "BLOCKED_BY_OLD_VLLM_SUPPORT_LOGIC",
+    "safe_conclusion": "The current ROCm10 runtime sees gfx1201 and contains AITER, but this vLLM build does not expose the newer RDNA4 AITER support helper and reports the generic AITER support gate false. Refresh/cherry-pick and revalidation are required before enabling RDNA4 AITER paths."
+  }
+}
