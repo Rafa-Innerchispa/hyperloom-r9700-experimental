@@ -226,3 +226,31 @@ Do not declare the R9700 work fully complete until all of these are closed:
 ## Preservation rule
 
 Every new experiment must produce a timestamped evidence file and update DEVELOPMENT_LEDGER.md in the same work session. Failed experiments are evidence and must be retained with FAIL/PARTIAL status. Temporary runtime hooks must be quarantined after capture and must never become an invisible dependency of the stable server.
+
+## Fresh upstream verification added after the initial recovery record
+
+### ROCm 10 target status
+
+AMD ROCm 10.0.0 now lists the Radeon AI PRO R9700/R9700S/R9600D family as RDNA4 `gfx1201` in the official ROCm 10 device tables and compatibility material. This means the base GPU/runtime target itself is an official ROCm 10 target. It does NOT mean HyperLoom or every vLLM/AITER kernel is officially supported on R9700.
+
+### AITER current support boundary
+
+Current AITER README explicitly lists `AMD Radeon AI PRO R9700 | gfx1201 (RDNA4) | Experimental`. The RDNA footnote states that Triton and most FlyDSL kernels run, as do most HIP kernels including normalization, RoPE, quantization, activation and some GEMM/attention, while most CK and ASM kernels remain CDNA-only.
+
+Therefore the correct policy is capability-by-capability validation, not a global `AITER=works` or `AITER=does-not-work` label.
+
+### Current vLLM release boundary
+
+vLLM v0.28.0 is the latest stable release found during this audit. Its published ROCm artifact is built for ROCm 7.2.2, so it is NOT a blind drop-in replacement for the existing ROCm 10 canary. We should port/cherry-pick the relevant RDNA4 support into the ROCm 10 environment or build an equivalent current vLLM/AITER stack against ROCm 10, then validate it on the physical R9700.
+
+### Current AITER release boundary
+
+AITER v0.1.21.post2 was published on 2026-09-09. The physical ROCm 10 container currently has `amd-aiter 0.1.20.post1`. Because published binary wheels target ROCm 7.x families, the ROCm 10 path should use a compatible ROCm 10 package if AMD supplies one in the canary channel or build the current AITER source against the ROCm 10 environment rather than downgrading the node.
+
+### R9700 queue/spawn issue
+
+ROCm issue #6347 remains open and describes process-start bimodality and later degradation on R9700. Independent community work also reports `GPU_MAX_HW_QUEUES=1` as a promising single-GPU stabilization workaround in related RDNA4 queue/firmware scenarios. This is NOT yet accepted as a universal fix in our project. It is now an explicit bounded experiment: compare default queue behavior versus `GPU_MAX_HW_QUEUES=1` across multiple independent process starts with identical model/config and GPU telemetry.
+
+### Consequence for the hackathon
+
+The experimental contribution is no longer 'make ROCm see an R9700'. ROCm 10 already does that officially. The contribution is the agentic optimization and validation system above a rapidly changing RDNA4 software stack: detect capability changes, retire obsolete bypasses, tune missing gfx1201 shapes, benchmark real workloads, preserve negative evidence, and retain only optimizations that survive comparison with the newest safe upstream baseline.
