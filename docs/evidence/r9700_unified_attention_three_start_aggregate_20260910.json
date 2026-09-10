@@ -1,5 +1,5 @@
 {
-  "schema": "hyperloom.r9700.unified_attention_three_start.v1",
+  "schema": "hyperloom.r9700.unified_attention_plus_queue1_three_start.v2",
   "date": "2026-09-10",
   "hardware": "AMD Radeon AI PRO R9700 / gfx1201 / 32 GiB",
   "stack": {
@@ -10,7 +10,8 @@
     "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
   },
   "candidate": {
-    "description": "minimal RDNA4 backend-selection overlay enabling ROCM_AITER_UNIFIED_ATTN while leaving RMSNorm native and MoE on stock TritonWNA16Experts",
+    "description": "minimal RDNA4 backend-selection overlay enabling ROCM_AITER_UNIFIED_ATTN, RMSNorm native, MoE stock TritonWNA16Experts, AND GPU_MAX_HW_QUEUES=1",
+    "confounded_factors": ["ROCM_AITER_UNIFIED_ATTN", "GPU_MAX_HW_QUEUES=1"],
     "c4_tok_s": [158.0166198315149, 157.29614044629488, 157.46854284094132],
     "c1_decode_tok_s": [63.09511407226332, 62.99350722377374, 62.030078418405964],
     "long_6012_prompt_decode_tok_s": [56.28755775605733, 56.26432507194514, 56.08780511625038],
@@ -25,6 +26,7 @@
     "moe_backend_log_proof": "Using TritonWNA16Experts"
   },
   "stock": {
+    "description": "resident stock launches without the two candidate factors",
     "c4_tok_s": [71.94005242598614, 71.77571486368628, 165.6992831304978],
     "c1_decode_tok_s": [22.322404436852985, 22.289419966594174, 69.34261782624603],
     "long_6012_prompt_decode_tok_s": [21.944038582104113, 21.909926782720216, 62.55254701299016],
@@ -46,8 +48,8 @@
     "candidate_vs_best_stock_long_pct": -10.052703273200303
   },
   "verdict": {
-    "unified_attention": "KEEP_FOR_NEXT_GATE",
-    "reason": "3/3 candidate process starts were stable and near the fast stock regime, while stock reproduced severe process-start bimodality. Candidate does not yet beat the best observed stock spawn, so no peak-performance win is claimed.",
-    "claim_boundary": "This validates RDNA4 AITER Unified Attention as a stable baseline candidate. It is not a HyperLoom W1 or whole-model speedup claim yet."
+    "combined_candidate": "KEEP_FOR_FACTORIAL_GATE",
+    "reason": "3/3 combined candidate process starts were stable and near the fast stock regime, while stock reproduced severe process-start bimodality. Because the launcher also set GPU_MAX_HW_QUEUES=1, attribution to Unified Attention alone is not valid until a factorial separation is run.",
+    "claim_boundary": "This validates the measured combined configuration only. It does not yet prove that Unified Attention alone removes bimodality, and it is not a HyperLoom W1 or whole-model speedup claim."
   }
 }

@@ -100,3 +100,16 @@ Next comparison must use:
 6. promotion only if the combined candidate reaches or beats the best credible baseline without sacrificing correctness or reproducibility.
 
 This is a stronger hackathon story than a one-off port: HyperLoom is being tested as an adaptive optimization system against a moving RDNA4 upstream baseline, with obsolete workarounds rejected and upstream improvements incorporated when they win.
+
+
+## 2026-09-10 correction — candidate launcher included `GPU_MAX_HW_QUEUES=1`
+
+A source-level audit of the exact candidate launcher found that all three candidate process starts enabled both `ROCM_AITER_UNIFIED_ATTN` **and** `GPU_MAX_HW_QUEUES=1`. The throughput/correctness numbers above remain valid measurements of that combined configuration, but attributing the stability improvement to Unified Attention alone would be incorrect.
+
+The aggregate JSON was revised to schema `hyperloom.r9700.unified_attention_plus_queue1_three_start.v2`. The current verdict is therefore **KEEP_FOR_FACTORIAL_GATE**, not an isolated Unified-Attention promotion. The required separation is:
+
+1. Unified Attention with `GPU_MAX_HW_QUEUES` unset;
+2. stock attention with `GPU_MAX_HW_QUEUES=1`;
+3. compare each against the existing stock/no-queue and Unified+queue1 results using independent process starts.
+
+This correction preserves the original measurements while tightening their claim boundary before any hackathon/public use.

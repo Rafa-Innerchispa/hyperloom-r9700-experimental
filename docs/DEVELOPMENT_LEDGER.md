@@ -282,3 +282,10 @@ The bounded tuner found a gfx1201-specific WNA16 winner (`BM=16, BN=64, BK=32, G
 The live override is **REJECT / NOT PROMOTED**. In the first smoke `tuned_seen=false`; in the second smoke the tuned config was observed for M1/2/4/8/16 but the deterministic output hash did not match the pre-candidate baseline and the stock process changed from slow to fast regime across restore. No serving-level gain is claimed from these smokes.
 
 Future use must integrate the configuration through a correctness-safe path and benchmark it against the stable/fast RDNA4 attention baseline established by the 2026-09-10 three-start Unified Attention campaign.
+
+
+### Correction: Unified three-start candidate also set `GPU_MAX_HW_QUEUES=1`
+
+A later source audit of the exact launcher found that the three `157-158 tok/s` candidate runs combined two factors: `ROCM_AITER_UNIFIED_ATTN` and `GPU_MAX_HW_QUEUES=1`. The measurements and hashes remain valid, but the earlier attribution to Unified Attention alone was too strong. The aggregate evidence schema has been revised to `hyperloom.r9700.unified_attention_plus_queue1_three_start.v2`, and the verdict is now **KEEP_FOR_FACTORIAL_GATE** pending separation of Unified-without-queue1 and stock-with-queue1.
+
+No public or hackathon claim should state that Unified Attention alone eliminates R9700 process-start bimodality until that factorial gate is complete.
