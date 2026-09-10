@@ -1,0 +1,53 @@
+{
+  "schema": "hyperloom.r9700.unified_attention_three_start.v1",
+  "date": "2026-09-10",
+  "hardware": "AMD Radeon AI PRO R9700 / gfx1201 / 32 GiB",
+  "stack": {
+    "rocm": "10.0 / HIP 7.15.26333",
+    "torch": "2.12.0+rocm10.0.0",
+    "vllm": "0.27.1.dev5+gf46a9dfe2.d20260827.rocm100",
+    "aiter": "0.1.20.post1",
+    "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+  },
+  "candidate": {
+    "description": "minimal RDNA4 backend-selection overlay enabling ROCM_AITER_UNIFIED_ATTN while leaving RMSNorm native and MoE on stock TritonWNA16Experts",
+    "c4_tok_s": [158.0166198315149, 157.29614044629488, 157.46854284094132],
+    "c1_decode_tok_s": [63.09511407226332, 62.99350722377374, 62.030078418405964],
+    "long_6012_prompt_decode_tok_s": [56.28755775605733, 56.26432507194514, 56.08780511625038],
+    "c4_median_tok_s": 157.46854284094132,
+    "c4_range_over_median_pct": 0.4575386119802809,
+    "c1_median_tok_s": 62.99350722377374,
+    "c1_range_over_median_pct": 1.6907070280656058,
+    "long_median_tok_s": 56.26432507194514,
+    "long_range_over_median_pct": 0.35502539051437826,
+    "correctness_sha256_all_runs": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "backend_log_proof": "Setting kv cache block size to 64 for ROCM_AITER_UNIFIED_ATTN backend",
+    "moe_backend_log_proof": "Using TritonWNA16Experts"
+  },
+  "stock": {
+    "c4_tok_s": [71.94005242598614, 71.77571486368628, 165.6992831304978],
+    "c1_decode_tok_s": [22.322404436852985, 22.289419966594174, 69.34261782624603],
+    "long_6012_prompt_decode_tok_s": [21.944038582104113, 21.909926782720216, 62.55254701299016],
+    "c4_median_tok_s": 71.94005242598614,
+    "c4_range_over_median_pct": 130.55810372593572,
+    "c1_median_tok_s": 22.322404436852985,
+    "c1_range_over_median_pct": 210.78911097036558,
+    "long_median_tok_s": 21.944038582104113,
+    "long_range_over_median_pct": 185.21030246189488,
+    "best_c4_tok_s": 165.6992831304978,
+    "correctness_sha256_all_runs": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
+  },
+  "comparisons": {
+    "candidate_vs_stock_median_c4_pct": 118.88855725112126,
+    "candidate_vs_stock_median_c1_pct": 182.19857498762607,
+    "candidate_vs_stock_median_long_pct": 156.3991348330477,
+    "candidate_vs_best_stock_c4_pct": -4.967275738347221,
+    "candidate_vs_best_stock_c1_pct": -9.156144953139,
+    "candidate_vs_best_stock_long_pct": -10.052703273200303
+  },
+  "verdict": {
+    "unified_attention": "KEEP_FOR_NEXT_GATE",
+    "reason": "3/3 candidate process starts were stable and near the fast stock regime, while stock reproduced severe process-start bimodality. Candidate does not yet beat the best observed stock spawn, so no peak-performance win is claimed.",
+    "claim_boundary": "This validates RDNA4 AITER Unified Attention as a stable baseline candidate. It is not a HyperLoom W1 or whole-model speedup claim yet."
+  }
+}

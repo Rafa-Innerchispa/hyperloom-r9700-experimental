@@ -231,3 +231,37 @@ Later bounded-tuner/tuned-config files were referenced in the uncommitted experi
 Preserved failed/partial results remain part of the engineering record: AITER/FlyDSL sorting HSA fault; activation group pre-sum correct but slower; early FP16/BF16 mismatch superseded by measured FP16 live dtype; custom W2 slower than stock/reference; invalid runtime-gated same-process A/B.
 
 The final truth boundary is therefore explicit: the custom packed-INT4 W1 Triton kernel is worth keeping and is physically proven on `gfx1201`; the hybrid full-model integration is functionally proven but is not the default serving backend because the valid stable E2E comparison did not beat stock.
+
+
+## 2026-09-10 — ROCm 10 RDNA4 Unified Attention refresh — THREE-START GATE PASS
+
+Evidence: `docs/evidence/r9700_unified_attention_three_start_aggregate_20260910.json`
+
+Detailed result: `docs/R9700_UNIFIED_ATTENTION_REFRESH_RESULT_20260910.md`
+
+This campaign re-evaluated Vector.sys' R9700 bimodality warning against the newer vLLM RDNA4 AITER work without replacing ROCm 10. The resident image remains ROCm 10 / HIP 7.15.26333 / PyTorch 2.12.0+rocm10.0.0 / vLLM 0.27.1.dev5 / amd-aiter 0.1.20.post1. A minimal process-local overlay ports only the RDNA4 attention backend selection needed to exercise `ROCM_AITER_UNIFIED_ATTN`; RMSNorm remains native and MoE remains stock `TritonWNA16Experts`.
+
+Three independent stock starts reproduced the reported process-start bimodality:
+
+- C4 aggregate: `71.940 / 71.776 / 165.699 tok/s`.
+- C1 decode: `22.322 / 22.289 / 69.343 tok/s`.
+- ~6012-token prompt decode: `21.944 / 21.910 / 62.553 tok/s`.
+- Stock C4 range/median: `130.56%`.
+
+Three independent Unified Attention starts were tightly clustered:
+
+- C4 aggregate: `158.017 / 157.296 / 157.469 tok/s`.
+- C1 decode: `63.095 / 62.994 / 62.030 tok/s`.
+- ~6012-token prompt decode: `56.288 / 56.264 / 56.088 tok/s`.
+- Candidate C4 median: `157.469 tok/s`.
+- Candidate C4 range/median: `0.46%`.
+- Candidate C1 range/median: `1.69%`.
+- Candidate long-context range/median: `0.36%`.
+
+All candidate and stock deterministic correctness checks matched SHA-256 `7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2`.
+
+Runtime log proof confirms the candidate selected `ROCM_AITER_UNIFIED_ATTN` and retained stock `TritonWNA16Experts` for the Qwen AWQ MoE path.
+
+Interpretation boundary: candidate median C4 is about `+118.89%` versus the three-start stock median because two stock starts landed in the low-performance regime. However, the best stock start reached `165.699 tok/s`, about `4.97%` above candidate median. Therefore this is **not** claimed as a peak-throughput win over best stock. The valid result is that Unified Attention produced three consistently fast starts and is **KEEP_FOR_NEXT_GATE** as the new stable baseline candidate.
+
+Next gate: investigate the remaining stock spawn-state bimodality and then evaluate HyperLoom's proven packed-INT4 small-M W1 substitution on top of the stable/fast RDNA4 attention baseline. Promotion requires the combined path to match or beat the best credible baseline without sacrificing correctness or reproducibility.
