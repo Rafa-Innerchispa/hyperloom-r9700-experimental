@@ -265,3 +265,20 @@ Runtime log proof confirms the candidate selected `ROCM_AITER_UNIFIED_ATTN` and 
 Interpretation boundary: candidate median C4 is about `+118.89%` versus the three-start stock median because two stock starts landed in the low-performance regime. However, the best stock start reached `165.699 tok/s`, about `4.97%` above candidate median. Therefore this is **not** claimed as a peak-throughput win over best stock. The valid result is that Unified Attention produced three consistently fast starts and is **KEEP_FOR_NEXT_GATE** as the new stable baseline candidate.
 
 Next gate: investigate the remaining stock spawn-state bimodality and then evaluate HyperLoom's proven packed-INT4 small-M W1 substitution on top of the stable/fast RDNA4 attention baseline. Promotion requires the combined path to match or beat the best credible baseline without sacrificing correctness or reproducibility.
+
+
+## 2026-09-10 — Recovered gfx1201 WNA16 tuner reconciliation
+
+Recovered source evidence:
+
+- `docs/evidence/r9700_vllm_wna16_bounded_tuner_20260909T051731Z.json` — SHA-256 `f56942b75f6621ae22078a8173ce3f6ea01c8980d07f279d8456c3d2aaba6d50`
+- `docs/evidence/r9700_tuned_config_live_smoke_20260909T052123Z.json` — SHA-256 `5d1891dbd8c9bf4a414542c68ee3e702f0c18e2c900eb5cbeaf92cba988239b9`
+- `docs/evidence/r9700_tuned_config_live_smoke_20260909T052523Z.json` — SHA-256 `54e6a79cae81e21e39c34912008f66fb35f16e8e263faae84d4ef663eb428f8f`
+
+Detailed interpretation: `docs/R9700_RECOVERED_WNA16_TUNER_RESULT_20260910.md`.
+
+The bounded tuner found a gfx1201-specific WNA16 winner (`BM=16, BN=64, BK=32, GROUP_M=1, warps=4, stages=2, waves_per_eu=4, SPLIT_K=1`) with `1.20926x` median isolated speedup across M1..16 and minimum tested speedup `1.08384x`. This candidate is retained as **MICROBENCH KEEP**.
+
+The live override is **REJECT / NOT PROMOTED**. In the first smoke `tuned_seen=false`; in the second smoke the tuned config was observed for M1/2/4/8/16 but the deterministic output hash did not match the pre-candidate baseline and the stock process changed from slow to fast regime across restore. No serving-level gain is claimed from these smokes.
+
+Future use must integrate the configuration through a correctness-safe path and benchmark it against the stable/fast RDNA4 attention baseline established by the 2026-09-10 three-start Unified Attention campaign.
