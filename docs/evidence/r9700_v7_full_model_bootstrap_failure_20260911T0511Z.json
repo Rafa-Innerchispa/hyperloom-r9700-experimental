@@ -1,0 +1,17 @@
+{
+  "schema": "hyperloom.r9700.v7_full_model_bootstrap_failure.v1",
+  "candidate": "hyperloom-r9700-v7-candidate",
+  "source_launch_evidence": "docs/evidence/r9700_v7_full_model_launch_20260911T051148Z.json",
+  "pre_gate_commit": "61e8a711dde3d0bb3f76b51863fa03e9f29ee5a2",
+  "patch_sha256": "eb6ae784d4cf9c7c9a956a09405b5d9ff479b88cd2cc575e294f4b85a9ff4269",
+  "stock_service_before": "inactive",
+  "stock_container_before": false,
+  "vram_before_bytes": 59994112,
+  "candidate_exit_code": 1,
+  "endpoint_ready": false,
+  "root_cause": "The explicit entrypoint invoked vllm via runpy at top level. Python multiprocessing spawn re-imported the entry file during child bootstrap and recursively attempted to start another engine, raising the safe-import RuntimeError before EngineCore initialization completed.",
+  "classification": "bootstrap_harness_failure_not_kernel_failure",
+  "corrective_action": "Keep v7 patch installation at module import time so spawned children receive it, but guard vLLM API-server startup with if __name__ == '__main__'.",
+  "performance_claim": "none",
+  "kernel_regression_claim": "none"
+}
