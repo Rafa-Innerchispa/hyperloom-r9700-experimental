@@ -1,0 +1,26 @@
+{
+  "schema":"hyperloom.r9700.phase3.overlay_layout_smoke.v1",
+  "date":"2026-09-11",
+  "container_rc":0,
+  "pass":true,
+  "checks":{
+    "weight_repack_exact":true,
+    "zp_unpack_exact":true,
+    "repacked_dtype":"torch.int32",
+    "repacked_shape":[2,16,2],
+    "zp_dtype":"torch.float16",
+    "zp_shape":[2,4,16],
+    "config_has_interleaved_property":true,
+    "fused_kernel_has_symbol":true,
+    "triton_experts_imported":true,
+    "oracle_imported":true
+  },
+  "mounted_file_sha256":[
+    ["vllm/model_executor/layers/fused_moe/config.py","18af9f7414b4a9e7620fd998f26b58b3294e58a5951af99a3923135509edc8a6"],
+    ["vllm/model_executor/layers/fused_moe/experts/triton_moe.py","beec848e3a6b76c362ec81ecf35e8a515f14fa5deb959aff7f166b6e9e499201"],
+    ["vllm/model_executor/layers/fused_moe/fused_moe.py","8de93930b8f7071741404fb27190273cd798d447fa32e274eda36e9499e0eb71"],
+    ["vllm/model_executor/layers/fused_moe/oracle/int_wna16.py","6fd057e0f0fff1bdfad3a8c70f34f7fe352ab4c2f920ba13466ae2eb79096a24"],
+    ["vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py","0f526fa4910b98fa8e64dea6b9c54b43d310ce47e91fa8366ab6e4e907d9a35d"]
+  ],
+  "truth_boundary":"Bit-level synthetic layout/import validation only; no serving performance claim."
+}

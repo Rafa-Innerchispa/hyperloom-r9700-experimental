@@ -338,3 +338,30 @@ An audit of the AMD worktree after the factorial found `scripts/r9700_wna16_hybr
 - Final verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT PROMOTED**.
 - Canonical summary: `docs/evidence/r9700_v7_final_gate_summary_20260911.json`.
 - Recovered tuner artifacts are present in Git; the previous evidence-gap statement is obsolete. Bounded tuner remains `MICROBENCH KEEP`; live override remains `REJECT / NOT PROMOTED`.
+
+
+## 2026-09-11 — Phase 3 RDNA INT4 MoE repack — C4 FULL-MODEL KEEP
+
+A fresh upstream review after the clean v7 rejection identified vLLM PR #43389, performance commit `f5d8dc25b7fc89c4ced724ba9f37a3f4555191e3`, as a directly relevant ROCm RDNA INT4/W4A16 MoE optimization for the same Qwen3-30B-A3B AWQ family and gfx1201 class.
+
+The five-file runtime patch applies cleanly to the deployed ROCm10 vLLM source commit `f46a9dfe2c5f57bebbd29556cbbb25eabd874226`. Runtime patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`. The installed stable source was not modified; the patch is built into an isolated read-only overlay.
+
+Pre-serving gates passed:
+
+- patched modules compile;
+- synthetic weight repack and zero-point conversion are bit-exact;
+- actual Qwen layer-0 gate/down AWQ weights both repack exactly;
+- real qzeros/scales match exactly;
+- sampled dequantization delta is `0.0` for gate and down projections.
+
+Three independent full Qwen3-Coder 30B candidate starts, with stock systemd stopped and clean VRAM before launch, produced canonical C4 results `191.450567 / 189.645424 / 191.426697 tok/s`. Median: `191.426697 tok/s`; range/median: `0.943%`.
+
+This is `+20.7816%` versus the clean stable stock+queue1 median `158.489996 tok/s`, `+18.0902%` versus same-day healthy-fast stock `162.102053`, and `+15.5268%` versus the historical fast-stock observation `165.699`.
+
+Comparable C4 response hashes matched stock. One cold/lazy strict-correctness request in start 2 temporarily differed and had abnormally high TTFT; an immediate hot repeat returned the canonical stock hash. One later same-process post-start-3 measurement fell to `145.119938 tok/s` and changed one C4 output hash. Temperature (~57 C), stock-service competition, and an obvious competing VRAM consumer were not observed. That degraded observation is preserved but excluded from the independent-start aggregate.
+
+Small-M/long-context remain open: C1 median ~`60.367 tok/s`; ~6K-context median ~`55.199 tok/s`, both below the clean stock+queue1 baselines. Current verdict: **C4 FULL-MODEL KEEP / SMALL-M + LONG-CONTEXT OPTIMIZATION OPEN / PRODUCTION PROMOTION PENDING STABILITY GATE**.
+
+The running vLLM still reports no tuned MoE config for `E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json`. Current upstream code search has no R9700 INT4 W4A16 config match, so generating/tuning this configuration is the next HyperLoom target rather than duplicate upstream work.
+
+Canonical Phase 3 summary: `docs/R9700_PHASE3_RESULT_20260911.md` and `docs/evidence/r9700_phase3_three_start_aggregate_20260911.json`.

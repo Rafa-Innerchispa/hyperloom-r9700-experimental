@@ -1,0 +1,33 @@
+{
+  "schema": "hyperloom.r9700.phase3.three_start_aggregate.v1",
+  "date": "2026-09-11",
+  "hardware": "AMD Radeon AI PRO R9700 / gfx1201 / 32 GiB",
+  "runtime": "ROCm 10 + vLLM f46a9dfe2c5f57bebbd29556cbbb25eabd874226",
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "candidate": {
+    "source": "vLLM PR #43389 performance commit f5d8dc25b7fc89c4ced724ba9f37a3f4555191e3",
+    "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+    "attention": "ROCM_ATTN",
+    "GPU_MAX_HW_QUEUES": "1"
+  },
+  "canonical_independent_starts": [
+    {"start": 1, "c4_tok_s": 191.45056709531252, "c1_tok_s": 59.707413067334166, "long_context_tok_s": 55.01946328964566, "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"},
+    {"start": 2, "c4_tok_s": 189.64542351365026, "c1_tok_s": 60.4590547308504, "long_context_tok_s": 55.20966342185397, "correctness_note": "first cold correctness request showed a lazy/cold artifact; immediate hot repeat returned the canonical stock hash"},
+    {"start": 3, "c4_tok_s": 191.42669659550938, "c1_tok_s": 60.367216712448254, "long_context_tok_s": 55.199205580671574, "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"}
+  ],
+  "aggregate": {
+    "c4_median_tok_s": 191.42669659550938,
+    "c4_range_over_median_pct": 0.942994688706659,
+    "c1_median_tok_s": 60.367216712448254,
+    "long_context_median_tok_s": 55.199205580671574,
+    "gain_vs_stable_stock_queue1_pct": 20.781564405812336,
+    "gain_vs_same_day_fast_stock_162_102053_pct": 18.090235782213917,
+    "gain_vs_historical_fast_stock_165_699_pct": 15.526766362808075
+  },
+  "excluded_observation": {
+    "c4_tok_s": 145.11993767592887,
+    "reason": "same-process later observation changed one C4 output hash and is not part of the independent-start canonical campaign; thermal and competing-stock causes were not observed"
+  },
+  "truth_boundary": "Phase 3 proves a reproducible C4 full-serving improvement for the repacked RDNA INT4 MoE path across three independent starts. It does not prove C1 or long-context improvement; those remain below the selected stable stock baseline and require a separate optimization gate.",
+  "verdict": "C4_FULL_MODEL_KEEP; SMALL_M_AND_LONG_CONTEXT_OPTIMIZATION_OPEN"
+}

@@ -1,0 +1,27 @@
+{
+  "schema":"hyperloom.r9700.phase3.real_weight_repack.v1",
+  "date":"2026-09-11",
+  "model":"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "layer":0,
+  "expert":0,
+  "upstream_pr":43389,
+  "upstream_commit":"f5d8dc25b7fc89c4ced724ba9f37a3f4555191e3",
+  "pass":true,
+  "rows":[
+    {
+      "projection":"gate_proj","checkpoint_file":"model-00001-of-00006.safetensors",
+      "K":2048,"N":768,"groups":16,"group_size":128,
+      "qweight_shape":[2048,96],"qzeros_shape":[16,96],"scales_shape":[16,768],
+      "stock_uint8_shape":[1,768,1024],"repacked_int32_shape":[1,2048,96],
+      "weight_exact":true,"zp_exact":true,"scale_exact":true,"dequant_sample_max_abs":0.0,"pass":true
+    },
+    {
+      "projection":"down_proj","checkpoint_file":"model-00001-of-00006.safetensors",
+      "K":768,"N":2048,"groups":6,"group_size":128,
+      "qweight_shape":[768,256],"qzeros_shape":[6,256],"scales_shape":[6,2048],
+      "stock_uint8_shape":[1,2048,384],"repacked_int32_shape":[1,768,256],
+      "weight_exact":true,"zp_exact":true,"scale_exact":true,"dequant_sample_max_abs":0.0,"pass":true
+    }
+  ],
+  "truth_boundary":"Real checkpoint bit-layout/zero-point/scale/dequant equivalence. This is not yet a Triton-kernel or E2E performance result."
+}
