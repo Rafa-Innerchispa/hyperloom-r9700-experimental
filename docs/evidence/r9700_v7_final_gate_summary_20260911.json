@@ -1,0 +1,93 @@
+{
+  "schema": "hyperloom.r9700.v7_final_gate_summary.v1",
+  "date": "2026-09-11",
+  "hardware": "AMD Radeon AI PRO R9700 / gfx1201 / 32 GiB",
+  "runtime": "ROCm 10 + vLLM 0.27.1.dev5 + Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "branch": "chatgpt/r9700-final-presentation-20260910",
+  "pre_final_sha": "97225ac5e7a314091f2231860d69d8e0ef63c8e6",
+  "candidate": {
+    "patch": "scripts/r9700_wna16_hybrid_patch_v7_clean.py",
+    "patch_sha256": "eb6ae784d4cf9c7c9a956a09405b5d9ff479b88cd2cc575e294f4b85a9ff4269",
+    "backend_observed": "R9700HybridWNA16Experts",
+    "attention_backend": "ROCM_ATTN",
+    "gpu_max_hw_queues": 1,
+    "clean_launch": {
+      "stock_systemd_state_before": "inactive",
+      "stock_container_running_before": false,
+      "vram_used_before_bytes": 59994112,
+      "patch_mount_read_only": true,
+      "entrypoint_mount_read_only": true
+    },
+    "path_counts": {
+      "custom_small_w1_stock_w2": 48,
+      "stock_full_fallback": 48
+    },
+    "stream_ttft_sec": 0.06486557307653129,
+    "c4_runs_tok_s": [
+      149.89110143752657,
+      150.84214268404742
+    ],
+    "c4_median_tok_s": 150.36662206078699,
+    "c1_runs_tok_s": [
+      66.07639326964801,
+      68.42146250602774
+    ],
+    "long_context_runs_tok_s": [
+      61.02447259473256,
+      61.60412721158279
+    ],
+    "dedicated_correctness_sha256": "e4810fc5ef6597d28440cc7e32d384180088ca95c385c7ddcf12c1439690f5f9",
+    "c4_output_sha256": [
+      "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+      "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407"
+    ],
+    "raw_runtime_files_on_amd_worktree": [
+      "docs/evidence/r9700_v7_full_model_launch_20260911T052013Z.json",
+      "docs/evidence/r9700_v7_full_model_measure_20260911T052626Z.json",
+      "docs/evidence/r9700_v7_full_model_result_20260911T052626Z.json",
+      "docs/evidence/r9700_v7_full_model_paths_20260911T052626Z.jsonl",
+      "docs/evidence/r9700_active_measure_active_20260911T052819Z.json"
+    ]
+  },
+  "fair_stock_queue1_control": {
+    "attention_backend": "ROCM_ATTN",
+    "gpu_max_hw_queues": 1,
+    "current_c4_tok_s": 157.48958796277506,
+    "prior_clean_factorial_median_c4_tok_s": 158.489996,
+    "current_c1_tok_s": 64.92032846333429,
+    "current_long_context_tok_s": 59.03758798283255,
+    "dedicated_correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "c4_output_sha256": [
+      "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+      "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407"
+    ],
+    "raw_runtime_file_on_amd_worktree": "docs/evidence/r9700_active_measure_active_20260911T123128Z.json"
+  },
+  "comparison": {
+    "candidate_c4_vs_current_stock_queue1": "about -4.5% using the median of two candidate runs",
+    "candidate_c4_vs_prior_clean_stock_queue1_median": "about -5.1%",
+    "c4_exact_output_parity": true,
+    "dedicated_exact_output_parity": false,
+    "c1_used_for_promotion": false,
+    "reason_c1_excluded": "R9700 process-start throughput is historically bimodal; C4 with queue1 is the selected stable promotion control"
+  },
+  "bootstrap_note": {
+    "first_explicit_entrypoint_attempt": "failed before model serving because runpy was re-entered by Python multiprocessing spawn",
+    "classification": "harness/bootstrap failure, not kernel failure",
+    "fix_commit": "97225ac5e7a314091f2231860d69d8e0ef63c8e6",
+    "evidence": "docs/evidence/r9700_v7_full_model_bootstrap_failure_20260911T0511Z.json"
+  },
+  "restoration": {
+    "candidate_removed": true,
+    "factorial_test_container_removed": true,
+    "stock_systemd_restored": true,
+    "stock_endpoint_http_200": true,
+    "active_container": "inneros-vllm-canary-rocm10"
+  },
+  "final_verdict": "KERNEL KEEP / FULL-MODEL INTEGRATION NOT PROMOTED",
+  "truth_boundary": "The custom W1 microkernel and full-model routing are real on physical gfx1201. The complete v7 hybrid must not be presented as an end-to-end speedup because stable C4 remains below stock and one strict deterministic output probe does not match stock exactly."
+}

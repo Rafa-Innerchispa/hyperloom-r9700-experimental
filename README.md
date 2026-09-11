@@ -141,8 +141,6 @@ They keep their own licences; [`THIRD_PARTY.md`](THIRD_PARTY.md) lists them and
 For security-relevant issues, see [`SECURITY.md`](SECURITY.md). For
 contribution conventions, see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-
-
 ---
 
 ## Experimental Radeon AI PRO R9700 / gfx1201 status
@@ -154,11 +152,14 @@ The current evidence supports these claims:
 - three independent process starts reproduced the autonomous serving/concurrency decision (`+80.99%` paired median); this is **not** a kernel-speedup claim;
 - the live Qwen MoE path was measured as FP16 `TritonWNA16Experts` with packed INT4 W4A16 weights;
 - a custom packed-INT4 small-M W1 Triton kernel beat the stock vLLM Triton WNA16 W1 kernel across the tested real-weight microbenchmark region (about `1.477x` median across M1..16; `63/63` paired wins per shape across three campaigns);
-- the complete 30B model booted with `R9700HybridWNA16Experts`, all 48 MoE layers exercised the custom path, deterministic output matched stock, and fallback/rollback passed;
-- the stable concurrency-4 end-to-end comparison remained approximately **5% slower than stock**, so the hybrid backend is **not promoted** as the default serving path.
+- the complete 30B model booted with the clean v7 `R9700HybridWNA16Experts` backend and real inference observed `48` custom-path plus `48` stock-fallback routes;
+- the clean final gate used stock `ROCM_ATTN` plus `GPU_MAX_HW_QUEUES=1` as the stable comparison control;
+- clean v7 C4 measured `149.891` and `150.842 tok/s` versus a current fair stock+queue1 control of `157.490 tok/s` and a prior clean stock+queue1 median of `158.490 tok/s`;
+- all four C4 response hashes matched stock exactly, while one dedicated strict deterministic probe did not, so universal exact-output parity is not claimed;
+- stock ROCm10 serving was restored after the experiment and `/v1/models` returned HTTP 200.
 
-Final experimental verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED**.
+Final experimental verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT PROMOTED**.
 
-See [`FINAL_STATUS.md`](FINAL_STATUS.md), [`docs/DEVELOPMENT_LEDGER.md`](docs/DEVELOPMENT_LEDGER.md), [`docs/COMMUNITY_FEEDBACK_LEDGER.md`](docs/COMMUNITY_FEEDBACK_LEDGER.md), and [`docs/R9700_PHASE2_TECHNICAL_PREVIEW_20260910.md`](docs/R9700_PHASE2_TECHNICAL_PREVIEW_20260910.md) for the evidence boundaries and preserved negative results.
+See [`FINAL_STATUS.md`](FINAL_STATUS.md), [`docs/R9700_PROJECT_CONTINUITY.md`](docs/R9700_PROJECT_CONTINUITY.md), [`docs/evidence/r9700_v7_final_gate_summary_20260911.json`](docs/evidence/r9700_v7_final_gate_summary_20260911.json), [`docs/DEVELOPMENT_LEDGER.md`](docs/DEVELOPMENT_LEDGER.md), and [`docs/COMMUNITY_FEEDBACK_LEDGER.md`](docs/COMMUNITY_FEEDBACK_LEDGER.md) for the evidence boundaries and preserved negative results.
 
 This work does not claim official AMD support, upstream HyperLoom support for the R9700, a “first port,” or a full-model `1.477x` speedup.

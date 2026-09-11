@@ -318,3 +318,23 @@ Conclusion: `GPU_MAX_HW_QUEUES=1` is the useful stability control in the tested 
 Selected stable baseline for the final candidate: **stock attention + `GPU_MAX_HW_QUEUES=1`**, C4 median `158.489996 tok/s`. Promotion must still compare against the credible healthy-fast stock ceiling (`162.102053` same-day, `165.699` historical), not only the stability-limited denominator.
 
 An audit of the AMD worktree after the factorial found `scripts/r9700_wna16_hybrid_patch.py` still at `r9700_autoawq_stock_layout_hybrid_v6`, SHA256 `0cf11f9fc86e33cde9aa8e6e386e38b9aad2ba09fc643cdb75e57f31703d26ee`. It retains the useful alignment-reuse change but also the invalid mmap/SIGUSR1/SIGUSR2 runtime-gate machinery. It must not be used as the final candidate. The next gate is to preserve/audit `v7_clean`, then run the full Qwen 30B candidate over stock attention + queue1 in clean process isolation.
+
+## 2026-09-11 — Clean v7 full-model final gate
+
+- Presentation branch: `chatgpt/r9700-final-presentation-20260910`.
+- Base preservation commit: `c4e4aae90f5582d76b7881ba932778bd94922611`.
+- Multiprocessing-safe explicit v7 entrypoint committed at `97225ac5e7a314091f2231860d69d8e0ef63c8e6`.
+- Candidate patch: `scripts/r9700_wna16_hybrid_patch_v7_clean.py`, SHA-256 `eb6ae784d4cf9c7c9a956a09405b5d9ff479b88cd2cc575e294f4b85a9ff4269`.
+- First explicit-entrypoint attempt failed because Python `spawn` re-entered the `runpy` API-server launch path. Classified as harness/bootstrap failure, preserved in `docs/evidence/r9700_v7_full_model_bootstrap_failure_20260911T0511Z.json`, then fixed without changing the v7 kernel source.
+- Corrected candidate launched with stock systemd stopped, stock container absent, ~60 MB VRAM used before launch, stock `ROCM_ATTN`, `GPU_MAX_HW_QUEUES=1`, and read-only patch/entrypoint mounts.
+- Full Qwen3-Coder 30B AWQ loaded and vLLM logged `Using R9700HybridWNA16Experts`.
+- Real inference path evidence: `48` x `custom_small_w1_stock_w2`, `48` x `stock_full_fallback`.
+- Candidate C4: `149.891101` and `150.842143 tok/s`; median `150.366622 tok/s`.
+- Fresh fair stock+queue1 control: `157.489588 tok/s`; prior clean factorial median `158.489996 tok/s`.
+- Candidate therefore remained about 4.5-5.1% below the selected stable stock baseline.
+- All four C4 response hashes matched stock exactly. Dedicated strict correctness hash did not: v7 `e4810fc5...f5f9` vs stock `7931ecfb...5ce2`. Universal exact-output parity is not claimed.
+- C1 remains excluded from promotion because R9700 process-start throughput is bimodal.
+- Candidate and factorial test containers were removed. `inneros-vllm-canary-rocm10.service` was restored and direct `/v1/models` returned HTTP 200.
+- Final verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT PROMOTED**.
+- Canonical summary: `docs/evidence/r9700_v7_final_gate_summary_20260911.json`.
+- Recovered tuner artifacts are present in Git; the previous evidence-gap statement is obsolete. Bounded tuner remains `MICROBENCH KEEP`; live override remains `REJECT / NOT PROMOTED`.

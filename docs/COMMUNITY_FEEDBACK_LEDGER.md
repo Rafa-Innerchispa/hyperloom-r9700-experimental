@@ -143,3 +143,17 @@ The feedback ledger is now reconciled against the later Phase-2 evidence and fin
 - **Full-model promotion gate:** NOT PASSED. The hybrid backend boot/correctness/fallback/rollback gate passed, but the more stable concurrency-4 E2E comparison remained approximately 5% below stock after the valid alignment-reuse improvement. Final verdict: `KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED`.
 
 This ledger therefore closes the recommendation-review cycle without manufacturing a favorable benchmark. Future work may revisit gfx1201 tuning or graph-recapture-safe integration, but it starts from this recorded verdict rather than repeating already closed experiments.
+
+## 2026-09-11 final presentation gate closure
+
+The final clean v7 campaign closes the remaining methodology items without changing the evidence boundaries:
+
+- independent-process / clean-start discipline retained;
+- stock `ROCM_ATTN` + `GPU_MAX_HW_QUEUES=1` selected as the stable comparison control after the clean serving factorial;
+- Unified Attention tested but not selected because it did not beat stock+queue1;
+- recovered gfx1201 WNA16 tuner preserved: isolated config is `MICROBENCH KEEP`, live override remains `REJECT / NOT PROMOTED`;
+- final full-model v7 reached all 48 custom/fallback routes but remained about 4.5-5.1% below the stable stock C4 control and did not achieve universal exact-output parity;
+- final public verdict remains **KERNEL KEEP / FULL-MODEL INTEGRATION NOT PROMOTED**;
+- no recommendation is being closed by substituting a pathological slow stock spawn or by converting a microkernel result into a full-model claim.
+
+Canonical final evidence: `docs/evidence/r9700_v7_final_gate_summary_20260911.json` and `FINAL_STATUS.md`.
