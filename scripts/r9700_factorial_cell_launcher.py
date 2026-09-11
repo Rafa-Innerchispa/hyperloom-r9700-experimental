@@ -123,14 +123,14 @@ def inspect_test() -> dict[str, object]:
 
 
 def launch(cell: str) -> int:
-    if cell not in {"stock_queue1", "unified_defaultq"}:
+    if cell not in {"stock_queue1", "unified_defaultq", "unified_queue1"}:
         raise ValueError(f"unsupported factorial cell: {cell}")
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     output = ROOT / "docs" / "evidence" / f"r9700_factorial_{cell}_launch_{stamp}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     payload: dict[str, object] = {
-        "schema": "hyperloom.r9700.serving_factorial_launch.v2",
+        "schema": "hyperloom.r9700.serving_factorial_launch.v3",
         "captured_at_utc": datetime.now(timezone.utc).isoformat(),
         "cell": cell,
         "model": MODEL,
@@ -179,9 +179,10 @@ def launch(cell: str) -> int:
         MODEL_MOUNT,
     ]
 
-    if cell == "stock_queue1":
+    if cell in {"stock_queue1", "unified_queue1"}:
         docker_args += ["-e", "GPU_MAX_HW_QUEUES=1"]
-    else:
+
+    if cell in {"unified_defaultq", "unified_queue1"}:
         make_overlay()
         docker_args += [
             "-v",
@@ -221,7 +222,7 @@ def launch(cell: str) -> int:
         "float16",
         "--trust-remote-code",
     ]
-    if cell == "unified_defaultq":
+    if cell in {"unified_defaultq", "unified_queue1"}:
         docker_args += ["--attention-backend", "ROCM_AITER_UNIFIED_ATTN"]
 
     launched = run(docker_args, timeout=40)
