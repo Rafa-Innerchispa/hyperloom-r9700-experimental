@@ -1,0 +1,2369 @@
+{
+  "benchmark": {
+    "c1_requests": [
+      {
+        "completion_tokens": 96,
+        "decode_sec": 4.216005915077403,
+        "decode_tok_s": 22.77036653499038,
+        "elapsed_sec": 4.280592881026678,
+        "ok": true,
+        "prompt_id": 0,
+        "prompt_tokens": 23,
+        "status": 200,
+        "text_len": 627,
+        "text_sha256": "d7367131ca68c4826c9c255d5ca26a1328312845a2525f847444f281e56b22b4",
+        "ttft_sec": 0.0645869659492746
+      },
+      {
+        "completion_tokens": 96,
+        "decode_sec": 3.5013904509833083,
+        "decode_tok_s": 27.417679160300438,
+        "elapsed_sec": 3.57074597699102,
+        "ok": true,
+        "prompt_id": 1,
+        "prompt_tokens": 24,
+        "status": 200,
+        "text_len": 473,
+        "text_sha256": "a0346eecbfb9d346a96902d0e518e9d13add704a3de536827a9b3692867100d1",
+        "ttft_sec": 0.06935552600771189
+      },
+      {
+        "completion_tokens": 96,
+        "decode_sec": 1.3061925530200824,
+        "decode_tok_s": 73.49605521638892,
+        "elapsed_sec": 1.3578968809451908,
+        "ok": true,
+        "prompt_id": 2,
+        "prompt_tokens": 21,
+        "status": 200,
+        "text_len": 550,
+        "text_sha256": "ea899d0f904613e87ce17ab8132f66dc9d8662ff44a6cc63ca0e0ae83d212561",
+        "ttft_sec": 0.05170432792510837
+      }
+    ],
+    "c1_summary": {
+      "count": 3,
+      "decode_tok_s_max": 73.49605521638892,
+      "decode_tok_s_median": 27.417679160300438,
+      "decode_tok_s_min": 22.77036653499038,
+      "e2e_ms_median": 3570.74597699102,
+      "e2e_ms_p95": 4280.592881026678,
+      "ok_count": 3,
+      "ttft_ms_median": 64.5869659492746,
+      "ttft_ms_p95": 69.35552600771189
+    },
+    "c4_batches": [
+      {
+        "aggregate_output_tok_s": 151.14440479459427,
+        "rows": [
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.465597225003876,
+            "decode_tok_s": 38.93579982425925,
+            "elapsed_sec": 2.5123328790068626,
+            "ok": true,
+            "prompt_id": 0,
+            "prompt_tokens": 23,
+            "status": 200,
+            "text_len": 616,
+            "text_sha256": "cf6c212f8df45e94986178be3b0c18be047ace835dd2e95ecb67cdadece59019",
+            "ttft_sec": 0.04673565400298685
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.41374998097308,
+            "decode_tok_s": 39.77213910170536,
+            "elapsed_sec": 2.5382689049001783,
+            "ok": true,
+            "prompt_id": 1,
+            "prompt_tokens": 24,
+            "status": 200,
+            "text_len": 398,
+            "text_sha256": "ac72a0b73bffe506fd16d68cb686c2704726b655d0d149609517c9055a6437a3",
+            "ttft_sec": 0.12451892392709851
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.414062004070729,
+            "decode_tok_s": 39.766998460735195,
+            "elapsed_sec": 2.5379438860109076,
+            "ok": true,
+            "prompt_id": 2,
+            "prompt_tokens": 21,
+            "status": 200,
+            "text_len": 550,
+            "text_sha256": "ea899d0f904613e87ce17ab8132f66dc9d8662ff44a6cc63ca0e0ae83d212561",
+            "ttft_sec": 0.12388188194017857
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.413694716989994,
+            "decode_tok_s": 39.77304972507754,
+            "elapsed_sec": 2.537271870067343,
+            "ok": true,
+            "prompt_id": 3,
+            "prompt_tokens": 30,
+            "status": 200,
+            "text_len": 478,
+            "text_sha256": "d5a3ec5475071b1691bd0ccbffc469e75ad507bcdf9f89b12715c97875030dc4",
+            "ttft_sec": 0.12357715307734907
+          }
+        ],
+        "wall_sec": 2.5406167070614174
+      },
+      {
+        "aggregate_output_tok_s": 151.1374632100562,
+        "rows": [
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.472238428890705,
+            "decode_tok_s": 38.83120611593893,
+            "elapsed_sec": 2.515045652980916,
+            "ok": true,
+            "prompt_id": 0,
+            "prompt_tokens": 23,
+            "status": 200,
+            "text_len": 627,
+            "text_sha256": "d7367131ca68c4826c9c255d5ca26a1328312845a2525f847444f281e56b22b4",
+            "ttft_sec": 0.04280722409021109
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.452019887045026,
+            "decode_tok_s": 39.15139534846569,
+            "elapsed_sec": 2.5398048569913954,
+            "ok": true,
+            "prompt_id": 1,
+            "prompt_tokens": 24,
+            "status": 200,
+            "text_len": 473,
+            "text_sha256": "a0346eecbfb9d346a96902d0e518e9d13add704a3de536827a9b3692867100d1",
+            "ttft_sec": 0.08778496994636953
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.45202970597893,
+            "decode_tok_s": 39.15123857020063,
+            "elapsed_sec": 2.5397818649653345,
+            "ok": true,
+            "prompt_id": 2,
+            "prompt_tokens": 21,
+            "status": 200,
+            "text_len": 550,
+            "text_sha256": "ea899d0f904613e87ce17ab8132f66dc9d8662ff44a6cc63ca0e0ae83d212561",
+            "ttft_sec": 0.08775215898640454
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.4518703270005062,
+            "decode_tok_s": 39.15378351898468,
+            "elapsed_sec": 2.539344336022623,
+            "ok": true,
+            "prompt_id": 3,
+            "prompt_tokens": 30,
+            "status": 200,
+            "text_len": 478,
+            "text_sha256": "d5a3ec5475071b1691bd0ccbffc469e75ad507bcdf9f89b12715c97875030dc4",
+            "ttft_sec": 0.08747400902211666
+          }
+        ],
+        "wall_sec": 2.5407333949115127
+      },
+      {
+        "aggregate_output_tok_s": 153.36726793017945,
+        "rows": [
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.4319043699651957,
+            "decode_tok_s": 39.4752364384188,
+            "elapsed_sec": 2.4755115309963003,
+            "ok": true,
+            "prompt_id": 0,
+            "prompt_tokens": 23,
+            "status": 200,
+            "text_len": 616,
+            "text_sha256": "cf6c212f8df45e94986178be3b0c18be047ace835dd2e95ecb67cdadece59019",
+            "ttft_sec": 0.043607161031104624
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.4143363770563155,
+            "decode_tok_s": 39.762479210559796,
+            "elapsed_sec": 2.5028198329964653,
+            "ok": true,
+            "prompt_id": 1,
+            "prompt_tokens": 24,
+            "status": 200,
+            "text_len": 398,
+            "text_sha256": "ac72a0b73bffe506fd16d68cb686c2704726b655d0d149609517c9055a6437a3",
+            "ttft_sec": 0.08848345594014972
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.4142728990409523,
+            "decode_tok_s": 39.763524677817124,
+            "elapsed_sec": 2.502636090037413,
+            "ok": true,
+            "prompt_id": 2,
+            "prompt_tokens": 21,
+            "status": 200,
+            "text_len": 550,
+            "text_sha256": "ea899d0f904613e87ce17ab8132f66dc9d8662ff44a6cc63ca0e0ae83d212561",
+            "ttft_sec": 0.08836319099646062
+          },
+          {
+            "completion_tokens": 96,
+            "decode_sec": 2.4140442609786987,
+            "decode_tok_s": 39.76729074597821,
+            "elapsed_sec": 2.50211064692121,
+            "ok": true,
+            "prompt_id": 3,
+            "prompt_tokens": 30,
+            "status": 200,
+            "text_len": 470,
+            "text_sha256": "7635ffd603a5eedd914a758ad0c4e12b9e794c09ec17b630d05783dda0b31b3c",
+            "ttft_sec": 0.08806638594251126
+          }
+        ],
+        "wall_sec": 2.5037937050219625
+      }
+    ],
+    "c4_summary": {
+      "aggregate_output_tok_s_max": 153.36726793017945,
+      "aggregate_output_tok_s_median": 151.14440479459427,
+      "aggregate_output_tok_s_min": 151.1374632100562,
+      "count": 12,
+      "decode_tok_s_max": 39.77304972507754,
+      "decode_tok_s_median": 39.6188578244893,
+      "decode_tok_s_min": 38.83120611593893,
+      "e2e_ms_median": 2526.1587615241297,
+      "e2e_ms_p95": 2539.8048569913954,
+      "ok_count": 12,
+      "ttft_ms_median": 87.9256779444404,
+      "ttft_ms_p95": 124.51892392709851
+    },
+    "hash_stability_informational": true,
+    "hashes_by_prompt": {
+      "0": [
+        "cf6c212f8df45e94986178be3b0c18be047ace835dd2e95ecb67cdadece59019",
+        "d7367131ca68c4826c9c255d5ca26a1328312845a2525f847444f281e56b22b4"
+      ],
+      "1": [
+        "a0346eecbfb9d346a96902d0e518e9d13add704a3de536827a9b3692867100d1",
+        "ac72a0b73bffe506fd16d68cb686c2704726b655d0d149609517c9055a6437a3"
+      ],
+      "2": [
+        "ea899d0f904613e87ce17ab8132f66dc9d8662ff44a6cc63ca0e0ae83d212561"
+      ],
+      "3": [
+        "7635ffd603a5eedd914a758ad0c4e12b9e794c09ec17b630d05783dda0b31b3c",
+        "d5a3ec5475071b1691bd0ccbffc469e75ad507bcdf9f89b12715c97875030dc4"
+      ]
+    },
+    "pass": true,
+    "stable_hashes_within_start": false,
+    "telemetry": {
+      "power_max": 309.0,
+      "power_median": 248.0,
+      "samples": 20,
+      "sclk_lines": [
+        "GPU[0]\t\t: sclk clock level: 1: (3271Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3347Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3358Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3366Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3362Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3354Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3359Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3348Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3294Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3236Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3289Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3282Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3052Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3287Mhz)",
+        "GPU[0]\t\t: sclk clock level: 1: (3242Mhz)"
+      ],
+      "use_max": 100.0,
+      "use_median": 100.0
+    },
+    "warmup": {
+      "completion_tokens": 48,
+      "decode_sec": 2.0277860501082614,
+      "decode_tok_s": 23.671136310182884,
+      "elapsed_sec": 2.3536327549954876,
+      "ok": true,
+      "prompt_id": 0,
+      "prompt_tokens": 23,
+      "status": 200,
+      "text_len": 296,
+      "text_sha256": "65e97bde654eb7c46871322002c1eafe0109f006acca9a615491addaf0fc9057",
+      "ttft_sec": 0.3258467048872262
+    }
+  },
+  "captured_at_utc": "2026-09-09T04:56:42.133007+00:00",
+  "container": "inneros-vllm-canary-rocm10",
+  "custom_path_seen": true,
+  "health": {
+    "attempts": 46,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 90.0207793029258
+  },
+  "identity": {
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "ok": true,
+    "pid": 1631019,
+    "running": true,
+    "started_at": "2026-09-09T04:56:43.351235303Z"
+  },
+  "mode": "candidate",
+  "neutralize_returncode": 0,
+  "pass": true,
+  "patch_sha256": "0cf11f9fc86e33cde9aa8e6e386e38b9aad2ba09fc643cdb75e57f31703d26ee",
+  "path_counts": {
+    "custom_small_w1_stock_w2": 48,
+    "stock_full_fallback": 48
+  },
+  "path_evidence": [
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "stock_full_fallback",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 16,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "custom_small_w1_stock_w2",
+      "pid": 68,
+      "topk_shape": [
+        16,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    }
+  ],
+  "probe_sha256": "66cf8aacff2b04e2ad44560b62f1fb86154dfe2d3ac171cafc5c07961ddd15cd",
+  "pth_removed": true,
+  "restart_returncode": 0,
+  "restore_health": {
+    "attempts": 41,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 80.01695443294011
+  },
+  "restore_start_returncode": 0,
+  "schema": "hyperloom.r9700.stock_layout_e2e_v3_single.v1",
+  "sequence_index": 3
+}

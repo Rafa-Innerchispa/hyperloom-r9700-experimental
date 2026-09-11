@@ -1,0 +1,86 @@
+{
+  "candidate": {
+    "completion_tokens": 48,
+    "decode_sec": 2.1459894699510187,
+    "decode_tok_s": 22.367304533463336,
+    "elapsed_sec": 2.2242538339924067,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 296,
+    "text_sha256": "65e97bde654eb7c46871322002c1eafe0109f006acca9a615491addaf0fc9057",
+    "ttft_sec": 0.07826436404138803
+  },
+  "candidate_health": {
+    "attempts": 44,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 86.01760756596923
+  },
+  "candidate_identity": {
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "ok": true,
+    "pid": 1690413,
+    "running": true,
+    "started_at": "2026-09-09T05:21:25.636111954Z"
+  },
+  "captured_at_utc": "2026-09-09T05:21:23.636885+00:00",
+  "evidence": [],
+  "evidence_M": [],
+  "hash_match_before_candidate": true,
+  "neutralize_returncode": 0,
+  "only_small_m": false,
+  "override_sha256": "faca3b2bd4b3eb96d226d452f233d15adff132c4515625273e6a792fd7880b87",
+  "pass": false,
+  "pth_removed": true,
+  "restart_returncode": 0,
+  "restore_health": {
+    "attempts": 39,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 76.0187505671056
+  },
+  "restore_start_returncode": 0,
+  "schema": "hyperloom.r9700.tuned_config_live_smoke.v1",
+  "sha256": "7bd733a22c7d2127af683dbae97fe62e5423ff0b84ad66e04c8d603a883e40fa",
+  "stock_after": {
+    "completion_tokens": 48,
+    "decode_sec": 2.0902040801011026,
+    "decode_tok_s": 22.964264808859358,
+    "elapsed_sec": 2.411297505022958,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 296,
+    "text_sha256": "65e97bde654eb7c46871322002c1eafe0109f006acca9a615491addaf0fc9057",
+    "ttft_sec": 0.32109342492185533
+  },
+  "stock_before": {
+    "completion_tokens": 48,
+    "decode_sec": 0.691077001974918,
+    "decode_tok_s": 69.45680418076208,
+    "elapsed_sec": 0.7497385410824791,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 296,
+    "text_sha256": "65e97bde654eb7c46871322002c1eafe0109f006acca9a615491addaf0fc9057",
+    "ttft_sec": 0.05866153910756111
+  },
+  "tuned_seen": false
+}

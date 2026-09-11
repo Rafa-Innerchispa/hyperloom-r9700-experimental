@@ -1,0 +1,711 @@
+{
+  "captured_at_utc": "2026-09-09T05:17:31.581058+00:00",
+  "pass": true,
+  "result": {
+    "coarse_count": 24,
+    "coarse_top": [
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "ok": true,
+        "us": 235.7153336207072
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "ok": true,
+        "us": 243.78203550974527
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "ok": true,
+        "us": 268.2743628819784
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "ok": true,
+        "us": 272.5810607274373
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 4
+        },
+        "ok": true,
+        "us": 289.6733283996582
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "ok": true,
+        "us": 312.49093214670813
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 128,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "ok": true,
+        "us": 317.2029972076416
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 2,
+          "waves_per_eu": 2
+        },
+        "ok": true,
+        "us": 334.9739710489909
+      }
+    ],
+    "coarse_valid": 24,
+    "rows": [
+      {
+        "M": 1,
+        "baseline": {
+          "config": {
+            "BLOCK_SIZE_M": 16,
+            "GROUP_SIZE_M": 1,
+            "SPLIT_K": 1
+          },
+          "ok": true,
+          "us": 122.06491947174072
+        },
+        "tests": [
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 107.06467866897583
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 112.6223611831665
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 134.28346157073975
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 123.90807628631592
+          }
+        ]
+      },
+      {
+        "M": 2,
+        "baseline": {
+          "config": {
+            "BLOCK_SIZE_M": 16,
+            "GROUP_SIZE_M": 1,
+            "SPLIT_K": 1
+          },
+          "ok": true,
+          "us": 205.36768198013306
+        },
+        "tests": [
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 150.29092073440552
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 134.30988311767578
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 144.65723991394043
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 145.50283908843994
+          }
+        ]
+      },
+      {
+        "M": 4,
+        "baseline": {
+          "config": {
+            "BLOCK_SIZE_M": 16,
+            "GROUP_SIZE_M": 1,
+            "SPLIT_K": 1
+          },
+          "ok": true,
+          "us": 267.57733821868896
+        },
+        "tests": [
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 229.55762386322021
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 221.27431869506836
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 246.98025703430176
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 245.38902282714844
+          }
+        ]
+      },
+      {
+        "M": 8,
+        "baseline": {
+          "config": {
+            "BLOCK_SIZE_M": 16,
+            "GROUP_SIZE_M": 1,
+            "SPLIT_K": 1
+          },
+          "ok": true,
+          "us": 455.94639778137207
+        },
+        "tests": [
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 363.1715202331543
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 356.25701904296875
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 430.7276201248169
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 429.0564250946045
+          }
+        ]
+      },
+      {
+        "M": 16,
+        "baseline": {
+          "config": {
+            "BLOCK_SIZE_M": 16,
+            "GROUP_SIZE_M": 1,
+            "SPLIT_K": 1
+          },
+          "ok": true,
+          "us": 640.62819480896
+        },
+        "tests": [
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 566.7263412475586
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 32,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 578.2905101776123
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 2
+            },
+            "ok": true,
+            "us": 669.8957538604736
+          },
+          {
+            "config": {
+              "BLOCK_SIZE_K": 64,
+              "BLOCK_SIZE_M": 16,
+              "BLOCK_SIZE_N": 64,
+              "GROUP_SIZE_M": 1,
+              "SPLIT_K": 1,
+              "num_stages": 2,
+              "num_warps": 4,
+              "waves_per_eu": 4
+            },
+            "ok": true,
+            "us": 669.1237640380859
+          }
+        ]
+      }
+    ],
+    "scores": [
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "median_speedup_x": 1.2092561838928513,
+        "min_speedup_x": 1.083842659569329,
+        "per_M": [
+          {
+            "M": 1,
+            "baseline_us": 122.06491947174072,
+            "candidate_us": 112.6223611831665,
+            "speedup_x": 1.083842659569329
+          },
+          {
+            "M": 2,
+            "baseline_us": 205.36768198013306,
+            "candidate_us": 134.30988311767578,
+            "speedup_x": 1.5290586009981104
+          },
+          {
+            "M": 4,
+            "baseline_us": 267.57733821868896,
+            "candidate_us": 221.27431869506836,
+            "speedup_x": 1.2092561838928513
+          },
+          {
+            "M": 8,
+            "baseline_us": 455.94639778137207,
+            "candidate_us": 356.25701904296875,
+            "speedup_x": 1.2798243217949894
+          },
+          {
+            "M": 16,
+            "baseline_us": 640.62819480896,
+            "candidate_us": 578.2905101776123,
+            "speedup_x": 1.1077964855625966
+          }
+        ]
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 32,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "median_speedup_x": 1.1656216583689787,
+        "min_speedup_x": 1.1304013033851896,
+        "per_M": [
+          {
+            "M": 1,
+            "baseline_us": 122.06491947174072,
+            "candidate_us": 107.06467866897583,
+            "speedup_x": 1.1401044769315831
+          },
+          {
+            "M": 2,
+            "baseline_us": 205.36768198013306,
+            "candidate_us": 150.29092073440552,
+            "speedup_x": 1.3664676547098897
+          },
+          {
+            "M": 4,
+            "baseline_us": 267.57733821868896,
+            "candidate_us": 229.55762386322021,
+            "speedup_x": 1.1656216583689787
+          },
+          {
+            "M": 8,
+            "baseline_us": 455.94639778137207,
+            "candidate_us": 363.1715202331543,
+            "speedup_x": 1.2554574694861997
+          },
+          {
+            "M": 16,
+            "baseline_us": 640.62819480896,
+            "candidate_us": 566.7263412475586,
+            "speedup_x": 1.1304013033851896
+          }
+        ]
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 4
+        },
+        "median_speedup_x": 1.062672345906109,
+        "min_speedup_x": 0.9574136045368372,
+        "per_M": [
+          {
+            "M": 1,
+            "baseline_us": 122.06491947174072,
+            "candidate_us": 123.90807628631592,
+            "speedup_x": 0.9851248048568183
+          },
+          {
+            "M": 2,
+            "baseline_us": 205.36768198013306,
+            "candidate_us": 145.50283908843994,
+            "speedup_x": 1.4114341910215642
+          },
+          {
+            "M": 4,
+            "baseline_us": 267.57733821868896,
+            "candidate_us": 245.38902282714844,
+            "speedup_x": 1.0904209778249532
+          },
+          {
+            "M": 8,
+            "baseline_us": 455.94639778137207,
+            "candidate_us": 429.0564250946045,
+            "speedup_x": 1.062672345906109
+          },
+          {
+            "M": 16,
+            "baseline_us": 640.62819480896,
+            "candidate_us": 669.1237640380859,
+            "speedup_x": 0.9574136045368372
+          }
+        ]
+      },
+      {
+        "config": {
+          "BLOCK_SIZE_K": 64,
+          "BLOCK_SIZE_M": 16,
+          "BLOCK_SIZE_N": 64,
+          "GROUP_SIZE_M": 1,
+          "SPLIT_K": 1,
+          "num_stages": 2,
+          "num_warps": 4,
+          "waves_per_eu": 2
+        },
+        "median_speedup_x": 1.0585492466195858,
+        "min_speedup_x": 0.9090093302922314,
+        "per_M": [
+          {
+            "M": 1,
+            "baseline_us": 122.06491947174072,
+            "candidate_us": 134.28346157073975,
+            "speedup_x": 0.9090093302922314
+          },
+          {
+            "M": 2,
+            "baseline_us": 205.36768198013306,
+            "candidate_us": 144.65723991394043,
+            "speedup_x": 1.4196847810888036
+          },
+          {
+            "M": 4,
+            "baseline_us": 267.57733821868896,
+            "candidate_us": 246.98025703430176,
+            "speedup_x": 1.0833956585506614
+          },
+          {
+            "M": 8,
+            "baseline_us": 455.94639778137207,
+            "candidate_us": 430.7276201248169,
+            "speedup_x": 1.0585492466195858
+          },
+          {
+            "M": 16,
+            "baseline_us": 640.62819480896,
+            "candidate_us": 669.8957538604736,
+            "speedup_x": 0.956310278303974
+          }
+        ]
+      }
+    ],
+    "winner": {
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 4
+      },
+      "median_speedup_x": 1.2092561838928513,
+      "min_speedup_x": 1.083842659569329,
+      "per_M": [
+        {
+          "M": 1,
+          "baseline_us": 122.06491947174072,
+          "candidate_us": 112.6223611831665,
+          "speedup_x": 1.083842659569329
+        },
+        {
+          "M": 2,
+          "baseline_us": 205.36768198013306,
+          "candidate_us": 134.30988311767578,
+          "speedup_x": 1.5290586009981104
+        },
+        {
+          "M": 4,
+          "baseline_us": 267.57733821868896,
+          "candidate_us": 221.27431869506836,
+          "speedup_x": 1.2092561838928513
+        },
+        {
+          "M": 8,
+          "baseline_us": 455.94639778137207,
+          "candidate_us": 356.25701904296875,
+          "speedup_x": 1.2798243217949894
+        },
+        {
+          "M": 16,
+          "baseline_us": 640.62819480896,
+          "candidate_us": 578.2905101776123,
+          "speedup_x": 1.1077964855625966
+        }
+      ]
+    }
+  },
+  "returncode": 0,
+  "schema": "hyperloom.r9700.vllm_wna16_bounded_tuner.v1",
+  "sha256": "a69ece1326bab76f64fceb91daf20aa3176ed48bbb55a6b912ecb58e6e90f1f6",
+  "stderr_tail": "",
+  "stdout_tail": "RESULT_JSON={\"coarse_count\":24,\"coarse_valid\":24,\"coarse_top\":[{\"ok\":true,\"us\":235.7153336207072,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":243.78203550974527,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":268.2743628819784,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":272.5810607274373,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":289.6733283996582,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":2,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":312.49093214670813,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":128,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":317.2029972076416,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":128,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":334.9739710489909,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":2,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}}],\"rows\":[{\"M\":1,\"baseline\":{\"ok\":true,\"us\":122.06491947174072,\"config\":{\"BLOCK_SIZE_M\":16,\"GROUP_SIZE_M\":1,\"SPLIT_K\":1}},\"tests\":[{\"ok\":true,\"us\":107.06467866897583,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":112.6223611831665,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":134.28346157073975,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":123.90807628631592,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}}]},{\"M\":2,\"baseline\":{\"ok\":true,\"us\":205.36768198013306,\"config\":{\"BLOCK_SIZE_M\":16,\"GROUP_SIZE_M\":1,\"SPLIT_K\":1}},\"tests\":[{\"ok\":true,\"us\":150.29092073440552,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":134.30988311767578,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":144.65723991394043,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":145.50283908843994,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}}]},{\"M\":4,\"baseline\":{\"ok\":true,\"us\":267.57733821868896,\"config\":{\"BLOCK_SIZE_M\":16,\"GROUP_SIZE_M\":1,\"SPLIT_K\":1}},\"tests\":[{\"ok\":true,\"us\":229.55762386322021,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":221.27431869506836,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":246.98025703430176,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":245.38902282714844,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}}]},{\"M\":8,\"baseline\":{\"ok\":true,\"us\":455.94639778137207,\"config\":{\"BLOCK_SIZE_M\":16,\"GROUP_SIZE_M\":1,\"SPLIT_K\":1}},\"tests\":[{\"ok\":true,\"us\":363.1715202331543,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":356.25701904296875,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":430.7276201248169,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":429.0564250946045,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}}]},{\"M\":16,\"baseline\":{\"ok\":true,\"us\":640.62819480896,\"config\":{\"BLOCK_SIZE_M\":16,\"GROUP_SIZE_M\":1,\"SPLIT_K\":1}},\"tests\":[{\"ok\":true,\"us\":566.7263412475586,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":578.2905101776123,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}},{\"ok\":true,\"us\":669.8957538604736,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1}},{\"ok\":true,\"us\":669.1237640380859,\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1}}]}],\"scores\":[{\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1},\"median_speedup_x\":1.2092561838928513,\"min_speedup_x\":1.083842659569329,\"per_M\":[{\"M\":1,\"speedup_x\":1.083842659569329,\"baseline_us\":122.06491947174072,\"candidate_us\":112.6223611831665},{\"M\":2,\"speedup_x\":1.5290586009981104,\"baseline_us\":205.36768198013306,\"candidate_us\":134.30988311767578},{\"M\":4,\"speedup_x\":1.2092561838928513,\"baseline_us\":267.57733821868896,\"candidate_us\":221.27431869506836},{\"M\":8,\"speedup_x\":1.2798243217949894,\"baseline_us\":455.94639778137207,\"candidate_us\":356.25701904296875},{\"M\":16,\"speedup_x\":1.1077964855625966,\"baseline_us\":640.62819480896,\"candidate_us\":578.2905101776123}]},{\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1},\"median_speedup_x\":1.1656216583689787,\"min_speedup_x\":1.1304013033851896,\"per_M\":[{\"M\":1,\"speedup_x\":1.1401044769315831,\"baseline_us\":122.06491947174072,\"candidate_us\":107.06467866897583},{\"M\":2,\"speedup_x\":1.3664676547098897,\"baseline_us\":205.36768198013306,\"candidate_us\":150.29092073440552},{\"M\":4,\"speedup_x\":1.1656216583689787,\"baseline_us\":267.57733821868896,\"candidate_us\":229.55762386322021},{\"M\":8,\"speedup_x\":1.2554574694861997,\"baseline_us\":455.94639778137207,\"candidate_us\":363.1715202331543},{\"M\":16,\"speedup_x\":1.1304013033851896,\"baseline_us\":640.62819480896,\"candidate_us\":566.7263412475586}]},{\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1},\"median_speedup_x\":1.062672345906109,\"min_speedup_x\":0.9574136045368372,\"per_M\":[{\"M\":1,\"speedup_x\":0.9851248048568183,\"baseline_us\":122.06491947174072,\"candidate_us\":123.90807628631592},{\"M\":2,\"speedup_x\":1.4114341910215642,\"baseline_us\":205.36768198013306,\"candidate_us\":145.50283908843994},{\"M\":4,\"speedup_x\":1.0904209778249532,\"baseline_us\":267.57733821868896,\"candidate_us\":245.38902282714844},{\"M\":8,\"speedup_x\":1.062672345906109,\"baseline_us\":455.94639778137207,\"candidate_us\":429.0564250946045},{\"M\":16,\"speedup_x\":0.9574136045368372,\"baseline_us\":640.62819480896,\"candidate_us\":669.1237640380859}]},{\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":64,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":2,\"SPLIT_K\":1},\"median_speedup_x\":1.0585492466195858,\"min_speedup_x\":0.9090093302922314,\"per_M\":[{\"M\":1,\"speedup_x\":0.9090093302922314,\"baseline_us\":122.06491947174072,\"candidate_us\":134.28346157073975},{\"M\":2,\"speedup_x\":1.4196847810888036,\"baseline_us\":205.36768198013306,\"candidate_us\":144.65723991394043},{\"M\":4,\"speedup_x\":1.0833956585506614,\"baseline_us\":267.57733821868896,\"candidate_us\":246.98025703430176},{\"M\":8,\"speedup_x\":1.0585492466195858,\"baseline_us\":455.94639778137207,\"candidate_us\":430.7276201248169},{\"M\":16,\"speedup_x\":0.956310278303974,\"baseline_us\":640.62819480896,\"candidate_us\":669.8957538604736}]}],\"winner\":{\"config\":{\"BLOCK_SIZE_M\":16,\"BLOCK_SIZE_N\":64,\"BLOCK_SIZE_K\":32,\"GROUP_SIZE_M\":1,\"num_warps\":4,\"num_stages\":2,\"waves_per_eu\":4,\"SPLIT_K\":1},\"median_speedup_x\":1.2092561838928513,\"min_speedup_x\":1.083842659569329,\"per_M\":[{\"M\":1,\"speedup_x\":1.083842659569329,\"baseline_us\":122.06491947174072,\"candidate_us\":112.6223611831665},{\"M\":2,\"speedup_x\":1.5290586009981104,\"baseline_us\":205.36768198013306,\"candidate_us\":134.30988311767578},{\"M\":4,\"speedup_x\":1.2092561838928513,\"baseline_us\":267.57733821868896,\"candidate_us\":221.27431869506836},{\"M\":8,\"speedup_x\":1.2798243217949894,\"baseline_us\":455.94639778137207,\"candidate_us\":356.25701904296875},{\"M\":16,\"speedup_x\":1.1077964855625966,\"baseline_us\":640.62819480896,\"candidate_us\":578.2905101776123}]}}\n"
+}

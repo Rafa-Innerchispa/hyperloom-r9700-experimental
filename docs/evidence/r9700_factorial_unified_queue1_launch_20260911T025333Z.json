@@ -1,0 +1,55 @@
+{
+  "candidate_identity": {
+    "cmd": [
+      "python3",
+      "-m",
+      "vllm.entrypoints.openai.api_server",
+      "--model",
+      "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--served-model-name",
+      "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8000",
+      "--max-model-len",
+      "8192",
+      "--gpu-memory-utilization",
+      "0.82",
+      "--dtype",
+      "float16",
+      "--trust-remote-code",
+      "--attention-backend",
+      "ROCM_AITER_UNIFIED_ATTN"
+    ],
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "pid": 3771674,
+    "relevant_env": [
+      "GPU_MAX_HW_QUEUES=1",
+      "VLLM_ROCM_USE_AITER=1",
+      "VLLM_ROCM_USE_AITER_LINEAR=0",
+      "VLLM_ROCM_USE_AITER_MHA=0",
+      "VLLM_ROCM_USE_AITER_MOE=0",
+      "VLLM_ROCM_USE_AITER_RMSNORM=0",
+      "VLLM_ROCM_USE_AITER_UNIFIED_ATTENTION=1"
+    ],
+    "running": true,
+    "started_at": "2026-09-11T02:53:35.555043421Z"
+  },
+  "captured_at_utc": "2026-09-11T02:53:33.430992+00:00",
+  "cell": "unified_queue1",
+  "container_id": "e4311101563a40ff0381691cc5575a7d4aca341f2b8e751b12c523038e7699c1",
+  "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+  "launch_rc": 0,
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "ok": true,
+  "schema": "hyperloom.r9700.serving_factorial_launch.v3",
+  "stock_container_running_before": false,
+  "stock_service_state_before": "failed",
+  "truth_boundary": "launch identity only; benchmark evidence is captured separately",
+  "vram_free": {
+    "last": 59994112,
+    "ok": true,
+    "wait_sec": 0.15490104095079005
+  }
+}

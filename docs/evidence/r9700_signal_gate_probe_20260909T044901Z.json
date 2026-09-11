@@ -1,0 +1,1103 @@
+{
+  "captured_at_utc": "2026-09-09T04:49:01.606478+00:00",
+  "custom_request": {
+    "completion_tokens": 32,
+    "decode_sec": 0.44974749197717756,
+    "decode_tok_s": 71.15103601650287,
+    "elapsed_sec": 0.7907281700754538,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 199,
+    "text_sha256": "e6a6148c1752a90a605b597a7633dfdb1ffaa6b82404628fd486ff8418612894",
+    "ttft_sec": 0.34098067809827626
+  },
+  "custom_seen": false,
+  "health": {
+    "attempts": 48,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 94.0215164370602
+  },
+  "identity": {
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "ok": true,
+    "pid": 1610849,
+    "running": true,
+    "started_at": "2026-09-09T04:49:02.921590528Z"
+  },
+  "neutralize_returncode": 0,
+  "pass": false,
+  "patch_sha256": "0cf11f9fc86e33cde9aa8e6e386e38b9aad2ba09fc643cdb75e57f31703d26ee",
+  "path_counts": {
+    "runtime_gate_stock": 48
+  },
+  "paths": [
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    },
+    {
+      "M": 2048,
+      "hidden_states_dtype": "torch.float16",
+      "patch": "r9700_autoawq_stock_layout_hybrid_v6",
+      "path": "runtime_gate_stock",
+      "pid": 68,
+      "topk_shape": [
+        2048,
+        8
+      ],
+      "w1_shape": [
+        128,
+        1536,
+        1024
+      ],
+      "w2_shape": [
+        128,
+        2048,
+        384
+      ]
+    }
+  ],
+  "proc_after": {
+    "rc": 0,
+    "stderr": "",
+    "stdout": "[{\"pid\": 68, \"comm\": \"VLLM::EngineCor\", \"status\": {\"Name\": \"VLLM::EngineCor\", \"Pid\": \"68\", \"PPid\": \"1\", \"SigBlk\": \"0000000000000000\", \"SigIgn\": \"0000000001001000\", \"SigCgt\": \"0000000108004e02\"}}]\n"
+  },
+  "proc_before": {
+    "rc": 0,
+    "stderr": "",
+    "stdout": "[{\"pid\": 68, \"comm\": \"VLLM::EngineCor\", \"status\": {\"Name\": \"VLLM::EngineCor\", \"Pid\": \"68\", \"PPid\": \"1\", \"SigBlk\": \"0000000000000000\", \"SigIgn\": \"0000000001001000\", \"SigCgt\": \"0000000108004e02\"}}]\n"
+  },
+  "pth_removed": true,
+  "restart_returncode": 0,
+  "restore_health": {
+    "attempts": 41,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 80.01988926995546
+  },
+  "restore_start_returncode": 0,
+  "schema": "hyperloom.r9700.signal_gate_probe.v1",
+  "sha256": "634fd7237c65b21d111daf583cfa4b29c42a0b441c42aac90d64c153bbd6e7ff",
+  "sigusr1": {
+    "rc": 0,
+    "stderr": "",
+    "stdout": "[68]\n"
+  },
+  "sigusr2": {
+    "rc": 0,
+    "stderr": "",
+    "stdout": "[68]\n"
+  },
+  "stock_request": {
+    "completion_tokens": 32,
+    "decode_sec": 0.4601034140214324,
+    "decode_tok_s": 69.54958173492142,
+    "elapsed_sec": 0.514024356030859,
+    "ok": true,
+    "prompt_id": 1,
+    "prompt_tokens": 24,
+    "status": 200,
+    "text_len": 183,
+    "text_sha256": "61a62a052152e127aa78cafd8354501c76910c1a5a8aa02fcd4c56aa1190c924",
+    "ttft_sec": 0.05392094200942665
+  },
+  "stock_seen": true
+}

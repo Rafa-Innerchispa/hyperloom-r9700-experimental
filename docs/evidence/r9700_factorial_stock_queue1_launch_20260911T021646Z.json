@@ -1,0 +1,47 @@
+{
+  "candidate_identity": {
+    "cmd": [
+      "python3",
+      "-m",
+      "vllm.entrypoints.openai.api_server",
+      "--model",
+      "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--served-model-name",
+      "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8000",
+      "--max-model-len",
+      "8192",
+      "--gpu-memory-utilization",
+      "0.82",
+      "--dtype",
+      "float16",
+      "--trust-remote-code"
+    ],
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "pid": 3565686,
+    "relevant_env": [
+      "GPU_MAX_HW_QUEUES=1"
+    ],
+    "running": true,
+    "started_at": "2026-09-11T02:16:47.637357305Z"
+  },
+  "captured_at_utc": "2026-09-11T02:16:46.810096+00:00",
+  "cell": "stock_queue1",
+  "container_id": "35d70bc061d2b9bd3fefe0759dbc9c746b5ec155624b8df8ca72011863cf8579",
+  "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+  "launch_rc": 0,
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "ok": true,
+  "schema": "hyperloom.r9700.serving_factorial_launch.v2",
+  "stock_container_running_before": false,
+  "stock_service_state_before": "failed",
+  "truth_boundary": "launch identity only; benchmark evidence is captured separately",
+  "vram_free": {
+    "last": 59994112,
+    "ok": true,
+    "wait_sec": 0.19972746400162578
+  }
+}

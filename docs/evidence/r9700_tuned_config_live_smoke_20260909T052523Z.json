@@ -1,0 +1,169 @@
+{
+  "candidate": {
+    "completion_tokens": 48,
+    "decode_sec": 2.125753080006689,
+    "decode_tok_s": 22.580233071965708,
+    "elapsed_sec": 2.462660453049466,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 296,
+    "text_sha256": "65e97bde654eb7c46871322002c1eafe0109f006acca9a615491addaf0fc9057",
+    "ttft_sec": 0.3369073730427772
+  },
+  "candidate_health": {
+    "attempts": 45,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 88.01892719999887
+  },
+  "candidate_identity": {
+    "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+    "ok": true,
+    "pid": 1700260,
+    "running": true,
+    "started_at": "2026-09-09T05:25:26.561713035Z"
+  },
+  "captured_at_utc": "2026-09-09T05:25:23.129146+00:00",
+  "evidence": [
+    {
+      "M": 16,
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 4
+      },
+      "patch": "r9700_vllm_wna16_smallm_tuned_config_v1",
+      "pid": 64
+    },
+    {
+      "M": 8,
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 4
+      },
+      "patch": "r9700_vllm_wna16_smallm_tuned_config_v1",
+      "pid": 64
+    },
+    {
+      "M": 4,
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 4
+      },
+      "patch": "r9700_vllm_wna16_smallm_tuned_config_v1",
+      "pid": 64
+    },
+    {
+      "M": 2,
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 4
+      },
+      "patch": "r9700_vllm_wna16_smallm_tuned_config_v1",
+      "pid": 64
+    },
+    {
+      "M": 1,
+      "config": {
+        "BLOCK_SIZE_K": 32,
+        "BLOCK_SIZE_M": 16,
+        "BLOCK_SIZE_N": 64,
+        "GROUP_SIZE_M": 1,
+        "SPLIT_K": 1,
+        "num_stages": 2,
+        "num_warps": 4,
+        "waves_per_eu": 4
+      },
+      "patch": "r9700_vllm_wna16_smallm_tuned_config_v1",
+      "pid": 64
+    }
+  ],
+  "evidence_M": [
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "hash_match_before_candidate": false,
+  "neutralize_returncode": 0,
+  "only_small_m": true,
+  "override_sha256": "99c76966dd3d470965c3fd8fb849aeb2f5c1fd05b09cb9e0fd53484c593ffbda",
+  "pass": false,
+  "pth_removed": true,
+  "restart_returncode": 0,
+  "restore_hash_mismatch": true,
+  "restore_health": {
+    "attempts": 41,
+    "health": {
+      "models": [
+        "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
+      ],
+      "ok": true,
+      "status": 200
+    },
+    "ok": true,
+    "ready_sec": 80.01740309700835
+  },
+  "restore_start_returncode": 0,
+  "schema": "hyperloom.r9700.tuned_config_live_smoke.v1",
+  "sha256": "edabd0443d89e896c1608a9dc6a5b4caf88e3fb0188e9ec93e86c70b3aa896c4",
+  "stock_after": {
+    "completion_tokens": 48,
+    "decode_sec": 0.688099822960794,
+    "decode_tok_s": 69.75732066528218,
+    "elapsed_sec": 1.0191250239731744,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 296,
+    "text_sha256": "65e97bde654eb7c46871322002c1eafe0109f006acca9a615491addaf0fc9057",
+    "ttft_sec": 0.3310252010123804
+  },
+  "stock_before": {
+    "completion_tokens": 48,
+    "decode_sec": 2.1454204859910533,
+    "decode_tok_s": 22.37323653494757,
+    "elapsed_sec": 2.2095495009562,
+    "ok": true,
+    "prompt_id": 0,
+    "prompt_tokens": 23,
+    "status": 200,
+    "text_len": 305,
+    "text_sha256": "c3d6677f0a7fbe09481563e685f6d79345c9153146b229bfb49a452c6fd363e4",
+    "ttft_sec": 0.06412901496514678
+  },
+  "tuned_seen": true
+}

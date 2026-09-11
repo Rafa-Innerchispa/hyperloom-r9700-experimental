@@ -1,0 +1,94 @@
+{
+  "c1": {
+    "completion_tokens": 128,
+    "decode_tok_s": 62.963800174558166,
+    "elapsed_sec": 2.0832006770651788,
+    "ok": true,
+    "prompt_tokens": 16,
+    "status": 200,
+    "text_len": 530,
+    "text_sha256": "7cedaa12db056ff69d1bb8d8259d4f44f8dd6d065948c36ae0c82cfa49212393",
+    "ttft_sec": 0.05028653203044087
+  },
+  "c4": {
+    "aggregate_tok_s": 158.5679591821096,
+    "completion_tokens": 512,
+    "rows": [
+      {
+        "completion_tokens": 128,
+        "decode_tok_s": 40.72939247423454,
+        "elapsed_sec": 3.2029807550134137,
+        "ok": true,
+        "prompt_tokens": 20,
+        "status": 200,
+        "text_len": 261,
+        "text_sha256": "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+        "ttft_sec": 0.06028718105517328
+      },
+      {
+        "completion_tokens": 128,
+        "decode_tok_s": 40.872973786921236,
+        "elapsed_sec": 3.2262054879684,
+        "ok": true,
+        "prompt_tokens": 20,
+        "status": 200,
+        "text_len": 522,
+        "text_sha256": "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+        "ttft_sec": 0.0945517779327929
+      },
+      {
+        "completion_tokens": 128,
+        "decode_tok_s": 40.870678029809774,
+        "elapsed_sec": 3.225992830004543,
+        "ok": true,
+        "prompt_tokens": 20,
+        "status": 200,
+        "text_len": 584,
+        "text_sha256": "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+        "ttft_sec": 0.09416321106255054
+      },
+      {
+        "completion_tokens": 128,
+        "decode_tok_s": 40.87008810719335,
+        "elapsed_sec": 3.225523862056434,
+        "ok": true,
+        "prompt_tokens": 20,
+        "status": 200,
+        "text_len": 584,
+        "text_sha256": "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+        "ttft_sec": 0.09364903799723834
+      }
+    ],
+    "wall_sec": 3.22889947402291
+  },
+  "captured_at_utc": "2026-09-11T02:22:37.571249+00:00",
+  "correctness": {
+    "completion_tokens": 64,
+    "decode_tok_s": 65.12981822862176,
+    "elapsed_sec": 5.488208611961454,
+    "ok": true,
+    "prompt_tokens": 15,
+    "status": 200,
+    "text_len": 268,
+    "text_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "ttft_sec": 4.505555785028264
+  },
+  "health": {
+    "body": "{\"object\":\"list\",\"data\":[{\"id\":\"QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ\",\"object\":\"model\",\"created\":1789093357,\"owned_by\":\"vllm\",\"root\":\"/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ\",\"parent\":null,\"max_model_len\":8192,\"permission\":[{\"id\":\"modelperm-80f49f24366703b9\",\"object\":\"model_permission\",\"created\":1789093357,\"allow_create_engine\":false,\"allow_sampling\":true,\"allow_logprobs\":true,\"allow_search_indices\":false,\"allow_view\":true,\"allow_fine_tuning\":false,\"organization\":\"*\",\"group\":null,\"is_blocking\":false}]}]}",
+    "ok": true,
+    "status": 200
+  },
+  "label": "active",
+  "long_context": {
+    "completion_tokens": 64,
+    "decode_tok_s": 58.91314925331676,
+    "elapsed_sec": 2.378602870972827,
+    "ok": true,
+    "prompt_tokens": 6012,
+    "status": 200,
+    "text_len": 331,
+    "text_sha256": "5bec9b06d51c5f6a9d73b2d382be184ede00404f7288ddf3b7e2c7536cbc7ed9",
+    "ttft_sec": 1.2922579579753801
+  },
+  "schema": "hyperloom.r9700.active_measure.v1"
+}
