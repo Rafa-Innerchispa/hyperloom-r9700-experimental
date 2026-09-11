@@ -1,0 +1,111 @@
+{
+  "cells": {
+    "stock_queue1": {
+      "all_correctness_match": true,
+      "all_health_ok": true,
+      "c4_range_pct_of_median": 0.0983823936114452,
+      "c4_range_tok_s": 0.15592625175480634,
+      "median_c1_tok_s": 63.892815888808514,
+      "median_c4_tok_s": 158.4899960562322,
+      "median_long_tok_s": 58.86892730931888,
+      "runs": [
+        {
+          "c1_tok_s": 62.963800174558166,
+          "c4_tok_s": 158.5679591821096,
+          "correctness_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+          "correctness_match": true,
+          "file": "docs/evidence/r9700_factorial_stock_queue1_clean1_20260911T022250Z.json",
+          "health_ok": true,
+          "long_tok_s": 58.91314925331676
+        },
+        {
+          "c1_tok_s": 64.82183160305885,
+          "c4_tok_s": 158.4120329303548,
+          "correctness_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+          "correctness_match": true,
+          "file": "docs/evidence/r9700_factorial_stock_queue1_clean2_20260911T023018Z.json",
+          "health_ok": true,
+          "long_tok_s": 58.82470536532099
+        }
+      ]
+    },
+    "unified_defaultq": {
+      "all_correctness_match": true,
+      "all_health_ok": true,
+      "c4_range_pct_of_median": 2.6868217218044235,
+      "c4_range_tok_s": 3.728367391222605,
+      "median_c1_tok_s": 66.86957595921623,
+      "median_c4_tok_s": 138.76497130292282,
+      "median_long_tok_s": 38.79630743294855,
+      "runs": [
+        {
+          "c1_tok_s": 66.80015153156727,
+          "c4_tok_s": 136.9007876073115,
+          "correctness_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+          "correctness_match": true,
+          "file": "docs/evidence/r9700_factorial_unified_defaultq_clean1_20260911T023713Z.json",
+          "health_ok": true,
+          "long_tok_s": 17.86159787963672
+        },
+        {
+          "c1_tok_s": 66.93900038686522,
+          "c4_tok_s": 140.62915499853412,
+          "correctness_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+          "correctness_match": true,
+          "file": "docs/evidence/r9700_factorial_unified_defaultq_clean2_20260911T024424Z.json",
+          "health_ok": true,
+          "long_tok_s": 59.73101698626039
+        }
+      ]
+    },
+    "unified_queue1": {
+      "all_correctness_match": true,
+      "all_health_ok": true,
+      "c4_range_pct_of_median": 0.3598351791619754,
+      "c4_range_tok_s": 0.5640544182503504,
+      "median_c1_tok_s": 62.6605592857284,
+      "median_c4_tok_s": 156.7535502126234,
+      "median_long_tok_s": 55.99982005138548,
+      "runs": [
+        {
+          "c1_tok_s": 62.47963667123636,
+          "c4_tok_s": 157.03557742174857,
+          "correctness_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+          "correctness_match": true,
+          "file": "docs/evidence/r9700_factorial_unified_queue1_clean1_20260911T025257Z.json",
+          "health_ok": true,
+          "long_tok_s": 56.03655049346988
+        },
+        {
+          "c1_tok_s": 62.84148190022044,
+          "c4_tok_s": 156.47152300349822,
+          "correctness_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+          "correctness_match": true,
+          "file": "docs/evidence/r9700_factorial_unified_queue1_clean2_20260911T030032Z.json",
+          "health_ok": true,
+          "long_tok_s": 55.96308960930107
+        }
+      ]
+    }
+  },
+  "comparisons": {
+    "stock_queue1_vs_healthy_fast_stock_c4_pct": -2.228261290120126,
+    "unified_defaultq_vs_stock_queue1_c4_pct": -12.445596090690136,
+    "unified_queue1_vs_healthy_fast_stock_c4_pct": -3.299466625029346,
+    "unified_queue1_vs_stock_queue1_c4_pct": -1.0956185796059392
+  },
+  "date": "2026-09-11",
+  "excluded": [
+    "preliminary stock+queue1 run while stock systemd auto-restart was not disabled",
+    "older Unified Attention candidate campaign for causal/promotion use because it used plain docker stop against an auto-restarting systemd unit"
+  ],
+  "healthy_fast_stock_reference_c4_tok_s": 162.10205336178268,
+  "interpretation": {
+    "fastest_stable_tested_candidate_baseline": "stock attention + GPU_MAX_HW_QUEUES=1",
+    "promotion_rule": "run clean HyperLoom v7 full-model candidate over stock attention + GPU_MAX_HW_QUEUES=1 and also compare against the healthy-fast stock ceiling before promotion",
+    "queue1_effect": "strongly reduces observed process-start throughput bimodality in two clean independent runs, while sitting slightly below the healthy-fast stock ceiling",
+    "unified_attention_effect": "does not improve the stable queue1 baseline in these clean runs; it reduces C4 throughput slightly when added to queue1 and is substantially slower without queue1"
+  },
+  "schema": "hyperloom.r9700.serving_factorial_summary.v1",
+  "truth_boundary": "clean process-isolated serving-factor analysis; not HyperLoom full-model promotion evidence"
+}

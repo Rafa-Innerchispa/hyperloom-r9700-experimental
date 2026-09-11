@@ -1,44 +1,52 @@
 # HyperLoom R9700 Project Continuity
 
-Last reconciled: 2026-09-10 (America/Guayaquil)
+Last reconciled: 2026-09-11 (America/Guayaquil)
 
-This file is the restart point for a fresh ChatGPT/Codex session. Read it together with `FINAL_STATUS.md`, `docs/DEVELOPMENT_LEDGER.md`, `docs/COMMUNITY_FEEDBACK_LEDGER.md`, `docs/R9700_UNIFIED_ATTENTION_REFRESH_RESULT_20260910.md`, and `docs/R9700_RECOVERED_WNA16_TUNER_RESULT_20260910.md` before changing code or restarting the AMD runtime.
+This is the canonical restart file for a fresh ChatGPT/Codex session. Read this first, then consult `FINAL_STATUS.md`, `docs/DEVELOPMENT_LEDGER.md`, `docs/COMMUNITY_FEEDBACK_LEDGER.md`, and the result documents referenced below. Do not reset or clean the AMD worktree before reconciling its untracked research artifacts.
 
-## Canonical identity
+## 1. Canonical identity
 
-- Repository: `Rafa-Innerchispa/hyperloom-r9700-experimental`
-- Active research branch: `chatgpt/r9700-rocm10-upstream-refresh-20260910`
-- Continuity checkpoint parent pushed at 2026-09-11 01:51 UTC: `939f982be8f276e7c703e641ca7aa1ccabbd6061`. Always verify current remote HEAD before editing because later evidence commits may advance it.
-- Ops task: `ops_9c4c37cfbb7e`
-- Correlation id: `hyperloom-r9700-rocm10-refresh-20260910`
+- repository: `Rafa-Innerchispa/hyperloom-r9700-experimental`
+- active research branch: `chatgpt/r9700-rocm10-upstream-refresh-20260910`
+- ops task: `ops_9c4c37cfbb7e`
+- Codex preservation child task: `ops_cab302169eca`
+- correlation id: `hyperloom-r9700-rocm10-refresh-20260910`
 - AMD node: `ralfiia-amd`
+- AMD project id: `hyperloom-r9700-amd-live-verify`
+- AMD worktree: `/home/rlopez/inneros/inneros_core/var/local_execution/worktrees/Rafa-Innerchispa__hyperloom-r9700-experimental/chatgpt__hyperloom-r9700-amd-live-verify`
 - GPU: AMD Radeon AI PRO R9700 / RDNA4 / `gfx1201` / 32 GB
-- Runtime: ROCm 10 + vLLM
-- Model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
-- Normal stock endpoint: `http://127.0.0.1:8000/v1`
-- Normal stock container/service: `inneros-vllm-canary-rocm10`
-- Exact ROCm 10 image observed: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
-- Observed runtime versions: Python 3.14.7; torch `2.12.0+rocm10.0.0`; HIP `7.15.26333`; vLLM `0.27.1.dev5+gf46a9dfe2.d20260827.rocm100`; Triton `3.8.0+git4cff872c.rocm10.0.0`; amd-aiter `0.1.20.post1`.
+- model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
+- normal stock endpoint: `http://127.0.0.1:8000/v1`
+- stock service/container: `inneros-vllm-canary-rocm10.service` / `inneros-vllm-canary-rocm10`
+- exact image: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
+- observed versions: Python 3.14.7; torch `2.12.0+rocm10.0.0`; HIP `7.15.26333`; vLLM `0.27.1.dev5+gf46a9dfe2.d20260827.rocm100`; Triton `3.8.0+git4cff872c.rocm10.0.0`; amd-aiter `0.1.20.post1`.
 
-## Truth boundary
+Always verify the current remote branch SHA before editing. The branch has advanced repeatedly during the ROCm10 refresh; never use a stale SHA from an old chat as the checkout target without checking remote HEAD.
 
-Current technical verdict:
+## 2. Current truth boundary
 
-`KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED`
+**`KERNEL KEEP / FULL-MODEL INTEGRATION NOT YET PROMOTED`**
 
-Do not weaken this gate for a better-looking benchmark claim. In particular:
+Allowed claims:
 
-- `1.47682x` is a routed W1 microkernel median against stock Triton WNA16 in the validated small-M region. It is **not** a full-Qwen speedup.
-- Phase-1 serving/concurrency gains are separate from GPU-kernel gains.
-- The process-local mmap/signal runtime gate was invalid under captured graphs and must not be counted.
-- A slow/bimodal stock spawn is not a legitimate denominator for promoting the hybrid backend.
-- Public status remains experimental; no claim of official AMD support and no claim of being the first RDNA4 port.
+- HyperLoom's experimental packed-INT4 W1 path physically runs on the Radeon AI PRO R9700 / `gfx1201`.
+- The custom small-M W1 kernel repeatedly beats the stock Triton WNA16 W1 kernel in the validated real-Qwen-weight microkernel region.
+- The full Qwen 30B hybrid has booted and exercised the custom W1 path across all 48 MoE layers with deterministic correctness and stock fallback.
+- A clean serving factorial now identifies `stock attention + GPU_MAX_HW_QUEUES=1` as the fastest stable tested serving baseline.
 
-## What is proven
+Forbidden claims:
 
-### Serving / process isolation
+- do not say full Qwen is `1.47682x` faster;
+- do not call Phase-1 serving/concurrency gains GPU-kernel gains;
+- do not claim official AMD RDNA4 support;
+- do not claim this is the first R9700/RDNA4 port;
+- do not count the mmap/SIGUSR1/SIGUSR2 same-process result;
+- do not claim Unified Attention fixes the R9700 process-start bimodality;
+- do not promote a candidate by comparing it only to a pathological slow stock spawn.
 
-The original serving gate was rerun with independent process starts:
+## 3. Canonical proven evidence
+
+### Phase-1 independent serving starts
 
 - stock: `19.893 / 19.942 / 19.987 tok/s`
 - candidate: `36.004 / 36.078 / 36.194 tok/s`
@@ -46,91 +54,66 @@ The original serving gate was rerun with independent process starts:
 - evidence: `docs/evidence/r9700_independent_process_final_20260908.json`
 - SHA256: `dda9128a5ea17728e3eae59488d37952665b30c77e54cb440c225971fdfcf94f`
 
-This is serving/concurrency evidence only.
+Interpretation: serving/concurrency only.
 
-### Live Qwen WNA16 contract
-
-Observed live backend contract on R9700:
+### Live Qwen AWQ/WNA16 contract
 
 - backend: `TritonWNA16Experts`
-- activation: FP16
+- activation dtype: FP16
 - experts: 128
 - top-k: 8
 - W1 packed uint8: `[128,1536,1024]`
 - W2 packed uint8: `[128,2048,384]`
 - quantization: `int4_w4a16`, group size 128
+- evidence: `docs/evidence/r9700_live_moe_dtype_probe_20260909T024321Z.json`
 
-### Custom W1 kernel
+### Custom W1 vs stock Triton WNA16
 
-The custom RDNA4 path keeps packed INT4 and precomputes `correction = zero_point * scale` once, removing qzero unpack/multiply from the hot W1 path. W2 remains stock WNA16.
-
-Real-Qwen-weight stock-vs-custom campaign, three child-process campaigns, 21 alternating HIP-event rounds per M:
+Three real-Qwen-weight child-process campaigns, 21 alternating paired HIP-event rounds per M:
 
 - M1: `1.74518x`
 - M2: `1.49210x`
 - M4: `1.47445x`
 - M8: `1.44613x`
 - M16: `1.46273x`
-- median: `1.47682x`
-- wins: `63/63` per tested shape aggregated across campaigns
+- median across tested small-M region: `1.47682x`
+- wins: `63/63` per tested shape across campaigns
 - correctness cosine: effectively 1.0
-- aggregate evidence: `docs/evidence/r9700_wna16_stock_gate_aggregate_20260909T025832Z.json`
+- evidence: `docs/evidence/r9700_wna16_stock_gate_aggregate_20260909T025832Z.json`
 - SHA256: `6f1faf903dc62d31b2ef62b60beeb1394f68c9f778366ebd77b38a187a782a5e`
+
+Interpretation: W1 microkernel only.
 
 ### Full-model functional integration
 
-`R9700HybridWNA16Experts` booted the full Qwen 30B AWQ model. A deterministic request observed all 48 MoE layers and matched the stock response hash:
+The full Qwen3-Coder 30B AWQ server booted with `R9700HybridWNA16Experts` and a deterministic request observed:
 
-- 48 observations: `custom_small_w1_stock_w2`
-- 48 observations: `stock_full_fallback`
+- 48 `custom_small_w1_stock_w2`
+- 48 `stock_full_fallback`
+- candidate response hash matched stock
+- temporary bootstrap hook removed and stock restored
 - evidence: `docs/evidence/r9700_stock_layout_live_candidate_smoke_20260909T030903Z.json`
 - SHA256: `98565adc398ecf91c34e4a6f94e8ef7847c3e36b6123b791410878e66091206d`
 
-This proves loading/routing/correctness/fallback/rollback, not E2E acceleration.
+Interpretation: load/routing/correctness/fallback/rollback proven, not E2E acceleration.
 
-## E2E promotion result so far
+### Historical full-model E2E result
 
-Stable C4 is the relevant full-model gate because C1 and some C4 stock starts have shown strong bimodality.
+- healthy/stable stock C4 region: roughly `159-162 tok/s`
+- integrated hybrid candidate: roughly `151-153 tok/s`
+- v3 alignment reuse reduced a prior roughly 6-7% regression to roughly 5%, but did not reach parity
 
-Historical stable region:
+Therefore the full hybrid was not promoted.
 
-- stock C4: roughly `159-162 tok/s`
-- hybrid C4: roughly `151-153 tok/s`
+## 4. Recovered gfx1201 WNA16 tuner
 
-Thus the full hybrid was about 5% slower E2E and was not promoted. A later v3 routing/alignment reuse experiment reduced an earlier roughly 6-7% regression to roughly 5%, still insufficient. v3-v6 were not cleanly preserved in the canonical Git branch and must not be represented as shipped code.
+Canonical note: `docs/R9700_RECOVERED_WNA16_TUNER_RESULT_20260910.md`
 
-## ROCm 10 refresh: Unified Attention plus single queue
+Raw evidence: `docs/evidence/r9700_vllm_wna16_bounded_tuner_20260909T051731Z.json`
 
-The controlled three-start campaign recorded in `docs/R9700_UNIFIED_ATTENTION_REFRESH_RESULT_20260910.md` validated the **combined** setting:
+SHA256: `f56942b75f6621ae22078a8173ce3f6ea01c8980d07f279d8456c3d2aaba6d50`
 
-- `VLLM_ROCM_USE_AITER=1`
-- RDNA4 AITER Unified Attention selection
-- `GPU_MAX_HW_QUEUES=1`
-
-Canonical C4 throughput from that campaign:
-
-- start 1: `158.017 tok/s`
-- start 2: `157.296 tok/s`
-- start 3: `157.469 tok/s`
-- median: `157.469 tok/s`
-- range/median: about `0.46%`
-- deterministic response hash matched stock: `7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2`
-
-The paired stock/no-queue starts were `71.940 / 71.776 / 165.699 tok/s` at C4 and reproduced the process-start bimodality.
-
-Important: the candidate campaign changed two causal knobs at once. It validates the combination, but does **not** prove that Unified Attention alone fixes the bimodality. The required factorial gate must isolate Unified Attention from `GPU_MAX_HW_QUEUES=1`.
-
-## Recovered bounded WNA16 tuner
-
-Canonical recovery source: `docs/R9700_RECOVERED_WNA16_TUNER_RESULT_20260910.md`.
-
-Raw source evidence: `docs/evidence/r9700_vllm_wna16_bounded_tuner_20260909T051731Z.json`.
-
-Recovered SHA256 recorded by the canonical recovery note:
-
-`f56942b75f6621ae22078a8173ce3f6ea01c8980d07f279d8456c3d2aaba6d50`
-
-Winner configuration:
+Winner:
 
 - `BLOCK_SIZE_M=16`
 - `BLOCK_SIZE_N=64`
@@ -141,105 +124,143 @@ Winner configuration:
 - `waves_per_eu=4`
 - `SPLIT_K=1`
 
-Isolated-kernel result:
+Result:
 
-- median speedup over M=1,2,4,8,16: `1.2092561838928513x`
+- median isolated speedup M1..16: `1.2092561838928513x`
 - minimum tested speedup: `1.083842659569329x`
+- verdict: `MICROBENCH KEEP`
 
-Verdict: `MICROBENCH KEEP`. The two historical live override smokes remain `REJECT / NOT PROMOTED` because one did not observe the tuned path and the other had a deterministic hash mismatch while process state changed across restore.
+The historical live tuned-config smokes remain `REJECT / NOT PROMOTED` because path observation and deterministic correctness/process-state controls were insufficient.
 
-## 2026-09-10/11 exact healthy-stock reference
+## 5. Healthy stock reference from this refresh
 
-After restoring the exact ROCm 10 canary, first startup appeared unavailable while weights/graphs compiled. Direct container logs proved this was not a hang:
+After restoring the exact ROCm10 canary, direct API measurement produced:
 
-- checkpoint weights: 15.66 GiB
-- weight load: `123.11 s`
-- `torch.compile`: `135.62 s`
-- graph capture: `17 s`
-- server HTTP started at `2026-09-11T01:56:59Z`
-- vLLM warning: no device-specific MoE config file was found for `E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16`; stock therefore used the default MoE config.
+- evidence generated on AMD: `docs/evidence/r9700_active_measure_active_20260911T015752Z.json`
+- `/v1/models`: HTTP 200
+- C1: `68.77085799282636 tok/s`
+- C4: `162.10205336178268 tok/s`
+- ~6012-token prompt: `62.282650281230964 tok/s`
+- deterministic correctness SHA256: `7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2`
+- separate stock audit: `PTH_HITS=[]`
 
-A real API measurement immediately after readiness produced:
+Historical stock/no-queue evidence also includes a fast C4 start at `165.699 tok/s`, alongside slow starts around 72 tok/s. Never substitute the low mode for the credible stock ceiling.
 
-- evidence currently generated on AMD worktree: `docs/evidence/r9700_active_measure_active_20260911T015752Z.json`
-- `/v1/models`: HTTP 200 with the expected Qwen model
-- C1 decode: `68.77085799282636 tok/s`
-- C4 aggregate: `162.10205336178268 tok/s`
-- ~6012-token prompt decode: `62.282650281230964 tok/s`
-- correctness SHA256: `7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2`
+The generic local-model manager incorrectly reported `vllm_models_unavailable` during this refresh while the direct endpoint returned HTTP 200. For this campaign, project probes/direct endpoint evidence are authoritative.
 
-This is a healthy fast stock spawn and a valid reference point, not yet a multi-start distribution by itself.
+## 6. 2026-09-11 clean serving factorial — CLOSED
 
-A separate recovery audit of the current stock container reported `PTH_HITS=[]`, so no temporary HyperLoom `.pth` bootstrap hook was present in the restored stock runtime.
+Canonical result: `docs/R9700_SERVING_FACTORIAL_RESULT_20260911.md`
 
-The generic `local_model_benchmark`/runtime manager incorrectly reported `vllm_models_unavailable` even while the direct endpoint returned HTTP 200. Treat that as an observability bug in the model manager; use the project probe/direct endpoint evidence for this campaign.
+Machine summary: `docs/evidence/r9700_factorial_clean_summary_20260911.json`
 
-## AMD-only artifacts that must be preserved before any reset/bootstrap
+Methodological correction: the earlier candidate launcher used plain `docker stop` against a stock container managed by an auto-restarting systemd unit. Logs proved stock restart attempts could overlap candidate execution. Therefore the preliminary queue1 run and the older Unified-Attention candidate campaign are preserved as historical evidence but excluded from clean causal/promotion statistics.
 
-As of this checkpoint, the AMD project worktree contains fresh untracked research helpers/artifacts not yet all present in the canonical Git tree. **Do not reset/bootstrap/clean that AMD worktree until they are reconciled.** Important names observed include:
+The clean rerun stopped `inneros-vllm-canary-rocm10.service` through authorized host ops, verified the stock container absent and used VRAM below 5 GiB, then launched a fresh candidate process with exact identity/environment capture.
 
-- `scripts/r9700_make_hybrid_v7_clean.py`
-- `scripts/r9700_active_measure.py`
-- `scripts/r9700_candidate_wait.py`
-- `scripts/r9700_container_recipe_probe.py`
-- `scripts/r9700_current_capability_probe.py`
-- `scripts/r9700_export_recovered_tuner.py`
-- `scripts/r9700_force_stock_restore.py`
-- `scripts/r9700_hybrid_patch_audit.py`
-- `scripts/r9700_live_container_diag.py`
-- `scripts/r9700_pilot_log_summary.py`
-- `scripts/r9700_recovery_inventory.py`
-- `scripts/r9700_refresh_audit.py`
-- `scripts/r9700_restore_stable.py`
-- `scripts/r9700_same_process_ab.py`
-- `scripts/r9700_same_process_c4_measure.py`
-- temporary helpers documenting v3-v6 work, including `_tmp_reuse_alignment_v3.py`, `_tmp_add_same_process_gate_v4.py`, `_tmp_add_signal_gate_v5.py`, and `_tmp_late_signal_install_v6.py`
+### Clean cell results
 
-The preserved canonical `scripts/r9700_wna16_hybrid_patch.py` is still the functional v2 implementation. Do not call v3-v7 'in Git' until a clean source file is actually committed.
+`stock attention + GPU_MAX_HW_QUEUES=1`:
 
-A Codex repair task (`ops_cab302169eca`) was dispatched specifically to preserve the clean v7 source, the reproducible raw evidence, and provenance without resetting the AMD worktree.
+- C4: `158.567959 / 158.412033 tok/s`
+- median C4: `158.489996 tok/s`
+- C4 range/median: `0.098%`
+- median C1: `63.892816 tok/s`
+- median ~6K: `58.868927 tok/s`
+- dedicated correctness: PASS / PASS
 
-## Invalid / rejected paths to avoid repeating
+`Unified Attention + default queues`:
 
-- AITER/FlyDSL sorting: isolated HSA memory fault.
-- Activation group pre-sum: correct but slower.
-- Initial FP16/BF16 mirror: dtype mismatch; superseded by actual FP16 measurement.
-- Custom W2 algebraic path: slower; reject.
-- Same-process mmap/SIGUSR1/SIGUSR2 runtime switching: signals reached EngineCore but captured execution stayed stock; invalid A/B.
-- Historical tuned-config live override: not promotable because of path-observation/correctness/process-state problems.
-- Any benchmark that compares a healthy candidate against an anomalously slow stock spawn without independent-process replication: reject.
+- C4: `136.900788 / 140.629155 tok/s`
+- median C4: `138.764971 tok/s`
+- C4 range/median: `2.687%`
+- dedicated correctness: PASS / PASS
+- one long-context completion was abnormally short/different; do not use its arithmetic long-context median as a performance claim
 
-## Immediate continuation gate
+`Unified Attention + GPU_MAX_HW_QUEUES=1`:
 
-Run a process-isolated 2x2 factorial with identical model, benchmark shape, context, request count, launch arguments, and clean restarts:
+- C4: `157.035577 / 156.471523 tok/s`
+- median C4: `156.753550 tok/s`
+- C4 range/median: `0.360%`
+- median ~6K: `55.999820 tok/s`
+- dedicated correctness: PASS / PASS
 
-1. stock attention + default queue setting
-2. stock attention + `GPU_MAX_HW_QUEUES=1`
-3. Unified Attention + default queue setting
-4. Unified Attention + `GPU_MAX_HW_QUEUES=1`
+Computed comparisons:
 
-The existing campaign already gives controlled observations for cells 1 and 4, but the missing cells 2 and 3 must be measured before attributing causality. Prefer multiple independent starts per missing cell. Capture throughput, TTFT, TPOT, E2E, response hash, launch env, GPU/runtime identity, and raw JSON evidence.
+- stock+queue1 vs same-day healthy-fast stock 162.102: `-2.2283%`
+- Unified/default vs stock+queue1: `-12.4456%`
+- Unified/queue1 vs stock+queue1: `-1.0956%`
+- Unified/queue1 vs healthy-fast stock: `-3.2995%`
 
-Then select the fastest **stable and correct** baseline. Only after that:
+### Factorial conclusion
 
-1. persist/inspect the clean v7 candidate source;
-2. boot a separate full-model process with v7 over the winning serving baseline;
-3. run C1, stable C4, and long-context (~6K) probes with correctness;
-4. compare against the healthy stock distribution, not its pathological low mode;
-5. restore the exact ROCm 10 stock server and verify direct API health plus absence of temporary hooks;
-6. update `FINAL_STATUS.md` and the ledgers;
-7. commit, push, and verify the remote SHA.
+`GPU_MAX_HW_QUEUES=1` is the useful stability control in the tested environment. It strongly reduces observed process-start throughput bimodality, at a roughly 2.23% cost relative to the same-day healthy-fast stock observation.
 
-Promotion rule: change the full-model verdict only if the clean candidate repeatedly matches or beats the healthy stock baseline without correctness, stability, or rollback regressions.
+Unified Attention does not improve the stable queue1 baseline and is not selected for the final HyperLoom gate.
 
-## Restart checklist for another chat
+**Final stable serving baseline selected:**
+
+`stock attention + GPU_MAX_HW_QUEUES=1`
+
+Reference C4 median: `158.489996 tok/s`.
+
+The full-model promotion comparison must still include the healthy-fast stock ceiling `162.102 tok/s` and historical `165.699 tok/s`, not only the stability-limited queue1 baseline.
+
+## 7. AMD candidate source state — DO NOT CONFUSE v6 WITH v7
+
+The audited AMD worktree `scripts/r9700_wna16_hybrid_patch.py` is currently:
+
+- patch name: `r9700_autoawq_stock_layout_hybrid_v6`
+- SHA256: `0cf11f9fc86e33cde9aa8e6e386e38b9aad2ba09fc643cdb75e57f31703d26ee`
+- still contains `mmap`, `SIGUSR1/SIGUSR2`, `runtime_gate_stock`, and the invalid runtime-gate machinery
+- also contains the useful v3 alignment-reuse change
+
+Do **not** use this v6 file as the final full-model candidate.
+
+AMD also contains `scripts/r9700_make_hybrid_v7_clean.py`, intended to materialize a clean candidate without the invalid runtime gates. Codex task `ops_cab302169eca` is preserving/reconciling this source and the fresh raw evidence into Git. Do not reset/bootstrap/clean the AMD worktree before that task's output is inspected.
+
+The canonical Git `scripts/r9700_wna16_hybrid_patch.py` may still represent an older v2 proof implementation until the clean candidate is explicitly committed. Never describe v3-v7 as shipped/versioned code without checking the actual file and commit.
+
+## 8. Invalid/rejected paths worth preserving
+
+- AITER/FlyDSL sorting: isolated HSA memory fault
+- activation group pre-sum: correct but slower
+- initial FP16/BF16 mirror: dtype mismatch, superseded by measured live FP16
+- custom W2 algebraic path: slower than stock/reference
+- same-process mmap/SIGUSR1/SIGUSR2 switching: invalid under captured graphs; signals reached EngineCore but telemetry stayed `runtime_gate_stock`
+- historical tuned-config live override: not promotable
+- old Unified-Attention campaign: historical only for clean causal/promotion use because stock systemd could auto-restart after plain Docker stop
+- preliminary 2026-09-11 stock+queue1 run: excluded for the same systemd contamination reason
+
+## 9. Immediate final gate
+
+Do this next, in order:
+
+1. inspect Codex task `ops_cab302169eca` and preserve the exact clean v7 source plus reproducible evidence in Git;
+2. audit the committed v7 source to prove the mmap/signal/runtime-gate code is gone while the proven W1 path, stock fallback, and alignment reuse remain;
+3. keep the stock systemd unit stopped during candidate measurement so no second model process can auto-restart;
+4. launch full Qwen3-Coder 30B AWQ with **stock attention + `GPU_MAX_HW_QUEUES=1` + clean v7** using the exact ROCm10 image;
+5. capture C1, C4, ~6K, TTFT/E2E, endpoint health, deterministic correctness, candidate path evidence, runtime identity, and raw JSON;
+6. if the first v7 run is competitive, repeat in a second independent process start;
+7. compare candidate against both:
+   - stable queue1 baseline: `158.489996 tok/s` C4 median;
+   - credible fast-stock observations: `162.102053` current and `165.699` historical;
+8. promote only if the clean candidate repeatedly matches or beats the credible stock baseline without correctness, stability, or rollback regressions;
+9. otherwise close Phase 2 honestly as a proven W1 kernel contribution plus stable serving configuration, with full hybrid integration unpromoted;
+10. remove candidate, restore exact ROCm10 stock systemd service, verify direct `/v1/models`, run deterministic health/correctness and confirm `PTH_HITS=[]`;
+11. update `FINAL_STATUS.md`, README, development/community ledgers as appropriate, commit, push, verify remote SHA, report final evidence status, and release the repo lock.
+
+Do not reopen already-closed microbenchmarks just to manufacture a better headline number.
+
+## 10. Restart checklist for a fresh chat
 
 1. Read this file.
-2. Read `FINAL_STATUS.md`.
-3. Read the tail of `docs/DEVELOPMENT_LEDGER.md` and `docs/COMMUNITY_FEEDBACK_LEDGER.md`.
-4. Read both 2026-09-10 recovery/Unified Attention detailed notes before quoting their numbers.
-5. Verify branch/SHA before editing.
-6. Check task `ops_9c4c37cfbb7e`, Codex child task `ops_cab302169eca`, and acquire/renew the repo lock.
-7. Inspect the AMD project worktree for the untracked artifacts listed above **before** any bootstrap/reset.
-8. Check the exact ROCm10 canary and direct `/v1/models`; do not trust the current generic model-manager health result by itself.
-9. Continue from the missing 2x2 cells and then the clean-v7 full-model gate. Do not rerun already-closed microbenchmarks simply to manufacture a nicer number.
+2. Verify remote HEAD of `chatgpt/r9700-rocm10-upstream-refresh-20260910` before editing.
+3. Read `FINAL_STATUS.md` and the tail of `docs/DEVELOPMENT_LEDGER.md`.
+4. Read `docs/R9700_SERVING_FACTORIAL_RESULT_20260911.md` before quoting serving results.
+5. Check parent task `ops_9c4c37cfbb7e` and child preservation task `ops_cab302169eca`.
+6. Acquire/renew the repo lock before writes.
+7. Inspect the AMD worktree before any bootstrap/reset/clean.
+8. Never trust the generic model-manager health result alone; confirm the direct endpoint/project probe.
+9. Do not run v6 as the final candidate.
+10. Resume at the clean-v7 full-model gate described in section 9.
