@@ -2,7 +2,7 @@ from __future__ import annotations
 import concurrent.futures,datetime as dt,hashlib,json,sys,time,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-MODEL='QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ'; PORT=8011; BASE=f'http://127.0.0.1:{PORT}'
+MODEL='QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ'; PORT=18011; BASE=f'http://127.0.0.1:{PORT}'
 label=sys.argv[1] if len(sys.argv)>1 else 'isolated'
 def req(prompt,max_tokens=96):
  payload={'model':MODEL,'prompt':prompt,'max_tokens':max_tokens,'temperature':0.0,'seed':7,'stream':True,'stream_options':{'include_usage':True}}
@@ -35,7 +35,7 @@ def health():
  except Exception as e:return {'ok':False,'error':f'{type(e).__name__}: {e}'}
 short='Implement a Python LRU cache with get and put methods. Return only code.'
 longp=(' x'*6000)+'\nSummarize the repeated marker pattern in one sentence.'
-out={'schema':'hyperloom.r9700.phase3.isolated_measure.v1','label':label,'port':PORT,'captured_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'health':health()}
+out={'schema':'hyperloom.r9700.phase3.isolated_measure.v2','label':label,'port':PORT,'captured_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'health':health()}
 if out['health']['ok']:
  out['correctness']=req('Return exactly a compact Python function add(a,b) that returns a+b.',64)
  out['c1']=req(short,128); out['c4']=c4(short,128); out['long_context']=req(longp,64)
