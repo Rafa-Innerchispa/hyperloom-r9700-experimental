@@ -1,1 +1,2 @@
-import sys,os; sys.path.insert(0,"/tmp"); os.environ["HYPERLOOM_R9700_EVIDENCE_FILE"]="/tmp/r9700_candidate_paths.jsonl"; import r9700_wna16_hybrid_patch as _r9700p; _r9700p.install_patch(force=True)
+# Deprecated intentionally. Final v7 uses scripts/r9700_v7_server_entry.py.
+# This file is inert and retained only as migration provenance.
