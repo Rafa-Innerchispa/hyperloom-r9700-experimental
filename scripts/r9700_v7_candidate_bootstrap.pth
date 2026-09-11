@@ -1,0 +1,1 @@
+import sys,os; sys.path.insert(0,"/tmp"); os.environ["HYPERLOOM_R9700_EVIDENCE_FILE"]="/tmp/r9700_candidate_paths.jsonl"; import r9700_wna16_hybrid_patch as _r9700p; _r9700p.install_patch(force=True)
