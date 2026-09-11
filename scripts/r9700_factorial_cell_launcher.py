@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
-"""Run one process-isolated R9700 serving factorial cell and restore stock.
+"""Launch one clean process-isolated R9700 serving factorial cell.
 
-This helper exists to separate the two knobs that were accidentally combined in
-the 2026-09-10 Unified Attention campaign:
+IMPORTANT: this script deliberately does not stop/start the stock systemd unit.
+The caller must use the authorized host-ops plane to stop
+`inneros-vllm-canary-rocm10.service` before launch and restore it after the
+candidate is removed. This prevents systemd auto-restart from contaminating the
+GPU while a candidate is loading or being benchmarked.
 
-* AITER RDNA4 Unified Attention selection
-* GPU_MAX_HW_QUEUES=1
-
-Supported cells intentionally cover only the two missing cells. Existing evidence
-already covers stock/default and Unified-Attention/queue1.
+The script exits immediately after starting and identifying the test container.
+Readiness, measurement, removal, and stock restore are separate explicit gates.
 """
 from __future__ import annotations
 
 import json
-import shutil
 import subprocess
 import time
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-STABLE = "inneros-vllm-canary-rocm10"
+STABLE_SERVICE = "inneros-vllm-canary-rocm10.service"
+STABLE_CONTAINER = "inneros-vllm-canary-rocm10"
 TEST = "hyperloom-r9700-unified-pilot"
 IMAGE = "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0"
 MODEL = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
@@ -37,6 +36,19 @@ def run(argv: list[str], *, timeout: float = 90.0, check: bool = False) -> subpr
             f"rc={proc.returncode} argv={argv!r} stderr={proc.stderr[-4000:]}"
         )
     return proc
+
+
+def stock_service_state() -> str:
+    proc = run(["systemctl", "--user", "is-active", STABLE_SERVICE], timeout=20)
+    return proc.stdout.strip() or "unknown"
+
+
+def stock_container_running() -> bool:
+    proc = run(
+        ["docker", "inspect", "-f", "{{.State.Running}}", STABLE_CONTAINER],
+        timeout=20,
+    )
+    return proc.returncode == 0 and proc.stdout.strip() == "true"
 
 
 def used_vram() -> int:
@@ -57,34 +69,6 @@ def wait_vram_free(timeout: float = 120.0) -> dict[str, object]:
             return {"ok": True, "wait_sec": time.monotonic() - started, "last": value}
         time.sleep(2)
     return {"ok": False, "wait_sec": time.monotonic() - started, "samples_tail": samples[-10:]}
-
-
-def wait_health(timeout: float = 420.0) -> dict[str, object]:
-    started = time.monotonic()
-    last_error = ""
-    attempts = 0
-    while time.monotonic() - started < timeout:
-        attempts += 1
-        try:
-            with urllib.request.urlopen("http://127.0.0.1:8000/v1/models", timeout=5) as response:
-                payload = json.loads(response.read().decode("utf-8"))
-                ids = [row.get("id") for row in payload.get("data", []) if isinstance(row, dict)]
-                if response.status == 200 and MODEL in ids:
-                    return {
-                        "ok": True,
-                        "ready_sec": time.monotonic() - started,
-                        "attempts": attempts,
-                        "models": ids,
-                    }
-        except Exception as exc:
-            last_error = f"{type(exc).__name__}: {exc}"
-        time.sleep(3)
-    return {
-        "ok": False,
-        "ready_sec": time.monotonic() - started,
-        "attempts": attempts,
-        "last_error": last_error,
-    }
 
 
 def make_overlay() -> None:
@@ -119,55 +103,23 @@ def make_overlay() -> None:
 
 
 def inspect_test() -> dict[str, object]:
-    proc = run(["docker", "inspect", TEST], timeout=30)
-    if proc.returncode:
-        return {"ok": False, "stderr": proc.stderr[-3000:]}
+    proc = run(["docker", "inspect", TEST], timeout=30, check=True)
     row = json.loads(proc.stdout)[0]
     env = row.get("Config", {}).get("Env", []) or []
     relevant = sorted(
         item
         for item in env
-        if item.startswith("VLLM_ROCM_USE_AITER") or item.startswith("GPU_MAX_HW_QUEUES=")
+        if item.startswith("VLLM_ROCM_USE_AITER")
+        or item.startswith("GPU_MAX_HW_QUEUES=")
     )
     return {
-        "ok": True,
         "image": row.get("Config", {}).get("Image"),
         "started_at": row.get("State", {}).get("StartedAt"),
         "pid": row.get("State", {}).get("Pid"),
+        "running": row.get("State", {}).get("Running"),
         "relevant_env": relevant,
         "cmd": row.get("Config", {}).get("Cmd", []),
     }
-
-
-def restore_stock() -> dict[str, object]:
-    removed = run(["docker", "rm", "-f", TEST], timeout=40)
-    started = run(["docker", "start", STABLE], timeout=40)
-    health = wait_health()
-    return {
-        "remove_candidate_rc": removed.returncode,
-        "start_stock_rc": started.returncode,
-        "health": health,
-    }
-
-
-def run_measurement(cell: str, stamp: str) -> dict[str, object]:
-    proc = run(["python3", str(ROOT / "scripts" / "r9700_active_measure.py")], timeout=180)
-    result: dict[str, object] = {
-        "returncode": proc.returncode,
-        "stdout_tail": proc.stdout[-16000:],
-        "stderr_tail": proc.stderr[-6000:],
-    }
-    if proc.returncode:
-        return result
-    first_line = proc.stdout.splitlines()[0].strip() if proc.stdout.splitlines() else ""
-    source = Path(first_line)
-    if source.is_file():
-        dest = ROOT / "docs" / "evidence" / f"r9700_factorial_{cell}_{stamp}.json"
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, dest)
-        result["source"] = str(source)
-        result["evidence"] = str(dest.relative_to(ROOT))
-    return result
 
 
 def launch(cell: str) -> int:
@@ -175,34 +127,37 @@ def launch(cell: str) -> int:
         raise ValueError(f"unsupported factorial cell: {cell}")
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    output = ROOT / "docs" / "evidence" / f"r9700_factorial_{cell}_run_{stamp}.json"
+    output = ROOT / "docs" / "evidence" / f"r9700_factorial_{cell}_launch_{stamp}.json"
+    output.parent.mkdir(parents=True, exist_ok=True)
     payload: dict[str, object] = {
-        "schema": "hyperloom.r9700.serving_factorial_cell.v1",
+        "schema": "hyperloom.r9700.serving_factorial_launch.v2",
         "captured_at_utc": datetime.now(timezone.utc).isoformat(),
         "cell": cell,
         "model": MODEL,
         "image": IMAGE,
-        "truth_boundary": "process-isolated causal gate; not a full-model HyperLoom promotion by itself",
+        "stock_service_state_before": stock_service_state(),
+        "stock_container_running_before": stock_container_running(),
+        "truth_boundary": "launch identity only; benchmark evidence is captured separately",
     }
 
-    run(["docker", "rm", "-f", TEST], timeout=30)
-    stable_running = (
-        run(["docker", "inspect", "-f", "{{.State.Running}}", STABLE], timeout=20).stdout.strip()
-        == "true"
-    )
-    payload["stock_was_running"] = stable_running
-    if stable_running:
-        stop = run(["docker", "stop", "-t", "20", STABLE], timeout=50)
-        payload["stock_stop_rc"] = stop.returncode
-
-    free = wait_vram_free()
-    payload["vram_free"] = free
-    if not free.get("ok"):
-        payload["restore"] = restore_stock()
+    if payload["stock_service_state_before"] in {"active", "activating", "reloading"} or payload["stock_container_running_before"]:
+        payload["ok"] = False
+        payload["error"] = "stock service/container must be stopped via authorized host ops before candidate launch"
         output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(output)
         print(json.dumps(payload, indent=2, sort_keys=True))
         return 2
+
+    run(["docker", "rm", "-f", TEST], timeout=30)
+    free = wait_vram_free()
+    payload["vram_free"] = free
+    if not free.get("ok"):
+        payload["ok"] = False
+        payload["error"] = "VRAM did not return below clean-launch threshold"
+        output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print(output)
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 3
 
     docker_args = [
         "docker",
@@ -273,32 +228,16 @@ def launch(cell: str) -> int:
     payload["launch_rc"] = launched.returncode
     payload["container_id"] = launched.stdout.strip()
     if launched.returncode:
+        payload["ok"] = False
         payload["launch_stderr"] = launched.stderr[-5000:]
-        payload["restore"] = restore_stock()
         output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(output)
         print(json.dumps(payload, indent=2, sort_keys=True))
-        return 3
+        return 4
 
-    health = wait_health()
-    payload["candidate_health"] = health
     payload["candidate_identity"] = inspect_test()
-    logs = run(["docker", "logs", TEST], timeout=30)
-    payload["candidate_log_tail"] = (logs.stdout + "\n" + logs.stderr)[-20000:]
-
-    if health.get("ok"):
-        payload["measurement"] = run_measurement(cell, stamp)
-
-    payload["restore"] = restore_stock()
+    payload["ok"] = True
     output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(output)
-    print(json.dumps({
-        "cell": cell,
-        "candidate_health": health,
-        "measurement": payload.get("measurement"),
-        "restore": payload["restore"],
-    }, indent=2, sort_keys=True))
-
-    measurement_ok = isinstance(payload.get("measurement"), dict) and payload["measurement"].get("returncode") == 0
-    restore_ok = bool((payload["restore"] or {}).get("health", {}).get("ok"))
-    return 0 if health.get("ok") and measurement_ok and restore_ok else 4
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
