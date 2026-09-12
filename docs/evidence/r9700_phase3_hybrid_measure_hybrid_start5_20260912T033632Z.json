@@ -1,0 +1,51 @@
+{
+  "c1": {
+    "completion_tokens": 128,
+    "decode_tok_s": 70.21479780432517,
+    "elapsed_sec": 1.868416358018294,
+    "ok": true,
+    "prompt_tokens": 16,
+    "status": 200,
+    "text_len": 530,
+    "text_sha256": "7cedaa12db056ff69d1bb8d8259d4f44f8dd6d065948c36ae0c82cfa49212393",
+    "ttft_sec": 0.045438809087499976
+  },
+  "c4": {
+    "aggregate_tok_s": 193.66233949834927,
+    "completion_tokens": 512,
+    "rows": [
+      {"completion_tokens":128,"decode_tok_s":49.86847676341551,"elapsed_sec":2.6222445559687912,"ok":true,"prompt_tokens":20,"status":200,"text_len":261,"text_sha256":"891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68","ttft_sec":0.05549280601553619},
+      {"completion_tokens":128,"decode_tok_s":50.17999259470076,"elapsed_sec":2.640769459074363,"ok":true,"prompt_tokens":20,"status":200,"text_len":522,"text_sha256":"f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c","ttft_sec":0.08995202404912561},
+      {"completion_tokens":128,"decode_tok_s":50.21681866750464,"elapsed_sec":2.640999570954591,"ok":true,"prompt_tokens":20,"status":200,"text_len":584,"text_sha256":"fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407","ttft_sec":0.09205275599379092},
+      {"completion_tokens":128,"decode_tok_s":50.239094344647306,"elapsed_sec":2.640610240981914,"ok":true,"prompt_tokens":20,"status":200,"text_len":584,"text_sha256":"fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407","ttft_sec":0.09279361192602664}
+    ],
+    "wall_sec": 2.643776798970066
+  },
+  "captured_at_utc": "2026-09-12T03:36:19.646699+00:00",
+  "correctness": {
+    "completion_tokens":64,
+    "decode_tok_s":70.20172406373118,
+    "elapsed_sec":5.887459408026189,
+    "ok":true,
+    "prompt_tokens":15,
+    "status":200,
+    "text_len":268,
+    "text_sha256":"7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "ttft_sec":4.975800886051729
+  },
+  "health": {"ok":true,"status":200},
+  "label": "hybrid_start5",
+  "long_context": {
+    "completion_tokens":64,
+    "decode_tok_s":63.13407306625579,
+    "elapsed_sec":2.138704288052395,
+    "ok":true,
+    "prompt_tokens":6012,
+    "status":200,
+    "text_len":331,
+    "text_sha256":"5bec9b06d51c5f6a9d73b2d382be184ede00404f7288ddf3b7e2c7536cbc7ed9",
+    "ttft_sec":1.124988605035469
+  },
+  "port":18015,
+  "schema":"hyperloom.r9700.phase3.hybrid_independent_measure.v1"
+}
