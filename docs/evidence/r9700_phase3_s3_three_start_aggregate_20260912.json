@@ -1,0 +1,72 @@
+{
+  "schema": "hyperloom.r9700.phase3.s3_three_start_aggregate.v1",
+  "captured_date": "2026-09-12",
+  "candidate": "vllm-pr-43389-repacked-int4-plus-r9700-s3-config",
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "s3_config_sha256": "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6",
+  "queue_control": "GPU_MAX_HW_QUEUES=1",
+  "attention": "ROCM_ATTN stock",
+  "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+  "canonical_c4_hashes": [
+    "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+    "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+    "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+    "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407"
+  ],
+  "independent_starts": [
+    {
+      "label": "hybrid_start3",
+      "port": 18013,
+      "first": {"c1_tok_s": 66.90866653149924, "c4_tok_s": 186.60153918601006, "long_context_tok_s": 58.18529057634683, "correctness_ttft_sec": 5.081645346013829},
+      "hot": {"c1_tok_s": 67.74903556188706, "c4_tok_s": 186.49254976456643, "long_context_tok_s": 62.67511482162822, "correctness_ttft_sec": 0.053394466056488454},
+      "additional_hot_c4_tok_s": 189.767407023313
+    },
+    {
+      "label": "hybrid_start4",
+      "port": 18014,
+      "first": {"c1_tok_s": 69.49680303871574, "c4_tok_s": 188.59816600815128, "long_context_tok_s": 61.801768267545576, "correctness_ttft_sec": 4.612734004040249},
+      "hot": {"c1_tok_s": 63.25507427770107, "c4_tok_s": 193.94826236494046, "long_context_tok_s": 62.20834147639644, "correctness_ttft_sec": 0.04929076798725873}
+    },
+    {
+      "label": "hybrid_start5",
+      "port": 18015,
+      "container_id": "e45e8e1301ba19029feb9faea78ac69b547b18983addf09e3daaedb8c18aa2b5",
+      "first": {"c1_tok_s": 70.21479780432517, "c4_tok_s": 193.66233949834927, "long_context_tok_s": 63.13407306625579, "correctness_ttft_sec": 4.975800886051729},
+      "hot": {"c1_tok_s": 69.13124786264491, "c4_tok_s": 192.46052225729215, "long_context_tok_s": 63.17038940184458, "correctness_ttft_sec": 0.05409695499110967}
+    }
+  ],
+  "first_measure_aggregate": {
+    "c1_tok_s": {"median": 69.49680303871574, "min": 66.90866653149924, "max": 70.21479780432517, "range_over_median_pct": 4.757242244631217},
+    "c4_tok_s": {"median": 188.59816600815128, "min": 186.60153918601006, "max": 193.66233949834927, "range_over_median_pct": 3.74383296602897},
+    "long_context_tok_s": {"median": 61.801768267545576, "min": 58.18529057634683, "max": 63.13407306625579, "range_over_median_pct": 8.007509539994421}
+  },
+  "hot_repeat_aggregate": {
+    "c1_tok_s": {"median": 67.74903556188706, "min": 63.25507427770107, "max": 69.13124786264491, "range_over_median_pct": 8.673442413178124},
+    "c4_tok_s": {"median": 192.46052225729215, "min": 186.49254976456643, "max": 193.94826236494046, "range_over_median_pct": 3.8738919093271544},
+    "long_context_tok_s": {"median": 62.67511482162822, "min": 62.20834147639644, "max": 63.17038940184458, "range_over_median_pct": 1.5349759281432567}
+  },
+  "combined_first_plus_hot_c4_median_tok_s": 190.52934413272172,
+  "reference_baselines": {
+    "stock_queue1_c4_tok_s": 158.489996,
+    "same_day_healthy_fast_stock_c4_tok_s": 162.102053,
+    "historical_fast_stock_c4_tok_s": 165.699,
+    "stock_queue1_c1_range_tok_s": [63.0, 65.0],
+    "stock_queue1_long_context_tok_s": 58.87,
+    "untuned_phase3_three_start_c4_median_tok_s": 191.42669659550938
+  },
+  "first_measure_gain_pct": {
+    "c4_vs_stock_queue1": 18.99688987824273,
+    "c4_vs_same_day_healthy_fast_stock": 16.345328463021545,
+    "c4_vs_historical_fast_stock": 13.819736997900577,
+    "long_context_vs_stock_queue1": 4.9800717981069775
+  },
+  "hot_repeat_gain_pct": {
+    "c4_vs_stock_queue1": 21.433861514699103,
+    "c4_vs_same_day_healthy_fast_stock": 18.727998008323897,
+    "c4_vs_historical_fast_stock": 16.150684226997235,
+    "long_context_vs_stock_queue1": 6.463588961488398
+  },
+  "cold_start_observation": "The dedicated correctness request on the first measurement of each fresh process repeatedly incurs about 4.6-5.1 s TTFT, while hot correctness returns to about 49-54 ms. C1/C4/long metrics and output hashes remain healthy. Treat as a reproducible cold/lazy compile/cache artifact requiring disclosure.",
+  "verdict_before_stock_restore": "THREE-INDEPENDENT-START S3 GATE PASS; CROSS-REGIME PERFORMANCE ACCEPTABLE; PROMOTION MAY PROCEED AFTER RAW PRESERVATION AND STOCK RESTORE HEALTH CHECK",
+  "claim_boundary": "Use independent-start first-measure C4 median 188.598 tok/s as the conservative tuned-S3 reproducibility figure. Hot-repeat median is 192.461 tok/s. Do not claim the 193.948 tok/s best observation as the universal result."
+}
