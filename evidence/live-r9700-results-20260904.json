@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "date": "2026-09-04",
+  "upstream_hyperloom_commit": "9ae79d6a8c9fec7ed041735e70fb19ef39850813",
+  "gpu": "AMD Radeon AI PRO R9700",
+  "gfx": "gfx1201",
+  "compute_units": 64,
+  "backend": "hyperloom bypass",
+  "preflight": {
+    "autodetected_gpu_type": "r9700",
+    "dispatch_identity": ["gfx1201", 64],
+    "result": "PASS"
+  },
+  "baseline": {
+    "concurrency": 1,
+    "completed_requests": 10,
+    "success": true,
+    "output_throughput_tok_s": 21.79527087563922,
+    "total_token_throughput_tok_s": 43.59054175127844,
+    "mean_ttft_ms": 68.47182940400671,
+    "mean_e2el_ms": 1467.8107443032786
+  },
+  "candidate": {
+    "concurrency": 2,
+    "completed_requests": 20,
+    "success": true,
+    "output_throughput_tok_s": 36.592719495369984,
+    "total_token_throughput_tok_s": 73.18543899073997,
+    "mean_ttft_ms": 121.06439904891886,
+    "mean_e2el_ms": 1746.4391647474258
+  },
+  "output_throughput_gain_pct": 67.89293284842822,
+  "interpretation": "Concurrency tuning increased aggregate throughput while latency increased. This does not claim universal 67.89% GPU acceleration or RDNA4 kernel optimization.",
+  "not_claimed": [
+    "official AMD Hyperloom R9700 support",
+    "Magpie R9700 runner",
+    "TraceLens RDNA4 profiling",
+    "RDNA4 kernel optimization",
+    "Instinct kernel portability"
+  ]
+}
