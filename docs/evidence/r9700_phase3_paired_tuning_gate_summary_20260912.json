@@ -1,0 +1,22 @@
+{
+  "schema": "hyperloom.r9700.phase3.paired_tuning_gate_summary.v1",
+  "captured_at_utc": "2026-09-12T01:55:30Z",
+  "device": "AMD Radeon AI PRO R9700",
+  "candidate": "vllm-pr-43389-repacked-int4 + R9700-specific MoE tiles",
+  "conditions": "same seed, same M, same 30-iteration benchmark_config, alternating default/tuned order; four samples each per M",
+  "all_tuned_faster": true,
+  "median_speedup_across_M": 1.047517063165491,
+  "min_speedup": 1.0397601484172259,
+  "rows": {
+    "1": {"default_median_us":145.0848642985026,"tuned_median_us":98.55155805746715,"speedup":1.4721722026342907,"tuned_wins":4},
+    "2": {"default_median_us":150.2862246831258,"tuned_median_us":144.53931987285614,"speedup":1.0397601484172259,"tuned_wins":4},
+    "4": {"default_median_us":245.67459503809613,"tuned_median_us":234.5303992430369,"speedup":1.047517063165491,"tuned_wins":4},
+    "8": {"default_median_us":403.22037021319073,"tuned_median_us":387.00472195943195,"speedup":1.0419003886352027,"tuned_wins":4},
+    "16": {"default_median_us":616.2542653083801,"tuned_median_us":591.0651620229085,"speedup":1.0426164573788488,"tuned_wins":4},
+    "32": {"default_median_us":946.4079300562541,"tuned_median_us":800.4835263888042,"speedup":1.1822953238347753,"tuned_wins":4},
+    "64": {"default_median_us":1481.489200592041,"tuned_median_us":919.9614350001018,"speedup":1.6103818532261378,"tuned_wins":4}
+  },
+  "selected_config_path": "configs/E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json",
+  "verdict": "KERNEL CONFIG GATE PASS; PROCEED TO ISOLATED FULL-MODEL SERVING",
+  "next_gate": "mount config read-only with PR#43389 overlay, boot Qwen 30B, verify log uses tuned config, measure C1/C4/~6K and hashes; repeat independent starts if competitive"
+}
