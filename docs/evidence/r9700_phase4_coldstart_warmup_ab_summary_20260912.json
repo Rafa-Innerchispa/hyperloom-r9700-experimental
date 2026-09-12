@@ -1,0 +1,81 @@
+{
+  "schema": "hyperloom.r9700.phase4.coldstart_warmup_ab.v1",
+  "date": "2026-09-12",
+  "hardware": "AMD Radeon AI PRO R9700 / gfx1201 / 32 GiB",
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+  "runtime_controls": {
+    "attention": "ROCM_ATTN stock",
+    "GPU_MAX_HW_QUEUES": "1",
+    "jit_monitor_mode": "warn",
+    "jit_monitor_verbose": true,
+    "isolated_port": 18016
+  },
+  "untreated_fresh_process": {
+    "ttft_sec": 6.074754946050234,
+    "elapsed_sec": 7.046957934042439,
+    "decode_tok_s": 65.82987379227554,
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "canonical_match": true,
+    "unexpected_inference_jit": true,
+    "kernel": "vllm.v1.attention.ops.prefix_prefill._fwd_kernel"
+  },
+  "captured_specialization": {
+    "BLOCK_DMODEL": 128,
+    "BLOCK_DMODEL_PADDED": 128,
+    "BLOCK_M": 128,
+    "BLOCK_N": 64,
+    "BLOCK_SIZE": 32,
+    "CAUSAL": true,
+    "KV_FROM_CACHE": false,
+    "MAX_CTX_LEN": 0,
+    "MAX_Q_LEN": 0,
+    "PHYSICAL_BLOCK_SIZE": 16,
+    "SKIP_DECODE": true,
+    "SLIDING_WINDOW": 0,
+    "USE_FP8": false,
+    "USE_SINKS": false,
+    "num_queries_per_kv": 8,
+    "num_unroll_cache": 4,
+    "num_unroll_request": 1,
+    "x": 8,
+    "qkv_dtype": "fp16",
+    "num_warps": 4,
+    "num_stages": 1
+  },
+  "fresh_process_with_directed_internal_warmup": {
+    "launch": {
+      "container": "hyperloom-r9700-p4-stock-verbose-p18016",
+      "removed_previous_exact_container": true,
+      "stock_service_state_before": "inactive",
+      "vram_used_before_bytes": 59994112
+    },
+    "internal_warmup_request": {
+      "ttft_sec": 5.413856045110151,
+      "elapsed_sec": 6.386839032056741,
+      "decode_tok_s": 65.77710079067718,
+      "canonical_match": true,
+      "unexpected_inference_jit": true,
+      "kernel": "vllm.v1.attention.ops.prefix_prefill._fwd_kernel"
+    },
+    "first_user_request_after_warmup": {
+      "ttft_sec": 0.06631277105771005,
+      "elapsed_sec": 1.2600659970194101,
+      "decode_tok_s": 53.61242056409182,
+      "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+      "canonical_match": true,
+      "unexpected_inference_jit": false
+    },
+    "gate": {
+      "canonical_match": true,
+      "no_user_inference_jit": true,
+      "user_ttft_under_500ms": true,
+      "pass": true
+    }
+  },
+  "derived": {
+    "untreated_to_prewarmed_first_user_ttft_reduction_pct": 98.91,
+    "untreated_to_prewarmed_first_user_ttft_ratio": 91.61
+  },
+  "verdict": "PASS: a readiness-stage internal request covers the previously missed ROCm prefix-prefill Triton specialization and prevents the ~6 s JIT penalty from reaching the first external user request. Operational integration and S3 regression validation remain open."
+}
