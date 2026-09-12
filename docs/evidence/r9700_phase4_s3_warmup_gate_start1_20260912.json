@@ -1,0 +1,61 @@
+{
+  "schema": "hyperloom.r9700.phase4.s3_warmup_gate.v1",
+  "date": "2026-09-12",
+  "fresh_start": "phase4_s3_start1",
+  "container": "hyperloom-r9700-p4-s3-verbose-p18017",
+  "port": 18017,
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "s3_config_sha256": "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6",
+  "warmup": {
+    "ttft_sec": 4.904734832933173,
+    "elapsed_sec": 5.819513511960395,
+    "decode_tok_s": 69.96227772608098,
+    "canonical_match": true,
+    "unexpected_prefix_prefill_jit": true
+  },
+  "first_user_after_warmup": {
+    "ttft_sec": 0.050894996034912765,
+    "elapsed_sec": 0.9732268990483135,
+    "decode_tok_s": 69.38933781960932,
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "canonical_match": true,
+    "unexpected_inference_jit": false,
+    "gate_pass": true
+  },
+  "performance_pass_1": {
+    "c1_tok_s": 69.95752512324499,
+    "c4_tok_s": 190.59692086686437,
+    "long_context_tok_s": 47.213198604995526,
+    "correctness_match": true,
+    "c4_hashes_match": true,
+    "note": "long-context observation retained as anomalous/transient; fresh-prefix controls below do not reproduce the decode drop"
+  },
+  "performance_pass_2": {
+    "c1_tok_s": 69.63808850401686,
+    "c4_tok_s": 194.46678632016344,
+    "long_context_tok_s": 62.93693617627567,
+    "correctness_match": true,
+    "c4_hashes_match": true
+  },
+  "fresh_prefix_long_context_control": {
+    "fresh_y": {
+      "prompt_tokens": 6012,
+      "decode_tok_s": 62.00360891879988,
+      "ttft_sec": 1.1297148279845715,
+      "ok": true
+    },
+    "fresh_z": {
+      "prompt_tokens": 6012,
+      "decode_tok_s": 61.96926153941344,
+      "ttft_sec": 1.1389952501049265,
+      "ok": true
+    },
+    "interpretation": "distinct 6K prefixes remain near 62 tok/s, so the isolated 47.21 decode observation is not a persistent long-context regression or an exact-prefix-cache artifact"
+  },
+  "phase3_reference": {
+    "s3_conservative_c4_median_tok_s": 188.598166,
+    "s3_hot_c4_median_tok_s": 192.460522,
+    "s3_hot_long_context_tok_s": 62.675115
+  },
+  "verdict": "START1 PASS: readiness prewarm removes user-visible cold JIT while preserving S3 correctness, C4 gain, small-M behavior and fresh-prefix long-context decode. Independent fresh-start replication remains required before Phase4 closure."
+}
