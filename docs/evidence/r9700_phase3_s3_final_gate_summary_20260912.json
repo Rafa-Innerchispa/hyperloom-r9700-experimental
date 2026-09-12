@@ -1,0 +1,74 @@
+{
+  "schema": "hyperloom.r9700.phase3.s3_final_gate.v1",
+  "captured_date": "2026-09-12",
+  "candidate": "vllm-pr-43389-repacked-int4-plus-r9700-s3-config",
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "s3_config_sha256": "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6",
+  "queue_control": "GPU_MAX_HW_QUEUES=1",
+  "attention": "ROCM_ATTN stock",
+  "independent_process_gate": {
+    "starts": 3,
+    "first_measure_c1_median_tok_s": 69.49680303871574,
+    "first_measure_c4_median_tok_s": 188.59816600815128,
+    "first_measure_long_context_median_tok_s": 61.801768267545576,
+    "first_measure_c4_range_over_median_pct": 3.74383296602897,
+    "hot_repeat_c1_median_tok_s": 67.74903556188706,
+    "hot_repeat_c4_median_tok_s": 192.46052225729215,
+    "hot_repeat_long_context_median_tok_s": 62.67511482162822,
+    "hot_repeat_c4_range_over_median_pct": 3.8738919093271544,
+    "combined_first_plus_hot_c4_median_tok_s": 190.52934413272172,
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "c4_output_hashes_exact_stock_match": true
+  },
+  "reference_baselines": {
+    "stable_stock_queue1_c4_tok_s": 158.489996,
+    "same_day_healthy_fast_stock_c4_tok_s": 162.102053,
+    "historical_fast_stock_c4_tok_s": 165.699,
+    "restored_stock_first_c4_tok_s": 162.90969638726844,
+    "restored_stock_hot_c4_tok_s": 165.57759496437413
+  },
+  "gain_pct": {
+    "conservative_first_median_c4_vs_stable_stock_queue1": 18.99688987824273,
+    "conservative_first_median_c4_vs_restored_hot_stock": 13.903192064560589,
+    "hot_median_c4_vs_stable_stock_queue1": 21.433861514699103,
+    "hot_median_c4_vs_restored_hot_stock": 16.235848394042797
+  },
+  "cross_regime_vs_restored_hot_stock_pct": {
+    "first_measure_median": {
+      "c1": 0.05890142252635844,
+      "c4": 13.903192064560589,
+      "long_context": -3.0603581039088446
+    },
+    "hot_repeat_median": {
+      "c1": -2.457468914337557,
+      "c4": 16.235848394042797,
+      "long_context": -1.6904636077279656
+    }
+  },
+  "cold_start_behavior": {
+    "fresh_process_correctness_ttft_sec_range": [4.612734004040249, 5.081645346013829],
+    "hot_correctness_ttft_sec_range": [0.04929076798725873, 0.05409695499110967],
+    "interpretation": "Reproducible first-request cold/lazy compile/cache penalty. Subsequent TTFT normalizes to about 50 ms. Disclosure required; not a steady-state regression."
+  },
+  "stock_restore": {
+    "service": "inneros-vllm-canary-rocm10.service",
+    "service_active": true,
+    "http_models_status": 200,
+    "first_restore_measure": {
+      "raw_runtime_path": "docs/evidence/r9700_active_measure_active_20260912T034651Z.json",
+      "c1_tok_s": 68.96443740474649,
+      "c4_tok_s": 162.90969638726844,
+      "long_context_tok_s": 63.16153734695802,
+      "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
+    },
+    "hot_restore_measure": {
+      "raw_runtime_path": "docs/evidence/r9700_active_measure_active_20260912T034724Z.json",
+      "c1_tok_s": 69.4558925299872,
+      "c4_tok_s": 165.57759496437413,
+      "long_context_tok_s": 63.752833266900666,
+      "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
+    }
+  },
+  "promotion_verdict": "PROMOTE AS SELECTED EXPERIMENTAL PHASE3 R9700 FULL-MODEL CONFIGURATION FOR BATCHED C4/CONCURRENT SERVING; KEEP STOCK SERVICE AS OPERATIONAL DEFAULT UNTIL DEPLOYMENT DECISION",
+  "claim_boundary": "Conservative reproducible S3 result is 188.598 tok/s C4 median across three independent fresh processes, +19.0% vs stable stock+queue1 and +13.9% vs a freshly restored healthy hot stock observation. Hot S3 C4 median is 192.461 tok/s. C1 is near parity and long-context is within about 1.7-3.1% of freshly restored healthy stock, so do not claim universal acceleration. Cold first-request TTFT penalty remains a known limitation."
+}
