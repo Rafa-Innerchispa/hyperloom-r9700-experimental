@@ -20,20 +20,33 @@ def run(argv: list[str], timeout: int = 30) -> subprocess.CompletedProcess[str]:
     return subprocess.run(argv, text=True, capture_output=True, timeout=timeout)
 
 
-sock = socket.socket()
-try:
-    sock.bind(("127.0.0.1", PORT))
-except OSError as exc:
-    raise RuntimeError(f"benchmark port {PORT} is not free: {exc}") from exc
-finally:
-    sock.close()
-
+# Safety order matters: only remove our exact disposable container, then prove
+# that no unrelated process still owns the benchmark port.
 svc = run(["systemctl", "--user", "is-active", SERVICE])
 service_state = svc.stdout.strip()
 if service_state == "active":
     raise RuntimeError("stock systemd service must be inactive before isolated Phase4 benchmark")
 
-run(["docker", "rm", "-f", NAME], timeout=30)
+inspect = run(["docker", "inspect", "-f", "{{.Name}} {{.State.Status}}", NAME], timeout=10)
+removed_previous = False
+if inspect.returncode == 0:
+    previous = inspect.stdout.strip()
+    if not previous.startswith(f"/{NAME} "):
+        raise RuntimeError(f"refusing to remove unexpected container identity: {previous!r}")
+    rm = run(["docker", "rm", "-f", NAME], timeout=30)
+    if rm.returncode != 0:
+        raise RuntimeError(f"failed to remove previous disposable container: {rm.stderr[-1000:]}")
+    removed_previous = True
+
+sock = socket.socket()
+try:
+    sock.bind(("127.0.0.1", PORT))
+except OSError as exc:
+    raise RuntimeError(
+        f"benchmark port {PORT} remains occupied after exact-container cleanup; refusing to disturb unrelated owner: {exc}"
+    ) from exc
+finally:
+    sock.close()
 
 last_vram = None
 clean = False
@@ -79,7 +92,7 @@ cmd = [
 ]
 launch = run(cmd, timeout=60)
 out = {
-    "schema": "hyperloom.r9700.phase4.stock_verbose_launch.v1",
+    "schema": "hyperloom.r9700.phase4.stock_verbose_launch.v2",
     "captured_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
     "name": NAME,
     "port": PORT,
@@ -87,6 +100,7 @@ out = {
     "container_id": launch.stdout.strip(),
     "stderr": launch.stderr[-2000:],
     "stock_service_state_before": service_state,
+    "removed_previous_exact_container": removed_previous,
     "vram_used_before": last_vram,
     "image": IMAGE,
     "model": MODEL,
