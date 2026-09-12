@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import hashlib
 import json
@@ -9,12 +10,19 @@ import time
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-PORT = 18016
-BASE = f"http://127.0.0.1:{PORT}"
 MODEL = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
-NAME = "hyperloom-r9700-p4-stock-verbose-p18016"
 PROMPT = "Return exactly a compact Python function add(a,b) that returns a+b."
 CANONICAL_SHA256 = "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--port", type=int, default=18016)
+parser.add_argument("--container", default="hyperloom-r9700-p4-stock-verbose-p18016")
+parser.add_argument("--label", default="stock")
+args = parser.parse_args()
+PORT = args.port
+NAME = args.container
+LABEL = args.label
+BASE = f"http://127.0.0.1:{PORT}"
 
 
 def request_once() -> dict:
@@ -96,8 +104,9 @@ def health() -> dict:
 
 captured = dt.datetime.now(dt.timezone.utc)
 result = {
-    "schema": "hyperloom.r9700.phase4.warmup_then_user.v1",
+    "schema": "hyperloom.r9700.phase4.warmup_then_user.v2",
     "captured_at_utc": captured.isoformat(),
+    "label": LABEL,
     "container": NAME,
     "port": PORT,
     "health": health(),
@@ -109,7 +118,6 @@ time.sleep(1.5)
 warmup_logs = docker_logs_since(warmup_since)
 result["warmup_jit_lines"] = jit_lines(warmup_logs)
 
-# Give log buffers a clean separation before measuring the first externally visible request.
 time.sleep(1.0)
 user_since = dt.datetime.now(dt.timezone.utc).isoformat()
 result["first_user_request"] = request_once()
@@ -127,10 +135,11 @@ result["pass"] = all(result["gate"].values())
 
 out_dir = ROOT / "docs" / "evidence"
 out_dir.mkdir(parents=True, exist_ok=True)
-out = out_dir / f"r9700_phase4_warmup_then_user_{captured.strftime('%Y%m%dT%H%M%SZ')}.json"
+out = out_dir / f"r9700_phase4_warmup_then_user_{LABEL}_{captured.strftime('%Y%m%dT%H%M%SZ')}.json"
 out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
 print(out)
 print(json.dumps({
+    "label": LABEL,
     "warmup_request": result["warmup_request"],
     "warmup_jit_lines": result["warmup_jit_lines"],
     "first_user_request": result["first_user_request"],
