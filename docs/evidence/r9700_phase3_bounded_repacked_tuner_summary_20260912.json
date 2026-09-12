@@ -1,0 +1,22 @@
+{
+  "schema": "hyperloom.r9700.phase3.bounded_repacked_tuner_summary.v1",
+  "captured_at_utc": "2026-09-12T01:52:56Z",
+  "device": "AMD Radeon AI PRO R9700",
+  "candidate": "vllm-pr-43389-repacked-int4",
+  "upstream_commit": "f5d8dc25b7fc89c4ced724ba9f37a3f4555191e3",
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "shape": {"E":128,"topk":8,"hidden_size":2048,"intermediate_size":768,"shard_intermediate_size":1536,"block_quant_shape":[0,128]},
+  "search_policy": "architecture-directed bounded search using upstream 8060S INT4 family, prior R9700 WNA16 winner and nearby valid tiles; default measured separately",
+  "elapsed_sec": 172.43205451965332,
+  "winners": {
+    "1": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":64,"BLOCK_SIZE_K":32,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":4,"num_stages":2,"waves_per_eu":4},"winner_median_us":97.1087209880352,"default_search_us":145.86642483870187,"approx_speedup_vs_default":1.5020939762626895},
+    "2": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":32,"BLOCK_SIZE_K":64,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":2,"num_stages":2,"waves_per_eu":4},"winner_median_us":142.5432711839676,"default_search_us":160.89663207530975,"approx_speedup_vs_default":1.1287564171840505},
+    "4": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":32,"BLOCK_SIZE_K":64,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":2,"num_stages":2,"waves_per_eu":4},"winner_median_us":236.45719091097513,"default_search_us":246.79828882217407,"approx_speedup_vs_default":1.043733488803444},
+    "8": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":32,"BLOCK_SIZE_K":64,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":2,"num_stages":2,"waves_per_eu":4},"winner_median_us":391.180095076561,"default_search_us":408.6901267369588,"approx_speedup_vs_default":1.0447620722035225},
+    "16": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":32,"BLOCK_SIZE_K":64,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":2,"num_stages":2,"waves_per_eu":4},"winner_median_us":599.4243919849396,"default_search_us":625.8942445119222,"approx_speedup_vs_default":1.0441587844620905},
+    "32": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":32,"BLOCK_SIZE_K":64,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":2,"num_stages":2,"waves_per_eu":4},"winner_median_us":805.6906700134277,"default_search_us":989.6824916203817,"approx_speedup_vs_default":1.2283653372874326},
+    "64": {"config":{"BLOCK_SIZE_M":16,"BLOCK_SIZE_N":32,"BLOCK_SIZE_K":64,"GROUP_SIZE_M":1,"SPLIT_K":1,"num_warps":2,"num_stages":2,"waves_per_eu":4},"winner_median_us":915.7260020573934,"default_search_us":1546.138540903727,"approx_speedup_vs_default":1.6884292216557835}
+  },
+  "claim_boundary": "Approximate speedups compare the bounded-search default timing with a confirmed winner median collected at a different iteration count. A paired equal-iteration validation gate is required before using these ratios as final kernel claims.",
+  "next_gate": "paired equal-iteration default-vs-tuned validation, then full-model isolated serving with this config mounted read-only"
+}
