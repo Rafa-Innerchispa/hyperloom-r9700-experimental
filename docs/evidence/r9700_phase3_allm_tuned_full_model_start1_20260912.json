@@ -1,0 +1,12 @@
+{
+  "schema":"hyperloom.r9700.phase3.allm_tuned_full_model_start.v1",
+  "date":"2026-09-12",
+  "config_sha256":"03636824d1e8da99f29b64ef44a4299f9fd9b9d6caf93f3b38fa59c7c3af895b",
+  "runtime_log_proof":"Using configuration from .../E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json for MoE layer.",
+  "coldish_measure":{"c1_tok_s":67.24493796950675,"c4_tok_s":184.92804297346828,"long_context_tok_s":61.4686654049234,"correctness_sha256":"7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"},
+  "hot_measure":{"c1_tok_s":68.42870386781756,"c4_tok_s":186.49273534819733,"long_context_tok_s":62.65768001150898,"correctness_sha256":"7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"},
+  "eight_round_c4":{"median_tok_s":176.00682804901635,"min_tok_s":169.13464125715691,"max_tok_s":178.23668308652975,"range_over_median_pct":5.171414046981177,"unique_hash_vectors":1},
+  "stock_queue1_reference":{"c1_median_approx_tok_s":63.893,"c4_median_tok_s":158.489996,"long_context_median_tok_s":58.869},
+  "interpretation":"All-M tuning closes the previous C1 and long-context deficit and remains materially above stock C4, but lowers C4 relative to the untuned-repack fresh-start ~191 tok/s regime. Next test is a selective M1-only tuned config with vLLM defaults restored for M>=2.",
+  "verdict":"KEEP AS EVIDENCE / DO NOT SELECT YET"
+}
