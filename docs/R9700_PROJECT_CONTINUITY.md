@@ -1,42 +1,98 @@
 # HyperLoom R9700 Project Continuity
 
-Last reconciled: 2026-09-11 22:50 America/Guayaquil / 2026-09-12 03:50 UTC
+Last reconciled: 2026-09-12 (America/Guayaquil)
 
 This is the canonical restart file for a fresh ChatGPT/Codex session.
 
-## 0. Current final state — read this first
+## 0. CURRENT ACTIVE STATE — READ THIS FIRST
+
+**PHASE 4 IS ACTIVE: COLD-START / PARITY OPTIMIZATION.**
+
+Do not restart Phase 2 or Phase 3 experiments. Phase 3 S3 is closed and preserved.
+
+Canonical active handoff:
+
+`docs/R9700_PHASE4_ACTIVE_HANDOFF_20260912.md`
+
+Canonical Phase 4 root-cause note:
+
+`docs/R9700_PHASE4_COLDSTART_ROOT_CAUSE_20260912.md`
+
+Current active branch:
+
+`chatgpt/r9700-phase4-coldstart-parity-20260912`
+
+Current Phase 4 task:
+
+`ops_d0c3d4eebd67`
+
+Phase 3 closure SHA:
+
+`321d5d0cff9020e70ba11cc8929e09b80dc3d655`
+
+Phase 4 root-cause commit:
+
+`7c8627ae6c132f83d2b487cc066406e053dd7e88`
+
+Phase 4 active-handoff commit:
+
+`9f1093612b90eeaec164c60c0d177ce52127e44f`
+
+### Exact next gate
+
+1. Start a fresh isolated stock-equivalent process with `--jit-monitor-verbose`.
+2. Reproduce the first real inference request that currently incurs ~4.6-5.1 s TTFT.
+3. Capture verbose Triton specialization details for the unexpected `prefix_prefill::_fwd_kernel` JIT.
+4. Design the minimal reversible startup warmup/precompile for that specialization.
+5. Fresh-process A/B until the inference-time JIT warning disappears and first-user TTFT moves toward the hot ~50 ms class.
+6. Preserve stock-exact correctness.
+7. Apply the mitigation to S3 and confirm Phase 3 C4/C1/long-context behavior is not materially regressed.
+8. Restore stock ROCm10 operational default and verify `/v1/models` HTTP 200.
+9. Commit raw evidence, negative results and final verdict before closing Phase 4.
+
+### Phase 4 root cause already proven
+
+The ~5 s first-request spike is not S3-specific. It also occurs on freshly restored stock ROCm10 after HTTP readiness. vLLM emits an unexpected Triton JIT warning for `_fwd_kernel` during that first request. The decoder path strongly identifies:
+
+`ROCM_ATTN -> chunked_prefill_paged_decode -> prefix_prefill.context_attention_fwd -> @triton.jit _fwd_kernel`
+
+Do not claim this is solved until a fresh-process A/B removes the inference-time JIT warning and normalizes first-user TTFT.
+
+---
+
+## 1. PHASE 3 S3 CLOSED RESULT — PRESERVE, DO NOT REDO
 
 **PHASE 3 S3 FULL-MODEL EXPERIMENTAL PROMOTION: PASS FOR BATCHED C4 / CONCURRENT SERVING.**
 
-**Stock ROCm10 remains the operational default and is currently restored healthy.**
+**Stock ROCm10 remains the operational default and was restored healthy at Phase 3 closure.**
 
-Read, in this order:
+Read these Phase 3 artifacts when historical detail is required:
 
 1. `FINAL_STATUS.md`
-2. `docs/evidence/r9700_phase3_s3_final_gate_summary_20260912.json`
-3. `docs/evidence/r9700_phase3_s3_three_start_aggregate_20260912.json`
-4. `docs/R9700_PHASE3_ACTIVE_HANDOFF_20260912.md` for the detailed pre-closure trail
+2. `docs/R9700_PHASE3_S3_CLOSURE_20260912.md`
+3. `docs/evidence/r9700_phase3_s3_final_gate_summary_20260912.json`
+4. `docs/evidence/r9700_phase3_s3_three_start_aggregate_20260912.json`
 5. `docs/evidence/r9700_phase3_tuned_moe_config_s3_20260912.json`
 6. `docs/evidence/r9700_phase3_long_soak_stability_20260912.json`
 7. `docs/DEVELOPMENT_LEDGER.md`
 
-Do not restart the investigation from zero. Phase 2 is historical context; Phase 3 is the current engineering result.
-
-## 1. Canonical identity
+## 2. Canonical identity
 
 - repo: `Rafa-Innerchispa/hyperloom-r9700-experimental`
-- active engineering branch: `chatgpt/r9700-phase3-int4-repack-20260911`
-- active Phase3 ops task: `ops_d07579f84116`
+- Phase 3 branch: `chatgpt/r9700-phase3-int4-repack-20260911`
+- Phase 4 branch: `chatgpt/r9700-phase4-coldstart-parity-20260912`
+- Phase 3 task: `ops_d07579f84116` (closed)
+- Phase 4 task: `ops_d0c3d4eebd67` (active)
 - GPU: AMD Radeon AI PRO R9700 / RDNA4 / `gfx1201` / 32 GiB
 - model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
 - stock endpoint: `http://127.0.0.1:8000/v1`
 - stock service/container: `inneros-vllm-canary-rocm10.service` / `inneros-vllm-canary-rocm10`
 - image: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
-- Phase3 runtime patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
+- Phase 3 runtime patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
 - S3 config SHA-256: `8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6`
 - serving controls: stock `ROCM_ATTN`, `GPU_MAX_HW_QUEUES=1`, clean fresh process
 
-Important preservation commits from the closure sequence:
+Important preservation commits from the Phase 3 closure sequence:
 
 - long-soak evidence: `db41aaf4d5da26340c1afb520101b5577f9b5cbc`
 - S3 config: `f11328fe5d58ca6997b423b584c51cfa2a3a5907`
@@ -49,10 +105,11 @@ Important preservation commits from the closure sequence:
 - start5 hot measure: `59705bef2f2914ad3b27ce31a9bc2d1cf0fcd841`
 - final S3 machine summary: `2d22dd72f0a938d033cb845fe8c35093f4b54f7c`
 - final status closure: `5521740f0a58891265c7d47c4b99590a8307e1d5`
+- canonical Phase 3 closure: `321d5d0cff9020e70ba11cc8929e09b80dc3d655`
 
 Always verify current remote HEAD before editing further.
 
-## 2. Final Phase3 S3 result
+## 3. Final Phase 3 S3 result
 
 The selected candidate combines the relevant vLLM #43389 RDNA INT4/W4A16 MoE repack/interleave path with the R9700-specific S3 MoE config.
 
@@ -82,7 +139,7 @@ Correctness:
 - selected S3 correctness requests returned that stock hash
 - all four canonical C4 response hashes matched stock in the selected S3 gate
 
-## 3. Fresh stock restore control
+## 4. Fresh stock restore control
 
 After S3 evidence capture, the candidate was removed and R9700 VRAM returned to about 60 MB before stock restart.
 
@@ -107,51 +164,28 @@ Fresh restored-stock hot measurement:
 
 Against that strong same-session healthy-hot stock control:
 
-Conservative S3 first-measure median:
+- conservative S3 first C4 gain: about `+13.90%`
+- S3 hot C4 gain: about `+16.24%`
+- C1 near parity
+- long-context within a few percent
 
-- C1: about `+0.06%`
-- C4: about `+13.90%`
-- long: about `-3.06%`
+Against the stable stock+queue1 C4 median `158.489996`:
 
-S3 hot-repeat median:
+- S3 conservative first C4 gain: about `+19.0%`
+- S3 hot C4 gain: about `+21.4%`
 
-- C1: about `-2.46%`
-- C4: about `+16.24%`
-- long: about `-1.69%`
-
-Therefore the final Phase3 claim is a substantial full-model C4/concurrent-serving improvement with C1 near parity and long-context within a few percent of healthy stock. It is not a universal acceleration claim.
-
-## 4. Stable historical stock control
-
-The previous clean factorial selected:
-
-`stock ROCM_ATTN + GPU_MAX_HW_QUEUES=1`
-
-- clean stock C4 median: `158.489996 tok/s`
-
-Against that stable control:
-
-- S3 conservative first-measure C4 median gain: about `+19.0%`
-- S3 hot-repeat C4 median gain: about `+21.4%`
-
-The newly restored healthy-hot stock at `165.577595` is a stronger same-session comparison and should be included whenever presenting the final result.
-
-## 5. Cold first-request limitation
+## 5. Cold first-request limitation that led to Phase 4
 
 Fresh S3 processes repeatedly showed:
 
 - first dedicated correctness TTFT: roughly `4.61-5.08 s`
 - hot correctness TTFT: roughly `49-54 ms`
 
-The first request still returned the correct stock hash. C1/C4/long measurements remained healthy.
-
-The restored stock runtime also showed a similar cold first-request delay before normalizing, so the evidence supports a cold/lazy compile/cache effect rather than a candidate-only steady-state correctness failure.
-
-This remains a real deployment limitation for latency-sensitive use and must be disclosed.
+Freshly restored stock also showed the same class of cold first-request delay. Phase 4 then proved the delay is associated with an unexpected post-readiness Triton JIT compile in the ROCm prefix-prefill path.
 
 ## 6. Long-soak evidence
 
-A same-process untuned Phase3 observation once dropped to about `145.12 tok/s`; it is not used in the canonical independent-start result.
+A same-process untuned Phase 3 observation once dropped to about `145.12 tok/s`; it is not used in the canonical independent-start result.
 
 A later roughly 10-hour soak did not reproduce the extreme 145 event:
 
@@ -181,21 +215,7 @@ Selected config:
 - M32: BM32 GROUP1 SPLIT1
 - M64: BM64 GROUP1 SPLIT1
 
-This config trades a small amount of the untuned Phase3 C4 peak for a much stronger cross-regime balance.
-
-## 8. Untuned Phase3 milestone
-
-Three independent fresh untuned starts:
-
-- `191.450567`
-- `189.645424`
-- `191.426697`
-
-Median: `191.426697 tok/s`, about `+20.8%` versus the established stable stock+queue1 baseline.
-
-But untuned C1 median was about `60.367` and long-context about `55.199`, so it was not selected as the final cross-regime configuration.
-
-## 9. Phase 2 remains a valid negative result
+## 8. Phase 2 remains a valid negative result
 
 Phase 2 custom W1 proof is real:
 
@@ -210,15 +230,15 @@ Phase 2 custom W1 proof is real:
 
 This is a W1 microkernel result only.
 
-The clean Phase2 v7 full-model hybrid remained roughly 4.5-5.1% below stable stock C4 and was correctly **not promoted**. That negative result is preserved. Phase3 is a different full-model path based on the later RDNA INT4 repack/interleave lead.
+The clean Phase 2 v7 full-model hybrid remained roughly 4.5-5.1% below stable stock C4 and was correctly **not promoted**. That negative result remains preserved.
 
-## 10. Worktree preservation
+## 9. Worktree preservation
 
-Canonical Phase3 worktree:
+Phase 3 worktree:
 
 `/home/rlopez/inneros/inneros_core/var/local_execution/worktrees/Rafa-Innerchispa__hyperloom-r9700-experimental/chatgpt__r9700-phase3-int4-repack-20260911`
 
-AMD final/runtime worktree containing current launchers and additional runtime evidence:
+AMD runtime/raw-evidence worktree:
 
 `/home/rlopez/inneros/inneros_core/var/local_execution/worktrees/Rafa-Innerchispa__hyperloom-r9700-experimental/chatgpt__r9700-amd-final-runtime-20260910`
 
@@ -228,18 +248,18 @@ Historical AMD research worktree:
 
 Do not `git clean`, hard reset, or delete these before inventory/archive.
 
-A known diagnostic bug also remains documented: `scripts/r9700_phase3_wait_isolated.py` can misleadingly print `container: still_running` if `docker inspect` fails because the named container does not exist. Verify inspect rc/listener/GPU ownership instead of trusting that string.
+Known diagnostic trap: `scripts/r9700_phase3_wait_isolated.py` can misleadingly print `container: still_running` if `docker inspect` fails because the named container does not exist. Verify inspect rc/listener/GPU ownership instead.
 
-## 11. Safe claim boundary
+## 10. Safe claim boundary
 
 Safe:
 
-- experimental full-model R9700 Phase3 candidate reproduced about `188.6 tok/s` C4 median across three independent fresh processes;
-- this is about `+19%` versus the established stable stock+queue1 baseline and about `+13.9%` versus a freshly restored healthy-hot stock observation from the same closure campaign;
-- hot S3 median was about `192.5 tok/s`;
-- C1 was near parity and long-context remained within a few percent of healthy stock;
-- correctness and canonical C4 hashes matched stock in the selected gate;
-- stock was restored healthy after the campaign.
+- Phase 3 selected experimental full-model S3 candidate reproduced about `188.6 tok/s` conservative C4 median across three fresh processes;
+- about `+19%` versus stable stock+queue1 and about `+13.9%` versus freshly restored healthy-hot stock;
+- hot S3 median about `192.5 tok/s`;
+- C1 near parity and long-context within a few percent of healthy stock;
+- correctness and canonical C4 hashes matched stock;
+- Phase 4 root cause identifies the cold first-request spike as an unexpected ROCm prefix-prefill Triton JIT seen on stock too.
 
 Do not claim:
 
@@ -251,14 +271,15 @@ Do not claim:
 - candidate is already deployed as operational default
 - cold first-request latency is solved
 
-## 12. Current operational state
+## 11. Restart rule
 
-At closure:
+A new ChatGPT/Codex session must:
 
-- no Phase3 candidate is intended to remain running;
-- stock ROCm10 service is active/running;
-- stock `/v1/models` is HTTP 200;
-- healthy stock measurements were captured after restore;
-- the Phase3 S3 configuration is preserved as the selected **experimental** full-model configuration, not silently installed into the stock service.
+1. read `docs/R9700_PHASE4_ACTIVE_HANDOFF_20260912.md` first;
+2. read `docs/R9700_PHASE4_COLDSTART_ROOT_CAUSE_20260912.md`;
+3. verify remote HEAD of `chatgpt/r9700-phase4-coldstart-parity-20260912`;
+4. inspect active ops task `ops_d0c3d4eebd67`;
+5. verify runtime state before any mutation;
+6. continue from the exact Phase 4 next gate, not from earlier benchmarks.
 
-Future work should start from this state. Highest-value next engineering target: reduce cold first-request latency and tighten long-context/C1 parity without sacrificing the independently reproduced C4 advantage.
+Do not repeat closed Phase 2/3 experiments merely to reconstruct context.
