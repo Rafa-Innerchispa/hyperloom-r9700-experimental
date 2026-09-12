@@ -1,0 +1,31 @@
+{
+  "c1": {
+    "completion_tokens": 128,
+    "decode_tok_s": 69.13124786264491,
+    "elapsed_sec": 1.8972714360570535,
+    "ok": true,
+    "prompt_tokens": 16,
+    "status": 200,
+    "text_len": 530,
+    "text_sha256": "7cedaa12db056ff69d1bb8d8259d4f44f8dd6d065948c36ae0c82cfa49212393",
+    "ttft_sec": 0.04572088608983904
+  },
+  "c4": {
+    "aggregate_tok_s": 192.46052225729215,
+    "completion_tokens": 512,
+    "rows": [
+      {"completion_tokens":128,"decode_tok_s":49.61263627974739,"elapsed_sec":2.6361035159789026,"ok":true,"prompt_tokens":20,"status":200,"text_len":261,"text_sha256":"891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68","ttft_sec":0.05611564195714891},
+      {"completion_tokens":128,"decode_tok_s":49.48632670889003,"elapsed_sec":2.6573782660998404,"ok":true,"prompt_tokens":20,"status":200,"text_len":522,"text_sha256":"f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c","ttft_sec":0.07080519606824964},
+      {"completion_tokens":128,"decode_tok_s":49.49367734132499,"elapsed_sec":2.656619496992789,"ok":true,"prompt_tokens":20,"status":200,"text_len":584,"text_sha256":"fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407","ttft_sec":0.0704305759863928},
+      {"completion_tokens":128,"decode_tok_s":49.494842931929234,"elapsed_sec":2.6559311479795724,"ok":true,"prompt_tokens":20,"status":200,"text_len":584,"text_sha256":"fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407","ttft_sec":0.06980313104577363}
+    ],
+    "wall_sec":2.6602858289843425
+  },
+  "captured_at_utc":"2026-09-12T03:36:42.586695+00:00",
+  "correctness":{"completion_tokens":64,"decode_tok_s":68.67027605403985,"elapsed_sec":0.9860868009272963,"ok":true,"prompt_tokens":15,"status":200,"text_len":268,"text_sha256":"7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2","ttft_sec":0.05409695499110967},
+  "health": {"ok":true,"status":200},
+  "label":"hybrid_start5",
+  "long_context":{"completion_tokens":64,"decode_tok_s":63.17038940184458,"elapsed_sec":1.1161594699369743,"ok":true,"prompt_tokens":6012,"status":200,"text_len":331,"text_sha256":"5bec9b06d51c5f6a9d73b2d382be184ede00404f7288ddf3b7e2c7536cbc7ed9","ttft_sec":0.10302656691055745},
+  "port":18015,
+  "schema":"hyperloom.r9700.phase3.hybrid_independent_measure.v1"
+}
