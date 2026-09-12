@@ -1,0 +1,53 @@
+{
+  "schema": "hyperloom.r9700.phase3.long_soak_stability.v1",
+  "captured_date": "2026-09-12",
+  "candidate": "vllm-pr-43389-repacked-int4",
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "container": "hyperloom-r9700-p3-int4-repack-p18011",
+  "port": 18011,
+  "observed_uptime_hours": 10,
+  "stock_systemd_state_during_measurement": "inactive",
+  "single_soak_measurement": {
+    "c1_tok_s": 60.64490792010163,
+    "c4_tok_s": 188.87045177070354,
+    "long_context_tok_s": 55.75631711428731,
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "c4_hashes": [
+      "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+      "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407"
+    ],
+    "raw_evidence": "docs/evidence/r9700_phase3_isolated_measure_isolated_20260912T014127Z.json"
+  },
+  "eight_round_c4": {
+    "tok_s": [176.28501142481116, 177.58045561323954, 189.76003455123833, 177.57259018704798, 175.52029636921574, 181.71630827433628, 178.7808343497473, 189.2325916901254],
+    "median_tok_s": 178.1806449814934,
+    "min_tok_s": 175.52029636921574,
+    "max_tok_s": 189.76003455123833,
+    "range_over_median_pct": 7.991742415963075,
+    "unique_c4_hash_vectors": 1,
+    "raw_evidence": "docs/evidence/r9700_phase3_c4_stability_20260912T014214Z.json"
+  },
+  "telemetry_interpretation": {
+    "thermal_throttle_supported": false,
+    "power_or_sclk_drop_supported": false,
+    "slowest_round": {
+      "tok_s": 175.52029636921574,
+      "gpu_use_median_pct": 100.0,
+      "power_median_w": 247.0,
+      "sclk_median_mhz": 3229.5,
+      "junction_max_c": 77.0
+    },
+    "fast_round_example": {
+      "tok_s": 189.2325916901254,
+      "gpu_use_median_pct": 100.0,
+      "power_median_w": 237.0,
+      "sclk_median_mhz": 3208.0,
+      "junction_median_c": 77.0
+    },
+    "next_hypothesis": "scheduler/graph/MoE config variability; missing R9700-specific int4_w4a16 tuning remains the highest-value next gate"
+  },
+  "verdict": "LONG-SOAK C4 WIN PERSISTS; 145 TOK/S EVENT NOT REPRODUCED; INTRA-PROCESS VARIABILITY REMAINS; SMALL-M/LONG-CONTEXT TUNING OPEN",
+  "claim_boundary": "Do not replace the canonical three-independent-start median (~191.43 tok/s) with this long-soak median. Use this evidence only to show the candidate remained functional and faster than stable stock after ~10h while retaining deterministic C4 hashes."
+}
