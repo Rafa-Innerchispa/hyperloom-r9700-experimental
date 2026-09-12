@@ -1,0 +1,36 @@
+{
+  "schema": "hyperloom.r9700.phase4.s3_warmup_gate.v1",
+  "date": "2026-09-12",
+  "fresh_start": "phase4_s3_start2",
+  "container": "hyperloom-r9700-p4-s3-verbose-p18017",
+  "port": 18017,
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "s3_config_sha256": "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6",
+  "warmup": {
+    "ttft_sec": 4.720455841044895,
+    "elapsed_sec": 5.6356526700546965,
+    "decode_tok_s": 69.93031222501602,
+    "canonical_match": true,
+    "unexpected_prefix_prefill_jit": true
+  },
+  "first_user_after_warmup": {
+    "ttft_sec": 0.05363532202318311,
+    "elapsed_sec": 1.134403171017766,
+    "decode_tok_s": 59.217157560282665,
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "canonical_match": true,
+    "unexpected_inference_jit": false,
+    "gate_pass": true
+  },
+  "performance": {
+    "c1_tok_s": 69.67899854056502,
+    "c4_tok_s": 194.08234087815802,
+    "long_context_tok_s": 61.95500330808383,
+    "correctness_ttft_sec": 0.053222661023028195,
+    "correctness_match": true,
+    "c4_hashes_match": true,
+    "long_prompt_tokens": 6012,
+    "long_ttft_sec": 1.1321310019120574
+  },
+  "verdict": "START2 PASS: second independent fresh S3 process reproduces readiness prewarm behavior, stock-exact correctness, ~194 tok/s C4 and ~62 tok/s long-context decode."
+}
