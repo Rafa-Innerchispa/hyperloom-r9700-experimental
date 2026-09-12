@@ -1,0 +1,13 @@
+model_list:
+  - model_name: qwen3-coder-r9700
+    litellm_params:
+      model: openai/QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ
+      api_base: http://127.0.0.1:8000/v1
+      api_key: local-not-used
+
+litellm_settings:
+  drop_params: true
+  set_verbose: false
+
+general_settings:
+  master_key: local-hyperloom-bridge
