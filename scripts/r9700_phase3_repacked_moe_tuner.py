@@ -10,15 +10,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import pathlib
 import subprocess
-import sys
 import time
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 IMAGE = "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0"
 MODEL = "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ"
+MODEL_STORE = pathlib.Path("/home/rlopez/inneros/inneros_core/var/local_models")
 OVERLAY = ROOT / "var" / "r9700_phase3_vllm43389_overlay"
 OUT = ROOT / "docs" / "evidence" / "r9700_phase3_repacked_moe_tuner.json"
 BATCHES = [1, 2, 4, 8, 16, 32, 64]
@@ -46,6 +45,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     ns = ap.parse_args()
+    if not MODEL_STORE.exists():
+        raise RuntimeError(f"model store missing: {MODEL_STORE}")
     benchmark_url = (
         "https://raw.githubusercontent.com/vllm-project/vllm/"
         "f5d8dc25b7fc89c4ced724ba9f37a3f4555191e3/benchmarks/kernels/benchmark_moe.py"
@@ -64,7 +65,7 @@ def main() -> int:
         "--group-add", "video", "--ipc=host",
         "-e", "GPU_MAX_HW_QUEUES=1",
         "-v", "/home/rlopez/.cache/huggingface:/root/.cache/huggingface",
-        "-v", "/home/rlopez/models:/models:ro",
+        "-v", f"{MODEL_STORE}:/models:ro",
         "-v", f"{bench}:/tmp/benchmark_moe.py:ro",
         "-v", f"{save_dir}:/tuned",
     ] + mount_args() + [
@@ -79,10 +80,11 @@ def main() -> int:
         "--save-dir", "/tuned",
     ]
     record = {
-        "schema": "hyperloom.r9700.phase3.repacked_moe_tuner.v1",
+        "schema": "hyperloom.r9700.phase3.repacked_moe_tuner.v2",
         "candidate": "vllm-pr-43389-repacked-int4",
         "upstream_commit": "f5d8dc25b7fc89c4ced724ba9f37a3f4555191e3",
         "batch_sizes": BATCHES,
+        "model_store": str(MODEL_STORE),
         "command": cmd,
         "dry_run": ns.dry_run,
     }
