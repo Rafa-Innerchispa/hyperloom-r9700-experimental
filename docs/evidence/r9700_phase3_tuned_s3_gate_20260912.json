@@ -1,0 +1,45 @@
+{
+  "schema": "hyperloom.r9700.phase3.tuned_s3_gate.v1",
+  "captured_date": "2026-09-12",
+  "candidate_container": "hyperloom-r9700-p3-hybrid-s3-p18013",
+  "port": 18013,
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "queue_control": "GPU_MAX_HW_QUEUES=1",
+  "attention": "ROCM_ATTN stock",
+  "config": "docs/evidence/r9700_phase3_tuned_moe_config_s3_20260912.json",
+  "cold_or_first_measure": {
+    "raw_evidence": "docs/evidence/r9700_phase3_tuned_s3_measure_20260912T025321Z.json",
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "correctness_ttft_sec": 5.081645346013829,
+    "c1_tok_s": 66.90866653149924,
+    "c4_tok_s": 186.60153918601006,
+    "long_context_tok_s": 58.18529057634683,
+    "c4_hashes": [
+      "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+      "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407"
+    ]
+  },
+  "hot_repeat": {
+    "raw_evidence": "docs/evidence/r9700_phase3_tuned_s3_measure_20260912T025339Z.json",
+    "correctness_sha256": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "correctness_ttft_sec": 0.053394466056488454,
+    "c1_tok_s": 67.74903556188706,
+    "c4_tok_s": 186.49254976456643,
+    "long_context_tok_s": 62.67511482162822,
+    "c4_hashes": [
+      "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
+      "f3164647b31f3f554d6d6f1be77d63f87736ffb85b89bc3e3b59fcdab5ac6c5c",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
+      "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407"
+    ]
+  },
+  "reference_baselines": {
+    "stock_queue1_c4_tok_s": 158.489996,
+    "phase3_untuned_three_start_c4_median_tok_s": 191.42669659550938,
+    "stock_queue1_c1_range_tok_s": [63.0,65.0],
+    "stock_queue1_long_context_tok_s": 58.87
+  },
+  "interpretation": "S3 trades a small amount of the untuned C4 peak for much stronger small-M and long-context behavior. Hot correctness and all C4 output hashes match stock. Independent fresh-process replication is still required before promotion."
+}
