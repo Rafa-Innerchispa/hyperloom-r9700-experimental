@@ -147,19 +147,42 @@ contribution conventions, see [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 This fork contains experimental RDNA4 work validated on a physical AMD Radeon AI PRO R9700 (`gfx1201`) with ROCm 10, vLLM, and `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`.
 
-The current evidence supports these claims:
+### Current Phase 3 result
 
-- three independent process starts reproduced the autonomous serving/concurrency decision (`+80.99%` paired median); this is **not** a kernel-speedup claim;
-- the live Qwen MoE path was measured as FP16 `TritonWNA16Experts` with packed INT4 W4A16 weights;
-- a custom packed-INT4 small-M W1 Triton kernel beat the stock vLLM Triton WNA16 W1 kernel across the tested real-weight microbenchmark region (about `1.477x` median across M1..16; `63/63` paired wins per shape across three campaigns);
-- the complete 30B model booted with the clean v7 `R9700HybridWNA16Experts` backend and real inference observed `48` custom-path plus `48` stock-fallback routes;
-- the clean final gate used stock `ROCM_ATTN` plus `GPU_MAX_HW_QUEUES=1` as the stable comparison control;
-- clean v7 C4 measured `149.891` and `150.842 tok/s` versus a current fair stock+queue1 control of `157.490 tok/s` and a prior clean stock+queue1 median of `158.490 tok/s`;
-- all four C4 response hashes matched stock exactly, while one dedicated strict deterministic probe did not, so universal exact-output parity is not claimed;
-- stock ROCm10 serving was restored after the experiment and `/v1/models` returned HTTP 200.
+The selected experimental full-model configuration combines a backport of the relevant RDNA INT4/W4A16 MoE repack/interleave path with an R9700-specific tuned `int4_w4a16` MoE config, stock `ROCM_ATTN`, and `GPU_MAX_HW_QUEUES=1`.
 
-Final experimental verdict: **KERNEL KEEP / FULL-MODEL INTEGRATION NOT PROMOTED**.
+Across three independent fresh S3 candidate processes:
 
-See [`FINAL_STATUS.md`](FINAL_STATUS.md), [`docs/R9700_PROJECT_CONTINUITY.md`](docs/R9700_PROJECT_CONTINUITY.md), [`docs/evidence/r9700_v7_final_gate_summary_20260911.json`](docs/evidence/r9700_v7_final_gate_summary_20260911.json), [`docs/DEVELOPMENT_LEDGER.md`](docs/DEVELOPMENT_LEDGER.md), and [`docs/COMMUNITY_FEEDBACK_LEDGER.md`](docs/COMMUNITY_FEEDBACK_LEDGER.md) for the evidence boundaries and preserved negative results.
+- conservative first-measurement C4 median: **`188.598 tok/s`**;
+- hot-repeat C4 median: **`192.461 tok/s`**;
+- canonical correctness hash matched stock;
+- all four canonical C4 output hashes matched stock;
+- first-measurement C1 median: `69.497 tok/s`;
+- first-measurement ~6K-context median: `61.802 tok/s`.
 
-This work does not claim official AMD support, upstream HyperLoom support for the R9700, a “first port,” or a full-model `1.477x` speedup.
+The established clean stock+queue1 C4 median is `158.490 tok/s`, making the conservative S3 result about **`+19.0%`** faster for the tested C4 workload.
+
+A fresh stock restore after the S3 campaign produced a stronger healthy-hot same-session control of:
+
+- C1 `69.456 tok/s`;
+- C4 `165.578 tok/s`;
+- ~6K-context `63.753 tok/s`.
+
+Against that healthy-hot stock observation, the conservative S3 first-measurement median is about **`+13.9%` C4**, with C1 essentially at parity and long-context about `3.1%` lower. The S3 hot median is about **`+16.2%` C4**, while C1/long-context remain within a few percent of stock.
+
+Accordingly, the final Phase 3 verdict is:
+
+**FULL-MODEL EXPERIMENTAL PROMOTION PASS FOR BATCHED C4 / CONCURRENT SERVING.**
+
+The stock ROCm10 service remains the operational default; this result does **not** mean the experimental candidate was silently deployed as the production/default runtime.
+
+### Important limits
+
+- Fresh processes repeatedly show a first-request cold/lazy latency penalty of roughly `4.6-5.1 s` on the dedicated correctness probe, followed by hot TTFT around `50 ms`.
+- A roughly 10-hour Phase 3 soak preserved the C4 advantage and did not reproduce an earlier isolated ~145 tok/s event; telemetry did not support thermal/power/sclk collapse as its cause.
+- Phase 2's packed-INT4 W1 microkernel result remains valid at about `1.477x` median across the tested M1..16 region, but that number is **not** a full-model speedup.
+- Phase 2's clean v7 full-model hybrid remains a valid negative result and was correctly not promoted because it was slower than stock. Phase 3 is a later, different full-model path.
+
+See [`FINAL_STATUS.md`](FINAL_STATUS.md), [`docs/R9700_PROJECT_CONTINUITY.md`](docs/R9700_PROJECT_CONTINUITY.md), [`docs/R9700_PHASE3_S3_CLOSURE_20260912.md`](docs/R9700_PHASE3_S3_CLOSURE_20260912.md), [`docs/evidence/r9700_phase3_s3_final_gate_summary_20260912.json`](docs/evidence/r9700_phase3_s3_final_gate_summary_20260912.json), and [`docs/evidence/r9700_phase3_s3_three_start_aggregate_20260912.json`](docs/evidence/r9700_phase3_s3_three_start_aggregate_20260912.json) for the claim boundaries and preserved evidence.
+
+This work does **not** claim official AMD support, upstream Hyperloom support for the R9700, a “first port,” a universal 19-21% acceleration, or a full-model `1.477x` speedup.
