@@ -6,7 +6,7 @@ This is the canonical restart file for a fresh ChatGPT/Codex session. **Read thi
 
 ## 0. CURRENT STATE
 
-**PHASE 4 EXPERIMENTAL GATE IS CLOSED: PASS ACROSS 3/3 INDEPENDENT FRESH PROCESSES.**
+**PHASE 4 IS CLOSED: PASS ACROSS 3/3 INDEPENDENT FRESH PROCESSES, AND STOCK ROCm10 HAS BEEN RESTORED HEALTHY.**
 
 Do not repeat Phase 2, Phase 3, or the Phase 4 cold-start discovery simply to reconstruct context.
 
@@ -16,19 +16,20 @@ Canonical repo:
 
 Canonical development line:
 
-`main` and `chatgpt/r9700-phase4-coldstart-parity-20260912` share the consolidated history. Phase 4 should be advanced to the latest validated closure commit before any new experimental work.
+`main` and `chatgpt/r9700-phase4-coldstart-parity-20260912` share the consolidated history. `main` must be advanced to the latest validated Phase 4 closure commit whenever Phase 4 receives a final documentation/evidence commit.
 
 Canonical Phase 4 closure artifacts:
 
 - `docs/R9700_PHASE4_FINAL_GATE_20260913.md`
 - `docs/evidence/r9700_phase4_three_start_aggregate_20260913.json`
+- `docs/evidence/r9700_phase4_stock_restore_20260913.json`
 - `scripts/r9700_readiness_warmup.py`
 - `scripts/r9700_phase4_s3_verbose_launcher.py`
 - `scripts/r9700_phase4_s3_warmup_probe.py`
 - `scripts/r9700_phase4_s3_measure.py`
 - `scripts/r9700_phase4_s3_long_fresh_probe.py`
 
-Historical Phase 4 discovery notes remain useful but are no longer the active next gate:
+Historical discovery notes remain useful but are no longer the active next gate:
 
 - `docs/R9700_PHASE4_ACTIVE_HANDOFF_20260912.md`
 - `docs/R9700_PHASE4_COLDSTART_ROOT_CAUSE_20260912.md`
@@ -44,18 +45,18 @@ Phase 4 ops task:
 - stable endpoint: `http://127.0.0.1:8000/v1`
 - stable service/container: `inneros-vllm-canary-rocm10.service` / `inneros-vllm-canary-rocm10`
 - image: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
-- runtime vLLM source lineage: `f46a9dfe2c5f57bebbd29556cbbb25eabd874226`
+- runtime vLLM lineage: `f46a9dfe2c5f57bebbd29556cbbb25eabd874226`
 - experimental Phase 3/4 patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
 - S3 MoE config SHA-256: `8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6`
-- serving controls: stock `ROCM_ATTN`, `GPU_MAX_HW_QUEUES=1`, clean fresh process
+- serving controls used for experiment: stock `ROCM_ATTN`, `GPU_MAX_HW_QUEUES=1`, clean fresh process
 
-The S3 config is mounted as:
+S3 config mount name:
 
 `E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json`
 
 ## 2. Phase 3 result preserved
 
-Phase 3 proved the upstream vLLM #43389-style INT4 MoE repack/interleave path can materially improve the full Qwen3-Coder serving workload on this R9700 stack.
+Phase 3 proved that the upstream vLLM #43389-style INT4 MoE repack/interleave path can materially improve the full Qwen3-Coder serving workload on this exact R9700 stack.
 
 Earlier Phase 3 three-start candidate median:
 
@@ -96,7 +97,7 @@ Captured specialization included:
 - FP16
 - `num_queries_per_kv=8`
 
-This was not S3-specific. Stock showed the same class of first-request JIT latency.
+This was **not S3-specific**. Stock reproduced the same class of late first-request JIT after HTTP readiness.
 
 ## 4. Phase 4 mitigation
 
@@ -110,7 +111,7 @@ Operational pattern:
 4. require the canonical output hash;
 5. only after the warmup passes expose the process to user traffic.
 
-The readiness request intentionally pays the 4-5 second JIT cost. Subsequent first-user requests show no new inference JIT for that specialization.
+The readiness request intentionally pays the 4-5 second JIT cost. Subsequent first-user requests showed no new inference JIT for that specialization.
 
 ## 5. Phase 4 three-fresh-process gate
 
@@ -118,7 +119,7 @@ Controlled stock+queue1 C4 baseline:
 
 `158.489996 tok/s`
 
-The aggregate intentionally uses the **first post-readiness-warmup C4 measurement from each independent process**, avoiding cherry-picking later hot repeats.
+The aggregate uses the **first post-readiness-warmup C4 measurement from each independent process**, avoiding cherry-picking later hot repeats.
 
 ### Start 1
 
@@ -170,14 +171,42 @@ The aggregate intentionally uses the **first post-readiness-warmup C4 measuremen
 
 One transient Start 1 long-context observation near 47 tok/s was explicitly rejected as a stable result. Fresh-prefix controls and the two later independent processes reproduced the ~61-62 tok/s class.
 
-## 6. Claim boundary
+## 6. Stock restore after Phase 4
+
+The experimental S3 container `hyperloom-r9700-p4-s3-verbose-p18017` was removed after the third gate.
+
+Immediately after removal, R9700 VRAM returned to the clean idle class:
+
+`59,994,112 bytes`
+
+The stable service was then restored:
+
+`inneros-vllm-canary-rocm10.service`
+
+Verified post-restore state:
+
+- service state: `active`
+- container: `inneros-vllm-canary-rocm10`
+- correct ROCm10/vLLM image
+- `/v1/models`: **HTTP 200**
+- expected Qwen3-Coder model present
+- VRAM after ready: about `28.61 GB`
+
+Evidence:
+
+`docs/evidence/r9700_phase4_stock_restore_20260913.json`
+
+The restored stock process again emitted the same class of `_fwd_kernel` JIT warning on a first inference after HTTP readiness, reinforcing the Phase 4 conclusion that the cold first-request issue is not introduced by S3.
+
+## 7. Claim boundary
 
 Safe claims:
 
 - the tested full-model C4 workload reproduced a roughly **+20.3% median improvement** versus the controlled `158.489996 tok/s` stock+queue1 baseline across three independent fresh Phase 4 processes;
 - the readiness warmup moved the first user request from the multi-second JIT class to roughly **51-54 ms TTFT** in all three fresh processes;
 - C1 remained around `68-70 tok/s` and fresh-prefix ~6K decode around `61-62 tok/s`;
-- deterministic correctness and the canonical four C4 hashes matched stock.
+- deterministic correctness and the canonical four C4 hashes matched stock;
+- operational stock was restored after the experiment.
 
 Do not claim:
 
@@ -188,23 +217,19 @@ Do not claim:
 - every workload or prompt shape is faster;
 - the S3 candidate is already the production default.
 
-## 7. Runtime state and exact next action
+## 8. Exact next action
 
-At the end of the three-start experiment, an experimental S3 container on port `18017` may still be running. **Inspect before launching anything else.**
+**No benchmark rerun is required. Phase 4 is closed.**
 
-The immediate closure sequence is:
+The next engineering decision is separate from Phase 4:
 
-1. preserve the Phase 4 three-start evidence in GitHub;
-2. remove only the experimental S3 container;
-3. confirm R9700 VRAM returns to the clean ~60 MB class;
-4. restore `inneros-vllm-canary-rocm10.service`;
-5. wait for `http://127.0.0.1:8000/v1/models` HTTP 200;
-6. record the stable restore evidence;
-7. only then consider a separate controlled promotion of S3 + readiness warmup into a persistent service.
+- decide whether to promote S3 + readiness warmup into a persistent service/canary;
+- if promoted, implement it as a controlled deployment with explicit rollback to `inneros-vllm-canary-rocm10.service` stock recipe;
+- preserve the current stock operational default until that promotion change is deliberately approved and validated.
 
-Promotion must be a separate change with rollback. Do not silently replace the operational default during benchmark cleanup.
+Do not silently mutate production while treating it as benchmark cleanup.
 
-## 8. Worktree preservation
+## 9. Worktree preservation
 
 Important historical/raw worktrees:
 
@@ -214,14 +239,14 @@ Important historical/raw worktrees:
 
 Do not `git clean`, hard reset, or delete them before deliberate inventory/archive.
 
-## 9. Restart rule
+## 10. Restart rule
 
 A new session must:
 
 1. read this file first;
 2. read `docs/R9700_PHASE4_FINAL_GATE_20260913.md`;
 3. read `docs/evidence/r9700_phase4_three_start_aggregate_20260913.json`;
-4. verify current remote `main` and Phase 4 branch HEADs;
-5. inspect runtime state before mutation;
-6. if stable stock has not yet been restored, finish the closure sequence in Section 7;
-7. do not repeat closed Phase 2/3/4 experiments merely to rebuild context.
+4. read `docs/evidence/r9700_phase4_stock_restore_20260913.json`;
+5. verify current remote `main` and Phase 4 branch HEADs;
+6. verify stock runtime is still healthy before any mutation;
+7. continue only with the separate promotion/canary decision, not by repeating closed Phase 2/3/4 experiments.
