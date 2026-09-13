@@ -2,29 +2,30 @@
 
 Date: 2026-09-13 UTC / 2026-09-13 America/Guayaquil
 
-Status: **LIVE PROMOTION PASS — S3 ACTIVE, GUARD ACTIVE, STOCK AVAILABLE FOR FALLBACK**
+Status: **CLOSED / PASS — LIVE AUTOMATIC FALLBACK PROVEN, S3 RE-PROMOTED AND GUARDED**
 
 Canonical Phase 5 base remains `eee6b5b4ecb19be9ad700aed0c8d98b171e77df7`. Phases 2–5 were not re-benchmarked. Phase 6 only changed operational promotion / rollback / readiness control.
 
-## 1. Current live state
+## 1. Final live state
 
-At the end of this session on AMD `.5`:
+Final desired operational state on AMD `.5` is S3.
 
 - active backend: `hyperloom_s3`
 - desired backend: `hyperloom_s3`
-- state reason: `promotion_validated`
+- state reason after successful transaction: `promotion_validated`
 - state validated: `true`
 - S3 service: `inneros-vllm-hyperloom-s3-production.service` → `active (running)`
 - stock service: `inneros-vllm-canary-rocm10.service` → `inactive`
 - public/private API contract: `http://127.0.0.1:8000`
 - `/v1/models`: HTTP 200
 - served model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
-- transient guard timer: active
-- guard service: oneshot, latest execution PASS
-- latest recorded guard: `2026-09-13T06:43:13Z`, `pass=true`, `guard_failures=0`
-- R9700 VRAM used at final status: approximately `28.47 GB`
+- transient guard scheduling: active
+- final observed guard: PASS at `2026-09-13 13:27:08 UTC`
+- final guard verification: S3 service `active`, exact model present, `ready=true`
+- R9700 VRAM after final re-promotion: approximately `28.47 GB`
+- only the S3 vLLM container owns the model/GPU after final re-promotion
 
-The successful promotion transaction completed at `2026-09-13 06:36:55 UTC`. Systemd recorded the production service `ExecStartPre` and Phase 6 `ExecStartPost` readiness gate as `status=0/SUCCESS`.
+The final re-promotion transaction started at `2026-09-13 13:20:42 UTC` and completed successfully at `2026-09-13 13:26:36 UTC`. Systemd recorded both `ExecStartPre` and the strict Phase 6 `ExecStartPost` readiness gate as `status=0/SUCCESS`.
 
 ## 2. Production S3 identity
 
@@ -43,7 +44,9 @@ The promoted backend runs:
 - exact Phase 5 overlay and S3 configuration bundle
 - runtime path observed: AutoAWQ MoE fallback → `TRITON` WNA16 → `TritonWNA16Experts`
 
-## 3. Phase 6 safety model now implemented
+The final re-promotion again logged `Using TritonWNA16Experts` and loaded the exact R9700 INT4 WNA16 configuration before the readiness gate passed.
+
+## 3. Phase 6 safety model implemented
 
 Phase 6 keeps the operational API contract on `127.0.0.1:8000` while enforcing a single GPU owner.
 
@@ -77,11 +80,11 @@ Rollback / fallback:
 
 S3 production remains manual-only and is not boot-enabled. Stock remains the boot/default service, so a reboot does not silently re-promote S3.
 
-## 4. New live bugs found during Phase 6 and fixes
+## 4. Live bugs found during Phase 6 and fixes
 
 ### A. Initial port release race
 
-First live cutover reached stock inactive + clean VRAM, but production preflight saw `:8000` still unavailable and rejected S3. Automatic recovery returned stock.
+An early live cutover reached stock inactive + clean VRAM, but production preflight saw `:8000` still unavailable and rejected S3. Automatic recovery returned stock.
 
 Fix: controller explicitly waits for route availability before starting S3.
 
@@ -91,7 +94,7 @@ The first implementation tested availability by `bind()` to `127.0.0.1:8000`. Af
 
 Fix: both controller and production preflight now use a TCP connect probe. `connect_ex != 0` means no listener owns the route; TIME_WAIT no longer blocks promotion.
 
-Live proof on the successful attempt: preflight reported:
+Live proof on the successful attempt:
 
 - `port_8000_free=true`
 - `port_8000_listener_present=false`
@@ -99,7 +102,7 @@ Live proof on the successful attempt: preflight reported:
 
 ### C. Failed ExecStartPost could leave a named Docker container alive
 
-During an earlier failed readiness gate, systemd killed the `docker run` client but the named S3 container remained and retained `:8000`. The fallback correctly failed closed rather than lying about stock recovery.
+During an earlier failed readiness gate, systemd killed the `docker run` client but the named S3 container remained and retained `:8000`. The fallback correctly failed closed rather than claiming stock recovery.
 
 Fix: production service now has an `ExecStopPost` exact-name cleanup for `inneros-vllm-hyperloom-s3-production`.
 
@@ -115,34 +118,35 @@ Canonical stock hash is:
 
 Stock was re-launched and independently reproduced the canonical `7931...` hash, proving the gate itself was not stale.
 
-Fix: Phase 6 does **not** weaken correctness. `scripts/r9700_phase6_readiness.py` now allows the cold-JIT transient to be consumed but requires **two canonical hashes consecutively** before declaring S3 production ready. Defaults used by the service:
+Fix: Phase 6 does **not** weaken correctness. `scripts/r9700_phase6_readiness.py` consumes a possible cold-JIT transient but requires **two canonical hashes consecutively** before declaring S3 production ready.
+
+Defaults used by the service:
 
 - max attempts: 4
 - required consecutive canonical results: 2
 
-If S3 never converges to the stock-exact canonical output, promotion fails closed and returns to stock.
+The final re-promotion passed this same strict gate with `reason=canonical_steady_state_proven` and `required_consecutive=2`.
 
-The successful live promotion completed with this stricter Phase 6 readiness gate returning `status=0/SUCCESS`.
+## 5. Focused tests / validation
 
-## 5. Tests / validation
-
-On AMD `.5` after the Phase 6 readiness and TCP-listener fixes:
+Focused Phase 6 validation remains:
 
 - `tests/test_r9700_phase6_control.py`: **11/11 PASS**
 - `tests/test_r9700_phase6_readiness.py`: **4/4 PASS**
 - combined focused Phase 6 suite: **15/15 PASS**
 - Python compile checks: PASS
-- read-only pre-promotion gate: PASS
 - exact Phase 5 overlay/config hash preflight: PASS
 - live S3 service start: PASS
 - Phase 6 canonical steady-state readiness: PASS
 - `/v1/models` expected model identity: PASS
 - transient guard scheduling: PASS
-- repeated live guard health checks: PASS
+- live automatic fallback: PASS
+- final S3 re-promotion after fallback: PASS
+- final post-promotion guard: PASS
 
-No Phase 2–5 benchmark was repeated.
+No Phase 2–5 benchmark was repeated during this final acceptance.
 
-## 6. Phase 5 immutable evidence still authoritative
+## 6. Phase 5 immutable evidence remains authoritative
 
 Do not rewrite Phase 5 results. Existing canonical evidence remains:
 
@@ -153,7 +157,55 @@ Do not rewrite Phase 5 results. Existing canonical evidence remains:
 - correctness hashes: stock exact
 - benchmark concurrency bug: preserved and fixed with exclusive benchmark lease
 
-## 7. Branch / PR
+## 7. Final automatic-fallback acceptance — PASS
+
+The final disruptive control-plane gate was executed once, deliberately and reversibly.
+
+### 7.1 Controlled failure
+
+Only `inneros-vllm-hyperloom-s3-production.service` was intentionally stopped while the Phase 6 transient guard remained enabled.
+
+S3 shutdown completed at approximately `2026-09-13 13:07:33 UTC`. The production unit's exact-name cleanup ran, and no S3 container remained to retain `:8000` or the R9700.
+
+### 7.2 Guard-triggered automatic fallback
+
+The guard detected that S3 was no longer active and entered the automatic fallback path. The stock service was started at `2026-09-13 13:07:43 UTC`.
+
+At `2026-09-13 13:14:05 UTC`, the guard/fallback transaction completed with evidence including:
+
+- `trigger=service_not_active`
+- stock service `inneros-vllm-canary-rocm10.service`
+- stock `service_state=active`
+- stock `ready=true`
+- exact model `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
+
+Because controller readiness requires HTTP 200 from `/v1/models` **and** the exact model ID, `ready=true` proves the operational API contract and exact model identity were restored before fallback was declared successful.
+
+Runtime inspection after fallback showed the only active vLLM container was `inneros-vllm-canary-rocm10`; the S3 container was absent. This proves there was no double GPU ownership or surviving S3 route owner.
+
+### 7.3 Final S3 re-promotion
+
+The desired final live state remained S3, so one final controlled promotion was executed. No second promotion was launched when the original MCP start RPC exceeded its 60-second RPC timeout; the already-running systemd transaction was allowed to finish, as designed.
+
+Evidence:
+
+- promotion transaction started: `2026-09-13 13:20:42 UTC`
+- stock stopped cleanly: `2026-09-13 13:20:46 UTC`
+- S3 exact-hash `ExecStartPre`: SUCCESS
+- S3 served exact model on `127.0.0.1:8000`
+- strict `ExecStartPost`: SUCCESS
+- readiness result: `reason=canonical_steady_state_proven`
+- required consecutive canonical outputs: `2`
+- `/v1/models`: HTTP 200
+- transaction completed: `2026-09-13 13:26:36 UTC`
+- final post-promotion guard PASS: `2026-09-13 13:27:08 UTC`
+- final guard saw S3 `service_state=active`, exact model, `ready=true`
+- stock remained inactive
+- final R9700 VRAM approximately `28.47 GB`
+
+No orphan S3 container, `:8000` conflict, or double GPU ownership was observed.
+
+## 8. Branch / PR gate
 
 Phase 6 branch:
 
@@ -163,24 +215,14 @@ PR:
 
 `#1 Phase 6: controlled S3 promotion, readiness guard and stock fallback`
 
-The PR must remain **draft / unmerged** until the final live automatic-fallback acceptance is executed and documented.
+The previously pending final automatic-fallback acceptance is now **PASS**. This document closes the live Phase 6 gate. PR #1 may now be marked ready for review; merge still requires the normal final Git/PR checks.
 
-## 8. Remaining acceptance item
+## 9. Closure
 
-The remaining live Phase 6 acceptance item is intentionally disruptive and was not run after the successful final promotion in this session:
+Phase 6 is **CLOSED / PASS** from the live control-plane perspective.
 
-1. verify S3 + guard remain healthy;
-2. perform one bounded controlled S3 failure while the guard timer is active;
-3. prove guard initiates automatic fallback;
-4. prove stock returns `active` and `/v1/models` returns HTTP 200 with the exact model;
-5. confirm no orphan S3 container and VRAM/routing ownership is clean;
-6. document evidence;
-7. decide desired final operational state;
-8. if desired final state is S3, perform one final promotion and verify guard again;
-9. only then update PR #1 from draft and consider merge.
+The validated sequence is now proven end to end:
 
-Do not use performance benchmarking for this acceptance item. This is control-plane/fallback validation only.
+`stock -> controlled S3 promotion -> strict canonical readiness -> transient guard -> induced S3 loss -> automatic stock fallback -> exact model recovery -> final S3 re-promotion -> strict canonical readiness -> guard PASS`
 
-## 9. New-chat rules
-
-Do not repeat Phases 2, 3, 4 or 5. Do not redo Phase 6 discovery. Start from the live state described here and the internal continuity file. Treat only a newly observed verifiable regression as justification for deeper investigation.
+Do not repeat Phases 2–5 or this disruptive fallback test unless a new verifiable regression requires a targeted reproduction.
