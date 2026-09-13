@@ -25,15 +25,17 @@ jobs:
           pip install --upgrade pip
           pip install "ruff==0.16.2"
 
-      - name: Capture full-tree Ruff report
+      - name: Capture full-tree Ruff reports
         shell: bash
         run: |
           set +e
           ruff --version > ruff-version.txt
           ruff check . --output-format=concise > ruff-report.txt 2>&1
-          status=$?
-          printf 'exit_code=%s\n' "$status" > ruff-status.txt
-          printf 'Ruff diagnostic exit code: %s\n' "$status" >> "$GITHUB_STEP_SUMMARY"
+          check_status=$?
+          ruff format --check . > ruff-format-report.txt 2>&1
+          format_status=$?
+          printf 'check_exit_code=%s\nformat_exit_code=%s\n' "$check_status" "$format_status" > ruff-status.txt
+          printf 'Ruff check exit code: %s\nRuff format exit code: %s\n' "$check_status" "$format_status" >> "$GITHUB_STEP_SUMMARY"
           exit 0
 
       - name: Upload diagnostic report
@@ -42,6 +44,7 @@ jobs:
           name: ruff-diagnostic-${{ github.sha }}
           path: |
             ruff-report.txt
+            ruff-format-report.txt
             ruff-status.txt
             ruff-version.txt
           retention-days: 1
