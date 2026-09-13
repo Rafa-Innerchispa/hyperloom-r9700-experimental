@@ -34,6 +34,7 @@ class Phase6ControlTests(unittest.TestCase):
         guard.assert_not_called()
         self.assertEqual(result["plan"]["from"], "stock")
         self.assertEqual(result["plan"]["to"], "hyperloom_s3")
+        self.assertIn("wait_port_8000_free", result["plan"]["steps"])
 
     def test_promotion_success_commits_s3_only_after_readiness(self):
         calls = []
@@ -45,12 +46,14 @@ class Phase6ControlTests(unittest.TestCase):
              mock.patch.object(p6, "set_service", side_effect=set_service), \
              mock.patch.object(p6, "wait_service_inactive"), \
              mock.patch.object(p6, "wait_vram_clean"), \
+             mock.patch.object(p6, "wait_port_free") as wait_port, \
              mock.patch.object(p6, "start_guard_scheduler") as guard:
             state = p6.promote()
         self.assertEqual(state["active_backend"], "hyperloom_s3")
         self.assertTrue(state["validated"])
         self.assertIn(("stop", p6.STOCK_SERVICE), calls)
         self.assertIn(("start", p6.S3_SERVICE), calls)
+        wait_port.assert_called_once_with(timeout=60)
         guard.assert_called_once_with()
 
     def test_start_guard_scheduler_uses_transient_timer(self):
@@ -67,15 +70,35 @@ class Phase6ControlTests(unittest.TestCase):
         self.assertIn(p6.GUARD_SERVICE, argv)
         waiter.assert_called_once()
 
-    def test_fallback_waits_for_stock_readiness(self):
+    def test_fallback_waits_for_port_and_stock_readiness(self):
         with mock.patch.object(p6, "set_service"), \
              mock.patch.object(p6, "wait_service_inactive"), \
              mock.patch.object(p6, "wait_vram_clean"), \
+             mock.patch.object(p6, "wait_port_free") as wait_port, \
              mock.patch.object(p6, "wait_backend_ready", return_value={"pass": True, "service": p6.STOCK_SERVICE}) as wait_ready:
             state = p6.fallback_locked("test")
+        wait_port.assert_called_once_with(timeout=60)
         wait_ready.assert_called_once_with(p6.STOCK_SERVICE, timeout=600)
         self.assertEqual(state["active_backend"], "stock")
         self.assertTrue(state["validated"])
+
+    def test_reconcile_stock_requires_ready_stock_and_inactive_s3(self):
+        verification = {"pass": True, "service": p6.STOCK_SERVICE}
+        with mock.patch.object(p6, "service_state", return_value="inactive"), \
+             mock.patch.object(p6, "wait_backend_ready", return_value=verification) as wait_ready, \
+             mock.patch.object(p6, "stop_guard_scheduler"), \
+             mock.patch.object(p6, "set_service"):
+            state = p6.reconcile_stock_state()
+        wait_ready.assert_called_once_with(p6.STOCK_SERVICE, timeout=600)
+        self.assertEqual(state["active_backend"], "stock")
+        self.assertEqual(state["desired_backend"], "stock")
+        self.assertTrue(state["validated"])
+        self.assertEqual(state["reason"], "stock_reconciled_after_interrupted_promotion")
+
+    def test_reconcile_stock_refuses_active_s3(self):
+        with mock.patch.object(p6, "service_state", return_value="active"):
+            with self.assertRaisesRegex(RuntimeError, "cannot_reconcile_stock_while_s3_active"):
+                p6.reconcile_stock_state()
 
     def test_promotion_failure_falls_back_to_stock(self):
         def verify(service):
@@ -87,6 +110,7 @@ class Phase6ControlTests(unittest.TestCase):
              mock.patch.object(p6, "set_service"), \
              mock.patch.object(p6, "wait_service_inactive"), \
              mock.patch.object(p6, "wait_vram_clean"), \
+             mock.patch.object(p6, "wait_port_free"), \
              mock.patch.object(p6, "wait_backend_ready", return_value={"pass": True, "service": p6.STOCK_SERVICE}):
             with self.assertRaises(RuntimeError):
                 p6.promote()
