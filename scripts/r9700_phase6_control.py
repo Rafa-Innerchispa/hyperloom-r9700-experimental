@@ -11,6 +11,7 @@ import fcntl
 import json
 import os
 import pathlib
+import socket
 import subprocess
 import sys
 import time
@@ -26,7 +27,9 @@ GUARD_WATCH_UNIT = "inneros-vllm-hyperloom-phase6-watch"
 GUARD_TIMER = f"{GUARD_WATCH_UNIT}.timer"
 GUARD_RUNNER_SERVICE = f"{GUARD_WATCH_UNIT}.service"
 MODEL_ID = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
-API_MODELS_URL = "http://127.0.0.1:8000/v1/models"
+API_HOST = "127.0.0.1"
+API_PORT = 8000
+API_MODELS_URL = f"http://{API_HOST}:{API_PORT}/v1/models"
 SCHEMA = "hyperloom.r9700.phase6.routing.v1"
 VRAM_CLEAN_BYTES = 1_000_000_000
 
@@ -112,6 +115,17 @@ def model_ready(timeout: float = 5.0) -> tuple[bool, dict[str, Any]]:
         return False, {"error": f"{type(exc).__name__}: {exc}"}
 
 
+def port_is_free() -> bool:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.bind((API_HOST, API_PORT))
+        return True
+    except OSError:
+        return False
+    finally:
+        sock.close()
+
+
 def vram_used_bytes() -> int:
     cp = run(["rocm-smi", "--showmeminfo", "vram", "--json"], timeout=30)
     if cp.returncode != 0:
@@ -139,6 +153,10 @@ def wait_vram_clean(timeout: float = 90.0) -> None:
     wait_for(lambda: 0 <= vram_used_bytes() < VRAM_CLEAN_BYTES, timeout=timeout, description="vram_clean")
 
 
+def wait_port_free(timeout: float = 60.0) -> None:
+    wait_for(port_is_free, timeout=timeout, interval=0.5, description=f"port_{API_PORT}_free")
+
+
 def verify_backend(service: str) -> dict[str, Any]:
     svc = service_state(service)
     ready, details = model_ready()
@@ -158,11 +176,7 @@ def wait_backend_ready(service: str, *, timeout: float = 600.0) -> dict[str, Any
 
 
 def stop_guard_scheduler() -> None:
-    """Stop the transient guard timer/runner if present.
-
-    The timer is deliberately transient. A reboot therefore cannot preserve an
-    S3 promotion decision; stock remains the boot/default backend.
-    """
+    """Stop the transient guard timer/runner if present."""
     set_service("stop", GUARD_TIMER, check=False, timeout=30)
     set_service("stop", GUARD_RUNNER_SERVICE, check=False, timeout=30)
     set_service("reset-failed", GUARD_TIMER, check=False, timeout=30)
@@ -215,6 +229,7 @@ def fallback_locked(reason: str) -> dict[str, Any]:
     set_service("stop", S3_SERVICE, check=False, timeout=90)
     wait_service_inactive(S3_SERVICE, timeout=60)
     wait_vram_clean(timeout=120)
+    wait_port_free(timeout=60)
     set_service("start", STOCK_SERVICE, check=True, timeout=720)
     try:
         verification = wait_backend_ready(STOCK_SERVICE, timeout=600)
@@ -233,6 +248,30 @@ def fallback_locked(reason: str) -> dict[str, Any]:
     return state
 
 
+def reconcile_stock_state() -> dict[str, Any]:
+    """Repair only controller state after an interrupted transaction.
+
+    This command never starts stock blindly: it requires stock to be fully ready
+    with the expected model and refuses reconciliation if S3 is active.
+    """
+    with exclusive_lock():
+        if service_state(S3_SERVICE) == "active":
+            raise RuntimeError("cannot_reconcile_stock_while_s3_active")
+        verification = wait_backend_ready(STOCK_SERVICE, timeout=600)
+        stop_guard_scheduler()
+        set_service("reset-failed", S3_SERVICE, check=False, timeout=30)
+        state = default_state()
+        state.update({
+            "desired_backend": "stock",
+            "active_backend": "stock",
+            "validated": True,
+            "reason": "stock_reconciled_after_interrupted_promotion",
+            "verification": verification,
+        })
+        save_state(state)
+        return state
+
+
 def promote(*, dry_run: bool = False) -> dict[str, Any]:
     plan = {
         "schema": "hyperloom.r9700.phase6.promotion_plan.v1",
@@ -244,6 +283,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
             "stop_stock",
             "wait_stock_inactive",
             "wait_vram_clean",
+            "wait_port_8000_free",
             "start_s3_production_on_port_8000",
             "verify_s3_systemd_and_model_identity",
             "start_transient_phase6_guard",
@@ -266,6 +306,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
             set_service("stop", STOCK_SERVICE, check=True, timeout=90)
             wait_service_inactive(STOCK_SERVICE, timeout=60)
             wait_vram_clean(timeout=120)
+            wait_port_free(timeout=60)
             set_service("start", S3_SERVICE, check=True, timeout=720)
             verification = verify_backend(S3_SERVICE)
             if not verification["pass"]:
@@ -282,7 +323,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
 
 def rollback(*, dry_run: bool = False) -> dict[str, Any]:
     if dry_run:
-        return {"dry_run": True, "plan": ["stop_transient_guard", "stop_s3", "wait_vram_clean", "start_stock", "wait_stock_ready", "verify_stock"]}
+        return {"dry_run": True, "plan": ["stop_transient_guard", "stop_s3", "wait_vram_clean", "wait_port_8000_free", "start_stock", "wait_stock_ready", "verify_stock"]}
     with exclusive_lock():
         return fallback_locked("manual_rollback")
 
@@ -325,6 +366,7 @@ def status() -> dict[str, Any]:
             "guard_runner": service_state(GUARD_RUNNER_SERVICE),
         },
         "public_endpoint": {"url": API_MODELS_URL, "ready": ready, "details": details},
+        "port_8000_free": port_is_free(),
         "vram_used_bytes": vram_used_bytes(),
     }
 
@@ -333,6 +375,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
+    sub.add_parser("reconcile-stock")
     p = sub.add_parser("promote")
     p.add_argument("--dry-run", action="store_true")
     r = sub.add_parser("rollback")
@@ -343,6 +386,8 @@ def main() -> int:
     try:
         if args.cmd == "status":
             out = status()
+        elif args.cmd == "reconcile-stock":
+            out = reconcile_stock_state()
         elif args.cmd == "promote":
             out = promote(dry_run=args.dry_run)
         elif args.cmd == "rollback":
