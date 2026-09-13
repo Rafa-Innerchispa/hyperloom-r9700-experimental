@@ -116,12 +116,15 @@ def model_ready(timeout: float = 5.0) -> tuple[bool, dict[str, Any]]:
 
 
 def port_is_free() -> bool:
+    """Return True when no TCP listener accepts connections on the API port.
+
+    A bind() probe is intentionally not used here: TIME_WAIT sockets can make
+    bind() return EADDRINUSE after the actual listener has already exited.
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(0.25)
     try:
-        sock.bind((API_HOST, API_PORT))
-        return True
-    except OSError:
-        return False
+        return sock.connect_ex((API_HOST, API_PORT)) != 0
     finally:
         sock.close()
 
