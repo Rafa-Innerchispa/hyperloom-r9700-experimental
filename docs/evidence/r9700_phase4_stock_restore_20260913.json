@@ -1,0 +1,22 @@
+{
+  "schema": "hyperloom.r9700.phase4.stock_restore.v1",
+  "captured_at_utc": "2026-09-13T01:56:56Z",
+  "service": "inneros-vllm-canary-rocm10.service",
+  "service_state": "active",
+  "container": "inneros-vllm-canary-rocm10",
+  "container_image": "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0",
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "endpoint": "http://127.0.0.1:8000/v1/models",
+  "http_status": 200,
+  "vram_used_bytes_after_ready": 28610031616,
+  "experimental_s3_container_removed": true,
+  "vram_used_bytes_after_s3_removal_before_stock_start": 59994112,
+  "runtime_versions": {
+    "python": "3.14.7",
+    "torch": "2.12.0+rocm10.0.0",
+    "torch_hip": "7.15.26333",
+    "vllm": "0.27.1.dev5+gf46a9dfe2.d20260827.rocm100"
+  },
+  "observation": "After HTTP readiness, stock again emitted the same class of Triton _fwd_kernel JIT warning on a first inference. This is consistent with the Phase4 finding that the late prefix-prefill JIT is not S3-specific.",
+  "pass": true
+}
