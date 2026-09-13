@@ -1,0 +1,64 @@
+{
+  "schema": "hyperloom.r9700.phase4.three_start_aggregate.v1",
+  "captured_at_utc": "2026-09-13T01:46:30Z",
+  "hardware": "AMD Radeon AI PRO R9700 / gfx1201 / 32 GiB",
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "s3_config_sha256": "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6",
+  "controlled_stock_c4_tok_s": 158.489996,
+  "methodology": "For C4 aggregate use the first post-readiness-warmup measurement from each independent fresh process. Long-context uses fresh-prefix controls where available to avoid exact prefix-cache reuse.",
+  "starts": [
+    {
+      "start": 1,
+      "warmup_jit_ttft_sec": 4.904734832933173,
+      "first_user_ttft_sec": 0.050894996034912765,
+      "first_user_hash_match": true,
+      "user_inference_jit_lines": 0,
+      "c1_tok_s": 69.95752512324499,
+      "c4_tok_s": 190.59692086686437,
+      "c4_canonical_hashes_match": true,
+      "fresh_long_tok_s": [62.00360891879988, 61.96926153941344],
+      "pass": true
+    },
+    {
+      "start": 2,
+      "warmup_jit_ttft_sec": 4.720455841044895,
+      "first_user_ttft_sec": 0.05363532202318311,
+      "first_user_hash_match": true,
+      "user_inference_jit_lines": 0,
+      "c1_tok_s": 69.67899854056502,
+      "c4_tok_s": 194.08234087815802,
+      "c4_canonical_hashes_match": true,
+      "fresh_long_tok_s": [61.95500330808383],
+      "pass": true
+    },
+    {
+      "start": 3,
+      "warmup_jit_ttft_sec": 4.623636366915889,
+      "first_user_ttft_sec": 0.05294385796878487,
+      "first_user_hash_match": true,
+      "user_inference_jit_lines": 0,
+      "c1_tok_s": 68.15011651516456,
+      "c4_tok_s": 189.9816022817711,
+      "c4_canonical_hashes_match": true,
+      "long_context_tok_s": 61.451599057468506,
+      "fresh_long_tok_s": [61.57065754386586, 60.79019191403163],
+      "pass": true
+    }
+  ],
+  "aggregate": {
+    "fresh_process_passes": "3/3",
+    "c4_median_tok_s": 190.59692086686437,
+    "c4_mean_tok_s": 191.5536213422645,
+    "c4_range_tok_s": [189.9816022817711, 194.08234087815802],
+    "c4_median_gain_vs_controlled_stock_pct": 20.258013551129352,
+    "c1_median_tok_s": 69.67899854056502,
+    "first_user_ttft_median_ms": 52.94385796878487,
+    "warmup_jit_ttft_median_sec": 4.720455841044895,
+    "fresh_long_per_start_tok_s": [61.98643522910666, 61.95500330808383, 61.18042472894875],
+    "fresh_long_median_tok_s": 61.95500330808383,
+    "correctness": "all canonical hashes match stock",
+    "verdict": "PASS"
+  },
+  "claim_boundary": "Measured on the tested Qwen3-Coder-30B-AWQ workloads and this exact ROCm10/vLLM/R9700 stack. Do not present as universal performance uplift or official AMD support."
+}
