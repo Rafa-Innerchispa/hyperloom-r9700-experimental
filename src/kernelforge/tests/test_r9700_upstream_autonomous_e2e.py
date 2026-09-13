@@ -27,6 +27,8 @@ def _round(output_tok_s: float, p95_ms: float, *, failed: int = 0) -> dict:
         "total_tok_s": output_tok_s * 2,
         "mean_e2e_ms": p95_ms * 0.8,
         "p95_e2e_ms": p95_ms,
+        "mean_ttft_ms": p95_ms * 0.2,
+        "p95_ttft_ms": p95_ms * 0.25,
         "errors": (["boom"] if failed else []),
     }
 
@@ -41,6 +43,7 @@ def _complete_arm(output_tok_s: float, p95_ms: float, *, failed: int = 0) -> dic
         "failed": failed,
         "median_output_tok_s": output_tok_s,
         "median_p95_e2e_ms": p95_ms,
+        "median_p95_ttft_ms": p95_ms * 0.25,
     }
 
 
@@ -55,6 +58,7 @@ def test_aggregate_rounds_uses_medians_and_preserves_failures():
     assert aggregate["round_count"] == 3
     assert aggregate["median_output_tok_s"] == 22.0
     assert aggregate["median_p95_e2e_ms"] == 950.0
+    assert aggregate["median_p95_ttft_ms"] == 237.5
     assert aggregate["failed"] == 1
     assert aggregate["requests"] == 3 * E2E.REQUESTS_PER_ARM
 
@@ -116,3 +120,4 @@ def test_benchmark_rounds_calls_each_round_and_aggregates(monkeypatch):
     ]
     assert result["aggregate"]["median_output_tok_s"] == 21.0
     assert result["aggregate"]["median_p95_e2e_ms"] == 910.0
+    assert result["aggregate"]["median_p95_ttft_ms"] == 227.5

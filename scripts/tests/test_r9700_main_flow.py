@@ -32,12 +32,20 @@ def test_actual_main_baseline_then_autonomous_choice_then_candidate(monkeypatch,
         throughput = 20.0 if concurrency == 1 else 36.0
         latency = 1000.0 if concurrency == 1 else 1200.0
         return {
-            "round": round_index + 1, "concurrency": concurrency,
-            "requests": 6, "passed": 6, "failed": 0,
-            "wall_sec": 1.0, "output_tokens": int(throughput),
+            "round": round_index + 1,
+            "concurrency": concurrency,
+            "requests": 6,
+            "passed": 6,
+            "failed": 0,
+            "wall_sec": 1.0,
+            "output_tokens": int(throughput),
             "total_tokens": int(throughput * 2),
-            "output_tok_s": throughput, "total_tok_s": throughput * 2,
-            "mean_e2e_ms": latency * 0.8, "p95_e2e_ms": latency,
+            "output_tok_s": throughput,
+            "total_tok_s": throughput * 2,
+            "mean_e2e_ms": latency * 0.8,
+            "p95_e2e_ms": latency,
+            "mean_ttft_ms": latency * 0.2,
+            "p95_ttft_ms": latency * 0.25,
             "errors": [],
         }
 
@@ -81,6 +89,7 @@ def test_actual_main_baseline_then_autonomous_choice_then_candidate(monkeypatch,
     assert report["candidate_concurrency"] == selection
     assert report["baseline"]["aggregate"]["requests"] == 18
     assert report["candidate"]["aggregate"]["requests"] == 18
+    assert report["baseline"]["aggregate"]["median_p95_ttft_ms"] == 250.0
     assert report["shell_exposed"] is False
     assert report["cdna_specific_paths_used"] is False
     assert report["hardware_attested_by_runner"] is False

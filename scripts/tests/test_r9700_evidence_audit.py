@@ -171,7 +171,7 @@ def test_runner_retains_every_sample_index(monkeypatch):
     target_spec.loader.exec_module(runner)
     def one_request(model, index):
         return {"ok": True, "correctness_passed": True, "elapsed_sec": 0.01,
-                "completion_tokens": 10, "prompt_tokens": 5, "text_len": 3}
+                "ttft_sec": 0.005, "completion_tokens": 10, "prompt_tokens": 5, "text_len": 3}
     monkeypatch.setattr(runner, "_one_request", one_request)
     row = runner._benchmark("synthetic", 2, round_index=2)
     assert [sample["request_index"] for sample in row["samples"]] == list(range(12, 18))

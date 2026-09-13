@@ -21,14 +21,20 @@ spec.loader.exec_module(runner)
 
 def bundle(throughput=20.0, latency=1000.0, failed=False):
     rows = [{
-        "round": i + 1, "concurrency": 1 if throughput == 20 else 2,
-        "requests": 6, "passed": 0 if failed else 6, "failed": 6 if failed else 0,
-        "wall_sec": 1.0, "output_tokens": 0 if failed else 20,
+        "round": i + 1,
+        "concurrency": 1 if throughput == 20 else 2,
+        "requests": 6,
+        "passed": 0 if failed else 6,
+        "failed": 6 if failed else 0,
+        "wall_sec": 1.0,
+        "output_tokens": 0 if failed else 20,
         "total_tokens": 0 if failed else 40,
         "output_tok_s": 0.0 if failed else throughput,
         "total_tok_s": 0.0 if failed else throughput * 2,
         "mean_e2e_ms": math.inf if failed else latency * 0.8,
         "p95_e2e_ms": math.inf if failed else latency,
+        "mean_ttft_ms": math.inf if failed else latency * 0.2,
+        "p95_ttft_ms": math.inf if failed else latency * 0.25,
         "errors": ["synthetic_timeout"] * 6 if failed else [],
     } for i in range(3)]
     return {"rounds": rows, "aggregate": runner._aggregate_rounds(rows)}
@@ -54,8 +60,11 @@ def setup_offline(monkeypatch, tmp_path, problem="", latency=1100.0):
     def measure(model, concurrency):
         name = "baseline" if "baseline" not in calls else "candidate"
         calls.append(name)
-        result = bundle(20.0 if name == "baseline" else 36.0, 1000.0 if name == "baseline" else latency,
-                        failed=problem == name + "_requests")
+        result = bundle(
+            20.0 if name == "baseline" else 36.0,
+            1000.0 if name == "baseline" else latency,
+            failed=problem == name + "_requests",
+        )
         if problem == "candidate_nonfinite" and name == "candidate":
             result["aggregate"]["median_output_tok_s"] = math.inf
         if problem == "candidate_counts" and name == "candidate":
@@ -77,8 +86,12 @@ def setup_offline(monkeypatch, tmp_path, problem="", latency=1100.0):
 
 
 @pytest.mark.parametrize("problem", [
-    "baseline_requests", "candidate_requests", "candidate_nonfinite",
-    "candidate_counts", "discovery_error", "agent_error",
+    "baseline_requests",
+    "candidate_requests",
+    "candidate_nonfinite",
+    "candidate_counts",
+    "discovery_error",
+    "agent_error",
 ])
 def test_invalid_run_never_reports_success(monkeypatch, tmp_path, capsys, problem):
     calls = setup_offline(monkeypatch, tmp_path, problem)
