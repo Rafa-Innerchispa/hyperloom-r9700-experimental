@@ -67,6 +67,16 @@ class Phase6ControlTests(unittest.TestCase):
         self.assertIn(p6.GUARD_SERVICE, argv)
         waiter.assert_called_once()
 
+    def test_fallback_waits_for_stock_readiness(self):
+        with mock.patch.object(p6, "set_service"), \
+             mock.patch.object(p6, "wait_service_inactive"), \
+             mock.patch.object(p6, "wait_vram_clean"), \
+             mock.patch.object(p6, "wait_backend_ready", return_value={"pass": True, "service": p6.STOCK_SERVICE}) as wait_ready:
+            state = p6.fallback_locked("test")
+        wait_ready.assert_called_once_with(p6.STOCK_SERVICE, timeout=600)
+        self.assertEqual(state["active_backend"], "stock")
+        self.assertTrue(state["validated"])
+
     def test_promotion_failure_falls_back_to_stock(self):
         def verify(service):
             if service == p6.STOCK_SERVICE:
@@ -76,7 +86,8 @@ class Phase6ControlTests(unittest.TestCase):
         with mock.patch.object(p6, "verify_backend", side_effect=verify), \
              mock.patch.object(p6, "set_service"), \
              mock.patch.object(p6, "wait_service_inactive"), \
-             mock.patch.object(p6, "wait_vram_clean"):
+             mock.patch.object(p6, "wait_vram_clean"), \
+             mock.patch.object(p6, "wait_backend_ready", return_value={"pass": True, "service": p6.STOCK_SERVICE}):
             with self.assertRaises(RuntimeError):
                 p6.promote()
         state = p6.load_state()
