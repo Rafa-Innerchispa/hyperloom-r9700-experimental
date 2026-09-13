@@ -1,0 +1,8 @@
+[Unit]
+Description=HyperLoom R9700 Phase 6 verified rollback transaction
+After=default.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/scripts/r9700_phase6_control.py rollback
+TimeoutStartSec=1800
