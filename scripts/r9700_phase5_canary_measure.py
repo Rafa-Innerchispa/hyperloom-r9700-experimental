@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import concurrent.futures
 import datetime as dt
+import fcntl
 import hashlib
 import json
+import os
 import time
 import urllib.request
 from pathlib import Path
@@ -12,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MODEL = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
 PORT = 18018
 BASE = f"http://127.0.0.1:{PORT}"
+LOCK_PATH = ROOT / "var" / "r9700_phase5_benchmark.lock"
+LOCK_HELD_ENV = "R9700_PHASE5_BENCH_LOCK_HELD"
 CANONICAL_CORRECTNESS = "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
 CANONICAL_C4 = [
     "891b5901302b3d6901fd310b055c7f3fa03ed1ea6a4cf1c1deebd0e5fc372e68",
@@ -19,6 +23,38 @@ CANONICAL_C4 = [
     "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
     "fbe90e7b9c033267a5017a845902599a1c0b6fead46d2a709ecad63ddb97a407",
 ]
+
+
+def acquire_benchmark_lock():
+    """Fail closed if another Phase5 benchmark client is using the canary.
+
+    A soak process owns the same lock and marks child measurements through
+    LOCK_HELD_ENV. This prevents cross-chat/agent benchmark contamination while
+    still allowing the soak to invoke this script repeatedly under one lease.
+    """
+    if os.environ.get(LOCK_HELD_ENV) == "1":
+        return None
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    handle = LOCK_PATH.open("a+", encoding="utf-8")
+    try:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print(json.dumps({
+            "schema": "hyperloom.r9700.phase5.benchmark_lock.v1",
+            "pass": False,
+            "error": "benchmark_lock_busy",
+            "lock_path": str(LOCK_PATH),
+            "action": "abort_without_sending_inference_traffic",
+        }, indent=2))
+        raise SystemExit(4)
+    handle.seek(0)
+    handle.truncate()
+    handle.write(json.dumps({"pid": os.getpid(), "acquired_at_utc": dt.datetime.now(dt.timezone.utc).isoformat()}) + "\n")
+    handle.flush()
+    return handle
+
+
+_BENCHMARK_LOCK = acquire_benchmark_lock()
 
 
 def req(prompt: str, max_tokens: int = 96) -> dict:
@@ -65,7 +101,7 @@ def long_prompt(marker: str) -> str:
     return (f" {marker}" * 6000) + "\nSummarize the repeated marker pattern in one sentence."
 
 captured = dt.datetime.now(dt.timezone.utc)
-out = {"schema": "hyperloom.r9700.phase5.canary_measure.v1", "captured_at_utc": captured.isoformat(), "port": PORT, "health": health()}
+out = {"schema": "hyperloom.r9700.phase5.canary_measure.v2", "captured_at_utc": captured.isoformat(), "port": PORT, "benchmark_lock": "exclusive", "health": health()}
 if out["health"]["ok"]:
     out["correctness"] = req("Return exactly a compact Python function add(a,b) that returns a+b.", 64)
     out["correctness"]["canonical_match"] = out["correctness"]["text_sha256"] == CANONICAL_CORRECTNESS
