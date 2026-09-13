@@ -38,6 +38,14 @@ jobs:
           printf 'Ruff check exit code: %s\nRuff format exit code: %s\n' "$check_status" "$format_status" >> "$GITHUB_STEP_SUMMARY"
           exit 0
 
+      - name: Produce exact formatted evidence-audit test candidate
+        shell: bash
+        run: |
+          cp scripts/tests/test_r9700_evidence_audit.py formatted-test_r9700_evidence_audit.py
+          sed -i '/^import copy$/d' formatted-test_r9700_evidence_audit.py
+          ruff format formatted-test_r9700_evidence_audit.py
+          ruff check formatted-test_r9700_evidence_audit.py
+
       - name: Upload diagnostic report
         uses: actions/upload-artifact@v4
         with:
@@ -47,5 +55,6 @@ jobs:
             ruff-format-report.txt
             ruff-status.txt
             ruff-version.txt
+            formatted-test_r9700_evidence_audit.py
           retention-days: 1
           if-no-files-found: error
