@@ -1,0 +1,18 @@
+{
+  "schema": "hyperloom.r9700.phase5.benchmark_lock_selftest.v1",
+  "captured_at_utc": "2026-09-13T02:59:00Z",
+  "measure": {
+    "returncode": 4,
+    "lock_rejected": true,
+    "error": "benchmark_lock_busy",
+    "action": "abort_without_sending_inference_traffic"
+  },
+  "soak": {
+    "returncode": 4,
+    "lock_rejected": true,
+    "error": "benchmark_lock_busy",
+    "action": "abort_without_sending_inference_traffic"
+  },
+  "pass": true,
+  "truth_boundary": "Both clients were invoked while an exclusive Phase5 benchmark lease was held. Both failed before health/request execution, proving the cross-chat concurrency guard works without inference traffic."
+}
