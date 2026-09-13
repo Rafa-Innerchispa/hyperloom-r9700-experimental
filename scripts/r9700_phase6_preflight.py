@@ -11,6 +11,7 @@ import subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "var" / "r9700_phase5_canary_bundle"
 MANIFEST = BUNDLE / "manifest.json"
+HOST = "127.0.0.1"
 PORT = 8000
 STOCK_SERVICE = "inneros-vllm-canary-rocm10.service"
 PROD_CONTAINER = "inneros-vllm-hyperloom-s3-production"
@@ -33,6 +34,21 @@ def sha(path: pathlib.Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def listener_present() -> tuple[bool, int]:
+    """Return whether a TCP listener accepts connections on the production port.
+
+    Do not use bind() as a readiness probe: TIME_WAIT sockets can make bind()
+    report EADDRINUSE even after the listener has disappeared.
+    """
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(0.25)
+    try:
+        rc = sock.connect_ex((HOST, PORT))
+        return rc == 0, rc
+    finally:
+        sock.close()
+
+
 def main() -> int:
     checks: dict[str, object] = {}
     svc = run(["systemctl", "--user", "is-active", STOCK_SERVICE])
@@ -42,15 +58,10 @@ def main() -> int:
     existing = run(["docker", "inspect", "-f", "{{.State.Status}}", PROD_CONTAINER])
     checks["existing_production_container"] = existing.stdout.strip() if existing.returncode == 0 else None
     checks["no_existing_production_container"] = existing.returncode != 0
-    sock = socket.socket()
-    try:
-        sock.bind(("127.0.0.1", PORT))
-        checks["port_8000_free"] = True
-    except OSError as exc:
-        checks["port_8000_free"] = False
-        checks["port_error"] = str(exc)
-    finally:
-        sock.close()
+    listener, connect_rc = listener_present()
+    checks["port_8000_listener_present"] = listener
+    checks["port_8000_probe_connect_ex"] = connect_rc
+    checks["port_8000_free"] = not listener
     vram = run(["rocm-smi", "--showmeminfo", "vram", "--json"])
     try:
         used = int(json.loads(vram.stdout)["card0"]["VRAM Total Used Memory (B)"])
@@ -73,7 +84,16 @@ def main() -> int:
     checks["overlay_all_match"] = all(file_checks.values())
     cfg = BUNDLE / "config" / CONFIG_NAME
     checks["config_hash_match"] = cfg.exists() and sha(cfg) == S3_CONFIG_SHA256
-    required = [checks["stock_service_inactive"], checks["no_existing_production_container"], checks["port_8000_free"], checks["vram_clean_under_1gb"], checks["manifest_exists"], checks["manifest_pass"], checks["overlay_all_match"], checks["config_hash_match"]]
+    required = [
+        checks["stock_service_inactive"],
+        checks["no_existing_production_container"],
+        checks["port_8000_free"],
+        checks["vram_clean_under_1gb"],
+        checks["manifest_exists"],
+        checks["manifest_pass"],
+        checks["overlay_all_match"],
+        checks["config_hash_match"],
+    ]
     out = {"schema": "hyperloom.r9700.phase6.production_preflight.v1", "port": PORT, "checks": checks, "pass": all(required)}
     print(json.dumps(out, indent=2, sort_keys=True))
     return 0 if out["pass"] else 2
