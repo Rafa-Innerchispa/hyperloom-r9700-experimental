@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import math
 from pathlib import Path
 
@@ -14,22 +15,47 @@ assert spec is not None and spec.loader is not None
 spec.loader.exec_module(runner)
 
 
+class FakeResponse:
+    def __init__(self, lines):
+        self.lines = [line.encode("utf-8") for line in lines]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        return False
+
+    def __iter__(self):
+        return iter(self.lines)
+
+
 def response(text="AMD validates this local response.", completion_tokens=8, prompt_tokens=12):
-    return {
-        "choices": [{"message": {"content": text}, "finish_reason": "stop"}],
-        "usage": {"completion_tokens": completion_tokens, "prompt_tokens": prompt_tokens},
-    }
+    """Build the streaming SSE contract consumed by _one_request."""
+    return [
+        "data: " + json.dumps({"choices": [{"delta": {"role": "assistant"}}], "usage": None}) + "\n",
+        "data: " + json.dumps({"choices": [{"delta": {"content": text}}], "usage": None}) + "\n",
+        "data: " + json.dumps({
+            "choices": [],
+            "usage": {"completion_tokens": completion_tokens, "prompt_tokens": prompt_tokens},
+        }) + "\n",
+        "data: [DONE]\n",
+    ]
 
 
 def arm(throughput=20.0, latency=1000.0):
     return {
-        "round_count": 3, "requests": 18, "passed": 18, "failed": 0,
-        "median_output_tok_s": throughput, "median_p95_e2e_ms": latency,
+        "round_count": 3,
+        "requests": 18,
+        "passed": 18,
+        "failed": 0,
+        "median_output_tok_s": throughput,
+        "median_p95_e2e_ms": latency,
+        "median_p95_ttft_ms": latency * 0.25,
     }
 
 
-@pytest.mark.parametrize("payload", [
-    {},
+@pytest.mark.parametrize("stream", [
+    ["data: {}\n", "data: [DONE]\n"],
     response(text=""),
     response(text="   "),
     response(text="An unrelated answer."),
@@ -39,20 +65,27 @@ def arm(throughput=20.0, latency=1000.0):
     response(completion_tokens=True),
     response(completion_tokens=2.5),
     response(prompt_tokens=-1),
-    {"choices": [], "usage": {"completion_tokens": 8, "prompt_tokens": 12}},
+    [
+        "data: " + json.dumps({
+            "choices": [],
+            "usage": {"completion_tokens": 8, "prompt_tokens": 12},
+        }) + "\n",
+        "data: [DONE]\n",
+    ],
 ])
-def test_invalid_model_responses_are_failures(monkeypatch, payload):
-    monkeypatch.setattr(runner, "_request_json", lambda *a, **k: payload)
+def test_invalid_model_responses_are_failures(monkeypatch, stream):
+    monkeypatch.setattr(runner.urllib.request, "urlopen", lambda *a, **k: FakeResponse(stream))
     row = runner._one_request("local-model", 0)
     assert row["ok"] is False, "HTTP success is not valid benchmark output"
     assert row["completion_tokens"] == 0
 
 
 def test_valid_model_response_is_counted(monkeypatch):
-    monkeypatch.setattr(runner, "_request_json", lambda *a, **k: response())
+    monkeypatch.setattr(runner.urllib.request, "urlopen", lambda *a, **k: FakeResponse(response()))
     row = runner._one_request("local-model", 0)
     assert row["ok"] is True
     assert row["completion_tokens"] == 8
+    assert 0 < row["ttft_sec"] <= row["elapsed_sec"]
 
 
 @pytest.mark.parametrize("which,key,value", [
