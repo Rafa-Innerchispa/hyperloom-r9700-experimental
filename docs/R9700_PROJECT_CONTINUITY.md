@@ -1,42 +1,48 @@
 # HyperLoom R9700 Project Continuity
 
-Last reconciled: 2026-09-12 America/Guayaquil / 2026-09-13 UTC.
+Last reconciled: 2026-09-13 UTC / 2026-09-12 America/Guayaquil.
 
 This is the canonical restart file for a fresh ChatGPT/Codex session. **Read this before touching the R9700 runtime.**
 
-## 0. CURRENT STATE
+## 0. CURRENT STATE — READ FIRST
 
-**PHASE 4 IS CLOSED: PASS ACROSS 3/3 INDEPENDENT FRESH PROCESSES, AND STOCK ROCm10 HAS BEEN RESTORED HEALTHY.**
+**PHASE 5 IS CLOSED: REVERSIBLE CANARY PACKAGING + SINGLE-OWNER SOAK PASS.**
 
-Do not repeat Phase 2, Phase 3, or the Phase 4 cold-start discovery simply to reconstruct context.
+The operational default after closure is still the **stock ROCm10 service on port 8000**. S3 has **not** been silently promoted into production routing.
+
+Do not repeat Phase 2, Phase 3, Phase 4, or Phase 5 experiments merely to reconstruct context.
 
 Canonical repo:
 
 `Rafa-Innerchispa/hyperloom-r9700-experimental`
 
-Canonical development line:
+Canonical validated Phase 5 branch:
 
-`main` and `chatgpt/r9700-phase4-coldstart-parity-20260912` share the consolidated history. `main` must be advanced to the latest validated Phase 4 closure commit whenever Phase 4 receives a final documentation/evidence commit.
+`chatgpt/r9700-phase5-canary-v3-20260913`
 
-Canonical Phase 4 closure artifacts:
+Canonical Phase 5 task:
 
-- `docs/R9700_PHASE4_FINAL_GATE_20260913.md`
-- `docs/evidence/r9700_phase4_three_start_aggregate_20260913.json`
-- `docs/evidence/r9700_phase4_stock_restore_20260913.json`
+`ops_1fdc08a1b732`
+
+Important Phase 5 closure artifacts:
+
+- `docs/R9700_PHASE5_CANARY_CLOSURE_20260913.md`
+- `docs/evidence/r9700_phase5_canary_bundle_manifest.json`
+- `docs/evidence/r9700_phase5_canary_measure_20260913T023328Z.json`
+- `docs/evidence/r9700_phase5_concurrency_contamination_20260913.json`
+- `docs/evidence/r9700_phase5_benchmark_lock_selftest_20260913.json`
+- `docs/evidence/r9700_phase5_clean_soak_manifest_20260913.json`
+- `docs/evidence/r9700_phase5_clean_soak_raw_bundle_20260913.gz.b64`
+- `scripts/systemd/inneros-vllm-hyperloom-s3-canary.service`
+- `scripts/r9700_phase5_prepare_canary.py`
+- `scripts/r9700_phase5_canary_preflight.py`
+- `scripts/r9700_phase5_wait_canary_active.py`
+- `scripts/r9700_phase5_canary_measure.py`
+- `scripts/r9700_phase5_canary_soak.py`
+- `scripts/r9700_phase5_benchmark_lock_selftest.py`
 - `scripts/r9700_readiness_warmup.py`
-- `scripts/r9700_phase4_s3_verbose_launcher.py`
-- `scripts/r9700_phase4_s3_warmup_probe.py`
-- `scripts/r9700_phase4_s3_measure.py`
-- `scripts/r9700_phase4_s3_long_fresh_probe.py`
 
-Historical discovery notes remain useful but are no longer the active next gate:
-
-- `docs/R9700_PHASE4_ACTIVE_HANDOFF_20260912.md`
-- `docs/R9700_PHASE4_COLDSTART_ROOT_CAUSE_20260912.md`
-
-Phase 4 ops task:
-
-`ops_d0c3d4eebd67`
+The next legitimate engineering action is a **separate explicit promotion decision / Phase 6**, not another reconstruction benchmark.
 
 ## 1. Exact hardware/runtime identity
 
@@ -46,27 +52,26 @@ Phase 4 ops task:
 - stable service/container: `inneros-vllm-canary-rocm10.service` / `inneros-vllm-canary-rocm10`
 - image: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
 - runtime vLLM lineage: `f46a9dfe2c5f57bebbd29556cbbb25eabd874226`
-- experimental Phase 3/4 patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
+- experimental patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
 - S3 MoE config SHA-256: `8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6`
-- serving controls used for experiment: stock `ROCM_ATTN`, `GPU_MAX_HW_QUEUES=1`, clean fresh process
+- S3 config mount name: `E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json`
+- serving controls used by the selected candidate: stock `ROCM_ATTN`, `GPU_MAX_HW_QUEUES=1`
 
-S3 config mount name:
+## 2. Closed history — preserve, do not redo
 
-`E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json`
+### Phase 2
 
-## 2. Phase 3 result preserved
+The custom W1 microkernel proof was genuinely faster in isolation, with median small-M speedup around `1.47682x`, but the final v7 full-model hybrid remained roughly 4.5-5.1% below stable stock C4. It was correctly **not promoted**.
 
-Phase 3 proved that the upstream vLLM #43389-style INT4 MoE repack/interleave path can materially improve the full Qwen3-Coder serving workload on this exact R9700 stack.
+### Phase 3
 
-Earlier Phase 3 three-start candidate median:
+The upstream vLLM #43389-style INT4 MoE repack/interleave path materially improved the full Qwen3-Coder serving workload on this exact R9700 stack.
 
-- C4: about `191.43 tok/s`
-- controlled stock+queue1 baseline: `158.489996 tok/s`
-- gain on that tested C4 workload: about `+20.8%`
+An earlier three-start candidate produced about `191.43 tok/s` C4 median versus controlled stock+queue1 `158.489996 tok/s`, about `+20.8%` on that tested workload.
 
-Phase 3 then added the R9700-specific S3 config to recover small-M and long-context performance rather than optimizing C4 alone.
+Phase 3 then added the R9700-specific S3 MoE config to recover C1 and long-context performance rather than optimizing C4 alone.
 
-Canonical Phase 3 closure artifacts:
+Canonical Phase 3 artifacts:
 
 - `docs/R9700_PHASE3_S3_CLOSURE_20260912.md`
 - `docs/evidence/r9700_phase3_s3_final_gate_summary_20260912.json`
@@ -74,179 +79,208 @@ Canonical Phase 3 closure artifacts:
 - `docs/evidence/r9700_phase3_tuned_moe_config_s3_20260912.json`
 - `docs/evidence/r9700_phase3_long_soak_stability_20260912.json`
 
-Phase 2 remains a valid negative result: its custom W1 microkernel was faster in isolation but the final v7 full-model candidate was slower than stock and was correctly not promoted.
+### Phase 4
 
-## 3. Phase 4 root cause
-
-Fresh stock-equivalent and S3 processes showed that `/v1/models` HTTP 200 did not mean the first real inference was latency-ready.
-
-The first inference could trigger a late Triton JIT compile in:
+Phase 4 identified the multi-second first-request penalty as a late Triton JIT in:
 
 `vllm.v1.attention.ops.prefix_prefill._fwd_kernel`
 
-Captured specialization included:
+The same class of JIT appeared on freshly restored stock, so it was not S3-specific.
 
-- `BLOCK_DMODEL=128`
-- `BLOCK_DMODEL_PADDED=128`
-- `BLOCK_M=128`
-- `BLOCK_N=64`
-- `BLOCK_SIZE=32`
-- `CAUSAL=True`
-- `KV_FROM_CACHE=False`
-- `SKIP_DECODE=True`
-- FP16
-- `num_queries_per_kv=8`
+The reversible mitigation is a deterministic readiness-stage inference. It intentionally pays the late JIT before exposing the process to user traffic and requires the canonical output hash.
 
-This was **not S3-specific**. Stock reproduced the same class of late first-request JIT after HTTP readiness.
+Three independent fresh Phase 4 processes passed:
 
-## 4. Phase 4 mitigation
+- C4: `190.5969`, `194.0823`, `189.9816 tok/s`
+- median C4: **`190.5969 tok/s`**
+- controlled stock+queue1 baseline: `158.489996 tok/s`
+- tested-workload median gain: **`+20.258%`**
+- C1 median: `69.6790 tok/s`
+- fresh-prefix ~6K: about `61-62 tok/s`
+- first-user TTFT after readiness warmup: about `51-54 ms`
+- correctness and canonical four C4 hashes: stock exact
 
-The selected reversible mitigation is a **readiness-stage deterministic inference**, not a risky modification to vLLM internals.
+Canonical Phase 4 artifacts:
 
-Operational pattern:
+- `docs/R9700_PHASE4_FINAL_GATE_20260913.md`
+- `docs/evidence/r9700_phase4_three_start_aggregate_20260913.json`
+- `docs/R9700_PHASE4_COLDSTART_ROOT_CAUSE_20260912.md`
 
-1. launch the serving process from a clean GPU state;
-2. wait for HTTP 200;
-3. run `scripts/r9700_readiness_warmup.py` or equivalent deterministic request;
-4. require the canonical output hash;
-5. only after the warmup passes expose the process to user traffic.
+Phase 4 task `ops_d0c3d4eebd67` is closed PASS.
 
-The readiness request intentionally pays the 4-5 second JIT cost. Subsequent first-user requests showed no new inference JIT for that specialization.
+## 3. Phase 5 packaged canary
 
-## 5. Phase 4 three-fresh-process gate
+Phase 5 converted S3 into a real reversible service rather than a hand-launched benchmark recipe.
 
-Controlled stock+queue1 C4 baseline:
+Canary identity:
 
-`158.489996 tok/s`
+- systemd unit: `inneros-vllm-hyperloom-s3-canary.service`
+- Docker container: `inneros-vllm-hyperloom-s3-canary`
+- isolated port: `18018`
+- stock service is never stopped automatically by the canary unit
+- preflight fails closed unless stock is inactive, R9700 VRAM is clean, bundle hashes are exact, and config hash is exact
+- `ExecStartPost` runs the readiness warmup and requires the canonical hash before the unit becomes active
 
-The aggregate uses the **first post-readiness-warmup C4 measurement from each independent process**, avoiding cherry-picking later hot repeats.
+The bundle is rebuilt from versioned/pinned repo sources. It no longer depends on a historical Phase 3 worktree for deployment.
 
-### Start 1
+First packaged-canary runtime gate:
 
-- warmup JIT TTFT: `4.9047 s`
-- first user TTFT: `50.9 ms`
-- C1: `69.96 tok/s`
-- C4: `190.60 tok/s`
-- fresh-prefix ~6K: `62.00 / 61.97 tok/s`
-- correctness: PASS
-- C4 hashes: stock exact
-- new JIT during first user inference: none
+- `/v1/models`: HTTP 200
+- correctness: stock exact
+- C1: `68.8094 tok/s`
+- C4: `191.4875 tok/s`
+- fresh-prefix ~6K: `61.8344 / 62.1267 tok/s`
+- hot correctness TTFT: `52.0 ms`
+- canonical C4 hashes: stock exact
 
-### Start 2
+## 4. Phase 5 concurrency incident — negative harness result, not candidate regression
 
-- warmup JIT TTFT: `4.7205 s`
-- first user TTFT: `53.6 ms`
-- C1: `69.68 tok/s`
-- C4: `194.08 tok/s`
-- ~6K: `61.96 tok/s`
-- correctness: PASS
-- C4 hashes: stock exact
-- new JIT during first user inference: none
+Two coordinated ChatGPT tasks accidentally benchmarked the same canary on port 18018 at nearly the same time.
 
-### Start 3
+Overlapping soak starts:
 
-- warmup JIT TTFT: `4.6236 s`
-- first user TTFT: `52.9 ms`
-- C1: `68.15 tok/s`
-- C4: `189.98 tok/s`
-- ~6K standard: `61.45 tok/s`
-- fresh-prefix ~6K controls: `61.57 / 60.79 tok/s`
-- correctness: PASS
-- C4 hashes: stock exact
-- new JIT during first user inference: none
+- `r9700_phase5_canary_soak_20260913T025312Z.json`
+- `r9700_phase5_canary_soak_20260913T025313Z.json`
 
-### Aggregate
+During overlap, samples degraded to C4 `151.30` and `88.64 tok/s`; one first C4 hash became the known `e79a200b...` anomaly.
 
-- fresh-process passes: **3/3**
-- C4 median: **190.5969 tok/s**
-- C4 mean: `191.5536 tok/s`
-- C4 range: `189.9816-194.0823 tok/s`
-- median C4 gain vs controlled stock: **+20.258%**
-- C1 median: **69.6790 tok/s**
-- first-user TTFT median after readiness warmup: **52.94 ms**
-- readiness JIT TTFT median: `4.720 s`
-- fresh-prefix long-context median by process: **61.955 tok/s**
-- canonical correctness: stock exact in all three processes
-- canonical C4 hash vector: stock exact in all three processes
+This evidence is **invalid for single-client stability decisions** because two benchmark suites were competing for the same GPU.
 
-One transient Start 1 long-context observation near 47 tok/s was explicitly rejected as a stable result. Fresh-prefix controls and the two later independent processes reproduced the ~61-62 tok/s class.
+The key forensic control is that the same canary process, without restart, recovered after overlap stopped to:
 
-## 6. Stock restore after Phase 4
+- C1 `67.9771 tok/s`
+- C4 `193.4585 tok/s`
+- fresh-prefix ~6K `62.7305 / 62.5542 tok/s`
+- correctness and C4 hashes stock exact
+- PASS
 
-The experimental S3 container `hyperloom-r9700-p4-s3-verbose-p18017` was removed after the third gate.
+Canonical incident evidence:
 
-Immediately after removal, R9700 VRAM returned to the clean idle class:
+`docs/evidence/r9700_phase5_concurrency_contamination_20260913.json`
 
-`59,994,112 bytes`
+## 5. Benchmark-concurrency fix
 
-The stable service was then restored:
+Phase 5 now uses one exclusive local benchmark lease:
 
-`inneros-vllm-canary-rocm10.service`
+`var/r9700_phase5_benchmark.lock`
 
-Verified post-restore state:
+- standalone measure takes it before any health/inference request
+- soak owns it for the entire multi-round campaign
+- a second client exits rc `4` with `benchmark_lock_busy` before sending inference traffic
+- soak child measurements inherit the owner lease explicitly
 
-- service state: `active`
-- container: `inneros-vllm-canary-rocm10`
-- correct ROCm10/vLLM image
-- `/v1/models`: **HTTP 200**
-- expected Qwen3-Coder model present
-- VRAM after ready: about `28.61 GB`
+Dynamic self-test passed for both measure and soak clients.
 
 Evidence:
 
-`docs/evidence/r9700_phase4_stock_restore_20260913.json`
+`docs/evidence/r9700_phase5_benchmark_lock_selftest_20260913.json`
 
-The restored stock process again emitted the same class of `_fwd_kernel` JIT warning on a first inference after HTTP readiness, reinforcing the Phase 4 conclusion that the cold first-request issue is not introduced by S3.
+## 6. Clean single-owner five-round soak
 
-## 7. Claim boundary
+After the concurrency fix, a fresh canary was started from a clean GPU state. Preflight and readiness passed. One exclusive-lock soak then ran five rounds.
 
-Safe claims:
+Result: **5/5 PASS, zero aborts.**
 
-- the tested full-model C4 workload reproduced a roughly **+20.3% median improvement** versus the controlled `158.489996 tok/s` stock+queue1 baseline across three independent fresh Phase 4 processes;
-- the readiness warmup moved the first user request from the multi-second JIT class to roughly **51-54 ms TTFT** in all three fresh processes;
-- C1 remained around `68-70 tok/s` and fresh-prefix ~6K decode around `61-62 tok/s`;
-- deterministic correctness and the canonical four C4 hashes matched stock;
-- operational stock was restored after the experiment.
+Aggregate:
+
+- C1 min/median/mean/max: `68.3227 / 68.3391 / 68.3704 / 68.5126 tok/s`
+- C4 min/median/mean/max: `184.0334 / 191.9242 / 190.2179 / 192.1595 tok/s`
+- fresh long Y min/median/mean/max: `62.1840 / 62.8224 / 62.7132 / 62.9794 tok/s`
+- fresh long Z min/median/mean/max: `61.2839 / 61.9523 / 61.8156 / 61.9874 tok/s`
+- correctness TTFT min/median/mean/max: `51.35 / 52.40 / 53.15 / 56.07 ms`
+
+Every round required:
+
+- canonical correctness hash
+- canonical four C4 hashes
+- C1 >= 60 tok/s
+- C4 >= 180 tok/s
+- both fresh-prefix 6K measurements >= 55 tok/s
+- hot correctness TTFT < 500 ms
+
+All five rounds passed all gates.
+
+Durable evidence:
+
+- `docs/evidence/r9700_phase5_clean_soak_manifest_20260913.json`
+- `docs/evidence/r9700_phase5_clean_soak_raw_bundle_20260913.gz.b64`
+
+The manifest records exact byte sizes and SHA-256 for all five raw round JSONs, the full soak JSON, and the final stock restore JSON. The compressed raw bundle preserves their complete contents.
+
+## 7. Final operational state after Phase 5
+
+After the clean soak:
+
+1. experimental canary was stopped;
+2. stock service was started;
+3. stock service reached `active`;
+4. stock container/image identity was correct;
+5. `/v1/models` returned **HTTP 200**;
+6. expected Qwen model was present.
+
+Final restore evidence file:
+
+`r9700_phase4_stock_restore_20260913T031729Z.json`
+
+SHA-256:
+
+`94dee76980c5df074c87bd7bedfcd19bf862f32a56d1201dc4c3bd740ac3914a`
+
+Operational default therefore remains stock ROCm10.
+
+## 8. Claim boundary
+
+Safe:
+
+- Phase 4 reproduced roughly `+20.3%` median C4 improvement against the controlled `158.489996 tok/s` stock+queue1 baseline on the tested workload across three fresh processes;
+- the packaged Phase 5 service reproduced `191.49 tok/s` C4 in its first window;
+- the clean single-owner Phase 5 five-round soak passed 5/5 with C4 median `191.92 tok/s`, C1 median `68.34 tok/s`, and fresh-prefix 6K medians around `62 tok/s`;
+- deterministic correctness and canonical C4 hashes remained stock exact in valid gates;
+- readiness warmup keeps first-user TTFT in the ~50 ms class for the tested canonical request;
+- the canary packaging is reversible and stock was restored after validation;
+- the cross-chat benchmark-concurrency failure was detected, preserved, and fixed with an exclusive lease.
 
 Do not claim:
 
 - universal +20% acceleration;
 - official AMD R9700 support;
 - first port in the world;
-- `1.47682x` as a full-model result;
-- every workload or prompt shape is faster;
-- the S3 candidate is already the production default.
+- every workload is faster;
+- overlapping benchmark samples are valid stability evidence;
+- S3 is already the production default.
 
-## 8. Exact next action
+## 9. Exact next action
 
-**No benchmark rerun is required. Phase 4 is closed.**
+**No Phase 2-5 benchmark rerun is required to reconstruct state.**
 
-The next engineering decision is separate from Phase 4:
+The next legitimate step is a separate **Phase 6 / explicit production-promotion decision**. If approved, define:
 
-- decide whether to promote S3 + readiness warmup into a persistent service/canary;
-- if promoted, implement it as a controlled deployment with explicit rollback to `inneros-vllm-canary-rocm10.service` stock recipe;
-- preserve the current stock operational default until that promotion change is deliberately approved and validated.
+- routing/cutover mechanism;
+- health and readiness requirements;
+- production rollback trigger;
+- whether S3 becomes default or remains an opt-in local provider;
+- observability and automatic fallback to `inneros-vllm-canary-rocm10.service`.
 
-Do not silently mutate production while treating it as benchmark cleanup.
+Do not silently replace the stock default as part of cleanup.
 
-## 9. Worktree preservation
+## 10. Worktree/raw preservation
 
-Important historical/raw worktrees:
+Historical/raw worktrees still contain useful negative and forensic evidence:
 
 - `/home/rlopez/inneros/inneros_core/var/local_execution/worktrees/Rafa-Innerchispa__hyperloom-r9700-experimental/chatgpt__r9700-phase3-int4-repack-20260911`
 - `/home/rlopez/inneros/inneros_core/var/local_execution/worktrees/Rafa-Innerchispa__hyperloom-r9700-experimental/chatgpt__r9700-amd-final-runtime-20260910`
 - `/home/rlopez/inneros/inneros_core/var/local_execution/worktrees/Rafa-Innerchispa__hyperloom-r9700-experimental/chatgpt__hyperloom-r9700-amd-live-verify`
 
-Do not `git clean`, hard reset, or delete them before deliberate inventory/archive.
+Do not `git clean`, hard reset, or delete them blindly. Phase 5 clean-soak raw evidence is additionally preserved in the compressed GitHub bundle, so Phase 5 no longer depends on those worktrees for continuity.
 
-## 10. Restart rule
+## 11. Restart rule
 
 A new session must:
 
 1. read this file first;
-2. read `docs/R9700_PHASE4_FINAL_GATE_20260913.md`;
-3. read `docs/evidence/r9700_phase4_three_start_aggregate_20260913.json`;
-4. read `docs/evidence/r9700_phase4_stock_restore_20260913.json`;
-5. verify current remote `main` and Phase 4 branch HEADs;
-6. verify stock runtime is still healthy before any mutation;
-7. continue only with the separate promotion/canary decision, not by repeating closed Phase 2/3/4 experiments.
+2. read `docs/R9700_PHASE5_CANARY_CLOSURE_20260913.md`;
+3. read `docs/evidence/r9700_phase5_clean_soak_manifest_20260913.json`;
+4. read `docs/evidence/r9700_phase5_concurrency_contamination_20260913.json` so the invalid overlapping soak is not mistaken for a candidate regression;
+5. verify current remote `main` and the stock runtime before mutation;
+6. continue from the Phase 6 promotion decision only;
+7. do not repeat closed Phase 2/3/4/5 experiments merely to rebuild context.
