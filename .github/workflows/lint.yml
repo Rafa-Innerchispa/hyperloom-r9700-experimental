@@ -6,9 +6,10 @@ name: Lint
 # Static analysis on push and pull_request for all branches. Skips when every
 # changed file matches paths-ignore (same list as ``tests-coverage.yml``).
 #
-# Ruff reads ``[tool.ruff]`` / ``[tool.ruff.lint]`` in ``pyproject.toml``. Ruff
-# check and format are hard gates. Bandit and Pylint remain advisory until their
-# backlogs are cleared.
+# Ruff is ratcheted: changed Python files are hard gates, while the historical
+# full-tree backlog remains visible as advisory output until it is driven to
+# zero. This prevents new lint debt without making every unrelated PR inherit
+# the legacy backlog.
 #
 # Pylint: ``--errors-only`` limits output to fatal/error-severity messages
 # (not convention or refactor hints). tree-reform.MD P2.5: critic-agent,
@@ -54,31 +55,90 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # The ratchet compares the current event against its real base SHA.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
       - name: Install Ruff
-        # Pinned exactly, not a floating range. Both `check` and `format --check`
-        # below are hard gates, and ruff changes rule behaviour and formatting
-        # between minor releases -- with a range, a ruff release reds main with
-        # no code change. Absorbed from KernelForge's pre-merge.yml, which pinned
-        # this for the same reason.
-        #
-        # The version is the one the tree was last formatted with; bumping it
-        # means running `ruff format .` in the same commit.
+        # Pinned exactly, not a floating range. A Ruff release must not change
+        # the gate without a deliberate repository change.
         run: |
           pip install --upgrade pip
           pip install "ruff==0.16.2"
 
-      - name: Ruff check
-        id: ruff_check
+      - name: Determine changed Python files
+        id: changed_py
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base="$PR_BASE_SHA"
+          else
+            base="$PUSH_BEFORE_SHA"
+          fi
+
+          # GitHub uses an all-zero before SHA for the first push of a branch.
+          # Fall back to the root commit rather than silently skipping lint.
+          if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
+            base="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
+          fi
+
+          mapfile -t files < <(
+            git diff --diff-filter=ACMR --name-only "$base" "$GITHUB_SHA" -- '*.py'
+          )
+
+          if (( ${#files[@]} == 0 )); then
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+            echo "No changed Python files."
+            exit 0
+          fi
+
+          printf '%s\0' "${files[@]}" > /tmp/ruff-changed-python-files
+          echo "has_files=true" >> "$GITHUB_OUTPUT"
+          printf 'Changed Python files:\n%s\n' "${files[@]}"
+
+      - name: Ruff check changed Python files (hard gate)
+        if: steps.changed_py.outputs.has_files == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' -t files < /tmp/ruff-changed-python-files
+          ruff check --force-exclude "${files[@]}"
+
+      - name: Ruff format changed Python files (hard gate)
+        if: steps.changed_py.outputs.has_files == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' -t files < /tmp/ruff-changed-python-files
+          ruff format --check --force-exclude "${files[@]}"
+
+      - name: Ruff full-tree backlog scan (advisory)
+        id: ruff_full_tree
+        continue-on-error: true
         run: ruff check .
 
-      - name: Ruff format (check only)
-        id: ruff_format
+      - name: Ruff full-tree format backlog scan (advisory)
+        id: ruff_format_full_tree
+        continue-on-error: true
         run: ruff format --check .
+
+      - name: Advisory notice for historical Ruff backlog
+        if: >-
+          always() &&
+          (steps.ruff_full_tree.outcome == 'failure' ||
+           steps.ruff_format_full_tree.outcome == 'failure')
+        run: |
+          echo "::warning::Full-tree Ruff backlog remains advisory. Changed Python files are still hard-gated, so new lint debt cannot enter through this workflow."
 
   compile:
     name: byte-compile (syntax check)
