@@ -147,6 +147,16 @@ def verify_backend(service: str) -> dict[str, Any]:
     return result
 
 
+def wait_backend_ready(service: str, *, timeout: float = 600.0) -> dict[str, Any]:
+    wait_for(
+        lambda: bool(verify_backend(service).get("pass")),
+        timeout=timeout,
+        interval=2.0,
+        description=f"{service}_ready",
+    )
+    return verify_backend(service)
+
+
 def stop_guard_scheduler() -> None:
     """Stop the transient guard timer/runner if present.
 
@@ -206,8 +216,10 @@ def fallback_locked(reason: str) -> dict[str, Any]:
     wait_service_inactive(S3_SERVICE, timeout=60)
     wait_vram_clean(timeout=120)
     set_service("start", STOCK_SERVICE, check=True, timeout=720)
-    verification = verify_backend(STOCK_SERVICE)
-    if not verification["pass"]:
+    try:
+        verification = wait_backend_ready(STOCK_SERVICE, timeout=600)
+    except RuntimeError:
+        verification = verify_backend(STOCK_SERVICE)
         state = default_state()
         state.update({"desired_backend": "stock", "active_backend": "unknown", "validated": False,
                       "reason": "fallback_failed", "fallback_reason": reason, "verification": verification})
@@ -270,7 +282,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
 
 def rollback(*, dry_run: bool = False) -> dict[str, Any]:
     if dry_run:
-        return {"dry_run": True, "plan": ["stop_transient_guard", "stop_s3", "wait_vram_clean", "start_stock", "verify_stock"]}
+        return {"dry_run": True, "plan": ["stop_transient_guard", "stop_s3", "wait_vram_clean", "start_stock", "wait_stock_ready", "verify_stock"]}
     with exclusive_lock():
         return fallback_locked("manual_rollback")
 
