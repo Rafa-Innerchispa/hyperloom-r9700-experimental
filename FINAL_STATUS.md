@@ -1,291 +1,177 @@
-# HyperLoom Radeon AI PRO R9700 / RDNA4 — Final Experimental Status
+# HyperLoom Radeon AI PRO R9700 / RDNA4 — Current Experimental Status
 
-Last reconciled: 2026-09-11 22:48 America/Guayaquil / 2026-09-12 03:48 UTC
+Last reconciled: 2026-09-13 UTC / 2026-09-12 America/Guayaquil
 Repository: `Rafa-Innerchispa/hyperloom-r9700-experimental`
-Active engineering branch: `chatgpt/r9700-phase3-int4-repack-20260911`
 Hardware: AMD Radeon AI PRO R9700 / RDNA4 / `gfx1201` / 32 GiB
 Workload: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
 Runtime: ROCm 10 + vLLM + Triton
 
-## Final verdict
+## Current verdict
 
-**PHASE 3 S3 FULL-MODEL EXPERIMENTAL PROMOTION: PASS FOR BATCHED C4 / CONCURRENT SERVING**
+**PHASE 5 CLOSED — REVERSIBLE S3 CANARY PACKAGING + SINGLE-OWNER 5-ROUND SOAK: PASS**
 
-**Stock ROCm10 remains the operational default until an explicit deployment decision is made.**
+**The stock ROCm10 service remains the operational default. S3 has not been silently promoted into production routing.**
 
-Phase 3 closes the full-model performance gap that Phase 2 did not close. The selected candidate combines the relevant vLLM #43389 RDNA INT4/W4A16 MoE repack/interleave path with an R9700-specific tuned `int4_w4a16` MoE configuration, stock `ROCM_ATTN`, and `GPU_MAX_HW_QUEUES=1`.
+Canonical current continuity:
 
-Across three independent fresh candidate processes, the conservative first-measurement C4 median is `188.598166 tok/s`. This is:
+`docs/R9700_PROJECT_CONTINUITY.md`
 
-- about `+19.0%` versus the established stable stock+queue1 baseline (`158.489996 tok/s`), and
-- about `+13.9%` versus a freshly restored healthy-hot stock observation from the same closure campaign (`165.577595 tok/s`).
+Canonical Phase 5 closure:
 
-The hot-repeat C4 median is `192.460522 tok/s`, about `+16.2%` versus the freshly restored healthy-hot stock observation.
+`docs/R9700_PHASE5_CANARY_CLOSURE_20260913.md`
 
-This is a real full-model serving result for the tested C4 workload. It is **not** a universal acceleration claim: C1 is near parity with healthy stock and long-context decode is within roughly `1.7-3.1%` of the freshly restored healthy-hot stock observation. The selected candidate is therefore promoted as the best experimental R9700 configuration for batched/concurrent C4 serving, not installed as the operational default and not described as faster in every workload regime.
+## What is now concrete
 
-Canonical final gate: `docs/evidence/r9700_phase3_s3_final_gate_summary_20260912.json`.
+The selected experimental S3 recipe combines:
 
-## Phase 3 implementation
+- the relevant vLLM #43389-style RDNA INT4/W4A16 MoE repack/interleave path;
+- R9700-specific `int4_w4a16` MoE tuning;
+- stock `ROCM_ATTN`;
+- `GPU_MAX_HW_QUEUES=1`;
+- deterministic readiness-stage warmup to absorb the late ROCm prefix-prefill Triton JIT before user traffic.
 
-Phase 3 backports the relevant RDNA INT4/W4A16 MoE repack/interleave work into the stable ROCm10 image without editing the installed runtime in place.
+Pinned identities:
 
-Runtime patch SHA-256:
-
-`3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
-
-Candidate controls:
-
+- runtime patch SHA-256: `3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d`
+- S3 config SHA-256: `8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6`
 - image: `rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0`
-- model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
-- attention: stock `ROCM_ATTN`
-- stability control: `GPU_MAX_HW_QUEUES=1`
-- fresh independent process for each canonical start
-- stock systemd unit inactive during candidate runs
-- clean VRAM before launch
-- patched vLLM files mounted read-only into disposable containers
 
-Real Qwen AutoAWQ validation before serving passed for repacked weights, qzeros, scales and sampled dequantization on the tested layer. The Phase 3 candidate uses the real full model, not a synthetic-only approximation.
+## Phase 4 performance gate
 
-## R9700-specific S3 MoE config
+Three independent fresh processes passed correctness and reproducibility after readiness warmup.
 
-Canonical config:
+Controlled stock+queue1 C4 baseline:
 
-`docs/evidence/r9700_phase3_tuned_moe_config_s3_20260912.json`
+`158.489996 tok/s`
 
-Observed config SHA-256:
+Phase 4 first-measure C4:
 
-`8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6`
+- `190.5969 tok/s`
+- `194.0823 tok/s`
+- `189.9816 tok/s`
 
-Mounted at the vLLM config name:
+Median:
 
-`E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json`
+**`190.5969 tok/s`**, about **`+20.26%`** versus that controlled stock+queue1 baseline on the tested C4 workload.
 
-Selected shape configuration:
+Other Phase 4 observations:
 
-- M1: `BM16 BN64 BK32 GROUP1 SPLIT1`, warps4, stages2, waves4
-- M2/M4/M8/M16: `BM16 GROUP1 SPLIT1`
-- M32: `BM32 GROUP1 SPLIT1`
-- M64: `BM64 GROUP1 SPLIT1`
+- C1 median: `69.679 tok/s`
+- fresh-prefix ~6K: about `61-62 tok/s`
+- first-user TTFT after readiness warmup: about `51-54 ms`
+- correctness and canonical four C4 hashes: stock exact in all three processes
 
-This tuning is the main difference between the untuned Phase 3 C4-focused candidate and the selected S3 configuration that recovers a much better small-M / long-context balance.
+This is a tested-workload result, not a universal acceleration claim.
 
-## Three independent S3 process starts
+## Phase 5 packaged service
 
-Canonical aggregate:
+Phase 5 converted the experimental recipe into a real reversible canary:
 
-`docs/evidence/r9700_phase3_s3_three_start_aggregate_20260912.json`
+- unit: `inneros-vllm-hyperloom-s3-canary.service`
+- port: `18018`
+- fail-closed preflight
+- exact overlay/config hash verification
+- deterministic readiness warmup required before service becomes active
+- explicit stock/canary separation
+- explicit rollback to `inneros-vllm-canary-rocm10.service`
 
-### First measurement from each fresh process
+First packaged-canary runtime gate:
 
-C1:
+- C1 `68.8094 tok/s`
+- C4 `191.4875 tok/s`
+- fresh-prefix ~6K `61.8344 / 62.1267 tok/s`
+- correctness and C4 hashes stock exact
+- hot correctness TTFT `52.0 ms`
 
-- median: `69.496803 tok/s`
-- min: `66.908667`
-- max: `70.214798`
+## Benchmark-concurrency bug found and fixed
 
-C4:
-
-- median: `188.598166 tok/s`
-- min: `186.601539`
-- max: `193.662339`
-- range / median: about `3.74%`
-
-~6K-context decode:
-
-- median: `61.801768 tok/s`
-- min: `58.185291`
-- max: `63.134073`
-
-All canonical candidate correctness requests returned the stock hash:
-
-`7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2`
-
-The four canonical C4 outputs also matched the stock hashes exactly on all selected S3 starts.
-
-### Hot repeat from each process
-
-C1 median: `67.749036 tok/s`
-
-C4:
-
-- median: `192.460522 tok/s`
-- min: `186.492550`
-- max: `193.948262`
-- range / median: about `3.87%`
-
-~6K-context decode median: `62.675115 tok/s`
-
-The best single C4 observation, `193.948262 tok/s`, is retained as evidence but is **not** the headline result. The conservative headline is the independent-start first-measurement median of `188.598166 tok/s`.
-
-## Fresh stock restore control
-
-After the candidate campaign:
-
-- the Phase 3 candidate container was removed;
-- R9700 VRAM returned to roughly 60 MB before stock restart;
-- `inneros-vllm-canary-rocm10.service` was restored;
-- `/v1/models` returned HTTP 200;
-- the normal Qwen3-Coder model loaded successfully;
-- stock correctness hash remained canonical.
-
-Fresh restored-stock first measurement:
-
-- C1 `68.964437 tok/s`
-- C4 `162.909696 tok/s`
-- long-context `63.161537 tok/s`
-
-Fresh restored-stock hot measurement:
-
-- C1 `69.455893 tok/s`
-- C4 `165.577595 tok/s`
-- long-context `63.752833 tok/s`
-
-Against that stronger same-session hot stock control, the selected S3 medians are approximately:
-
-First-measure S3 median:
-
-- C1: `+0.06%`
-- C4: `+13.90%`
-- long-context: `-3.06%`
-
-Hot-repeat S3 median:
-
-- C1: `-2.46%`
-- C4: `+16.24%`
-- long-context: `-1.69%`
-
-This is why the final claim is a strong batched/concurrent C4 improvement with near-parity in the other measured regimes, not universal acceleration.
-
-## Cold first-request behavior
-
-Every fresh S3 process showed a reproducible first-request latency artifact on the dedicated correctness request:
-
-- first-request correctness TTFT: roughly `4.61-5.08 s`
-- subsequent hot correctness TTFT: roughly `49-54 ms`
-
-The candidate still produced the canonical correctness hash and healthy C1/C4/long-context measurements. The behavior is therefore treated as a cold/lazy compile/cache penalty that must be disclosed and should be addressed before any latency-sensitive production deployment.
-
-The freshly restored stock runtime also showed a similar cold first-request effect before normalizing on its hot measurement, reinforcing that this behavior is not evidence of a candidate-only steady-state correctness regression.
-
-## Long-soak stability
-
-Canonical evidence:
-
-`docs/evidence/r9700_phase3_long_soak_stability_20260912.json`
-
-A prior same-process Phase 3 observation once fell to about `145.12 tok/s`. It is excluded from the canonical independent-start campaign.
-
-A later roughly 10-hour soak did **not** reproduce the 145 tok/s extreme event:
-
-- late single C4: `188.870452 tok/s`
-- eight-round C4 median: `178.180645 tok/s`
-- minimum: `175.520296`
-- maximum: `189.760035`
-- deterministic C4 hash vector retained
-
-Telemetry did not support thermal throttling, power collapse or sclk collapse as the cause of the earlier anomalous observation. The long-soak evidence supports persistence of the Phase 3 C4 advantage while also documenting remaining intra-process variability honestly.
-
-## Untuned Phase 3 milestone
-
-Before S3 tuning, three independent fresh Phase 3 starts produced:
-
-- `191.450567 tok/s`
-- `189.645424 tok/s`
-- `191.426697 tok/s`
-
-Median C4: `191.426697 tok/s`, roughly `+20.8%` versus the stable stock+queue1 control.
-
-However, untuned small-M and long-context performance were weaker:
-
-- C1 median about `60.367 tok/s`
-- ~6K-context median about `55.199 tok/s`
-
-The S3 tune was therefore selected not because it maximizes a single C4 number, but because it provides the strongest measured cross-regime full-model configuration while preserving a large C4 advantage.
-
-## Phase 2 historical result remains valid
-
-Phase 2 is not rewritten as a success merely because Phase 3 later found a better path.
-
-The clean Phase 2 v7 hybrid:
-
-- booted the full Qwen3-Coder 30B model;
-- reached the custom W1 path in all 48 MoE layers;
-- preserved stock fallback;
-- served requests;
-- but produced a C4 median around `150.366622 tok/s` against a stable stock+queue1 baseline around `158.489996 tok/s`.
-
-Therefore Phase 2 v7 was correctly **NOT PROMOTED**.
-
-That negative result motivated the fresh upstream RDNA search that found the relevant INT4 MoE repack path used by Phase 3.
-
-## Phase 2 W1 microkernel proof
-
-The real-weight custom W1 versus stock Triton WNA16 result remains valid:
-
-- M1: `1.74518x`
-- M2: `1.49210x`
-- M4: `1.47445x`
-- M8: `1.44613x`
-- M16: `1.46273x`
-- median M1..16: `1.47682x`
-- `63/63` wins per tested shape aggregate
-- cosine effectively 1.0
+A later soak initially produced degraded samples because **two coordinated benchmark clients hit the same canary simultaneously**. Those overlapping samples are preserved but explicitly excluded from candidate-stability decisions.
 
 Evidence:
 
-`docs/evidence/r9700_wna16_stock_gate_aggregate_20260909T025832Z.json`
+`docs/evidence/r9700_phase5_concurrency_contamination_20260913.json`
 
-This is a **W1 microkernel result only**. It must never be described as a `1.477x` full-Qwen speedup.
+The same process recovered after the overlapping traffic stopped to C4 `193.4585 tok/s`, C1 `67.9771 tok/s`, and fresh-prefix ~6K `62.7305 / 62.5542 tok/s` with stock-exact hashes.
 
-## Stable serving baseline and rejected alternatives
+The harness now uses one exclusive benchmark lease:
 
-The clean serving factorial previously selected stock attention + `GPU_MAX_HW_QUEUES=1` as the stable promotion control:
+`var/r9700_phase5_benchmark.lock`
 
-- stock+queue1 C4 median: `158.489996 tok/s`
-- Unified Attention + default queues: `138.764971 tok/s`
-- Unified Attention + queue1: `156.753550 tok/s`
+A second measure/soak client exits rc `4` with `benchmark_lock_busy` **before sending inference traffic**. Dynamic lock self-test passed.
 
-Unified Attention did not beat stock+queue1 and remains excluded from the selected Phase 3 configuration.
+## Clean single-owner soak
 
-Other negative/invalid paths remain preserved rather than rewritten:
+After the concurrency fix, a fresh canary ran a clean five-round exclusive-lock soak.
 
-- AITER/FlyDSL sorting: isolated HSA memory fault
-- activation group pre-sum: correct but slower
-- early FP16/BF16 mirror: dtype mismatch
-- custom algebraic W2: slower than stock/reference
-- mmap/SIGUSR1/SIGUSR2 same-process gate: invalid under captured graphs
-- recovered live WNA16 override: not promotable
-- Phase 2 clean v7 full-model hybrid: functional but slower than stock
-- pathological slow stock process starts: never valid promotion baselines
+Result: **5/5 PASS**.
 
-## Presentation-safe claims
+Aggregate:
 
-You may say:
+- C1 median: **`68.3391 tok/s`**
+- C4 median: **`191.9242 tok/s`**
+- C4 min/max: `184.0334 / 192.1595 tok/s`
+- fresh long Y median: **`62.8224 tok/s`**
+- fresh long Z median: **`61.9523 tok/s`**
+- correctness TTFT median: **`52.40 ms`**
 
-- An experimental HyperLoom/RDNA4 path runs on a physical Radeon AI PRO R9700 / `gfx1201` with a real Qwen3-Coder 30B AWQ workload.
-- Phase 2 validated a real packed-INT4 small-M W1 Triton microkernel improvement but rejected its slower full-model integration.
-- Phase 3 backported a directly relevant RDNA INT4/W4A16 MoE repack path, validated it against real Qwen AutoAWQ weights, and reproduced a full-model C4 improvement across independent fresh processes.
-- The selected R9700 S3 configuration achieved a conservative independent-start C4 median of about `188.6 tok/s`, about `+19%` versus the stable stock+queue1 baseline and about `+13.9%` versus a freshly restored healthy-hot stock measurement from the same closure campaign.
-- Hot S3 C4 median was about `192.5 tok/s`.
-- C1 remained near parity and long-context remained within a few percent of healthy stock under the tested workload.
-- Correctness and canonical C4 output hashes matched stock in the selected S3 gate.
-- The project preserves negative results, unstable modes, cold-start limitations and rollback evidence rather than hiding them.
+Every valid round required canonical correctness, canonical four C4 hashes, C1 >= 60, C4 >= 180, both fresh-prefix 6K results >= 55, and hot correctness TTFT < 500 ms.
 
-Do **not** say:
+Durable evidence:
 
-- official AMD support or official upstream HyperLoom support for R9700
-- first R9700/RDNA4 HyperLoom port in the world
-- full Qwen is `1.477x` faster
-- every workload is 19-21% faster
-- `193.95 tok/s` is the universal reproducible result
-- the candidate is already installed as the production/default service
-- cold-start latency is solved
+- `docs/evidence/r9700_phase5_clean_soak_manifest_20260913.json`
+- `docs/evidence/r9700_phase5_clean_soak_raw_bundle_20260913.gz.b64`
 
-## Closure
+The raw bundle preserves the five round JSONs, full soak JSON, and final stock-restore JSON. The manifest records their exact SHA-256 values and byte sizes.
 
-The Phase 3 S3 engineering gate is closed as an **experimental full-model promotion for batched/concurrent C4 serving**.
+## Final operational state
 
-The selected configuration is preserved in Git with machine-readable evidence, independent-process replication, correctness hashes, long-soak context and a fresh stock restore control. The stock ROCm10 service remains active and healthy as the operational default.
+After the clean Phase 5 soak, the experimental canary was stopped and stock was restored.
 
-Any future deployment step should be treated as a separate operational decision. The highest-value remaining engineering work is reducing the cold first-request penalty and further tightening C1/long-context parity without sacrificing the independently reproduced C4 advantage.
+Final verified stock state:
+
+- service: `inneros-vllm-canary-rocm10.service` active
+- container: `inneros-vllm-canary-rocm10`
+- correct ROCm10 image
+- `/v1/models`: HTTP 200
+- expected Qwen model present
+
+Final restore evidence SHA-256:
+
+`94dee76980c5df074c87bd7bedfcd19bf862f32a56d1201dc4c3bd740ac3914a`
+
+## Historical truth remains preserved
+
+Phase 2 remains a valid negative full-model result: its W1 microkernel was genuinely faster in isolation, but the v7 full-model integration was slower than stock and was correctly rejected.
+
+Phase 3 remains the stage where the directly relevant RDNA INT4 MoE repack path and S3 tuning first produced the full-model improvement.
+
+Phase 4 remains the stage that isolated and mitigated the cold first-user Triton JIT penalty.
+
+Phase 5 proves the selected recipe can be reconstructed, packaged as a reversible systemd canary, gated by hashes/readiness, soaked under single-owner measurement, and rolled back cleanly.
+
+## Claim boundary
+
+Safe to say:
+
+- the tested C4 workload reproduced roughly `+20.3%` median improvement versus the controlled `158.489996 tok/s` stock+queue1 baseline across three fresh Phase 4 processes;
+- the packaged Phase 5 canary reproduced C4 `191.49 tok/s` in its first service window;
+- the clean five-round Phase 5 soak passed 5/5 with C4 median `191.92 tok/s`, C1 median `68.34 tok/s`, fresh-prefix ~6K around `62 tok/s`, and stock-exact deterministic hashes;
+- first-user TTFT for the tested canonical request is in the ~50 ms class after readiness warmup;
+- the canary is reproducible and reversible;
+- a benchmark-concurrency contamination issue was found and fixed rather than hidden.
+
+Do not say:
+
+- universal +20% acceleration;
+- official AMD R9700 support;
+- first port in the world;
+- full Qwen is `1.477x` faster;
+- every workload is faster;
+- overlapping benchmark samples are valid stability evidence;
+- S3 is already the production default.
+
+## Next step
+
+No Phase 2-5 benchmark rerun is required for reconstruction.
+
+The next step is a **separate explicit Phase 6 production-promotion decision** defining routing, rollout, health gates, automatic fallback and rollback. Until that decision is made, stock remains the operational default.
