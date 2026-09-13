@@ -1,0 +1,45 @@
+{
+  "schema": "hyperloom.r9700.phase5.canary_window1.summary.v1",
+  "date_utc": "2026-09-13",
+  "branch": "chatgpt/r9700-phase5-canary-v3-20260913",
+  "task_id": "ops_1fdc08a1b732",
+  "service": "inneros-vllm-hyperloom-s3-canary.service",
+  "canary_port": 18018,
+  "runtime_patch_sha256": "3935c4dc60cfa6448e18aea1ef9fa6b00a0b46de294c59b7518a012138f5630d",
+  "s3_config_sha256": "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4d3e6",
+  "readiness": {
+    "exec_start_post": "PASS",
+    "canonical_hash": "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2",
+    "warmup_ttft_sec": 5.215961331035942,
+    "systemd_state_after_readiness": "active (running)"
+  },
+  "measurement": {
+    "pass": true,
+    "correctness_match": true,
+    "correctness_ttft_sec": 0.05199981096666306,
+    "c1_tok_s": 68.80937302092126,
+    "c4_tok_s": 191.48752113238592,
+    "c4_hashes_match": true,
+    "fresh_long_y_tok_s": 61.834357191107536,
+    "fresh_long_z_tok_s": 62.126748316623775,
+    "gates": {
+      "c1_floor_60": true,
+      "c4_floor_180": true,
+      "c4_hashes": true,
+      "correctness": true,
+      "fresh_long_floor_55": true,
+      "hot_ttft_under_500ms": true
+    }
+  },
+  "rollback": {
+    "canary_stopped": true,
+    "vram_after_canary_stop_bytes": 59994112,
+    "stock_service": "inneros-vllm-canary-rocm10.service",
+    "stock_started": true,
+    "stock_service_state": "active",
+    "stock_container": "inneros-vllm-canary-rocm10",
+    "stock_models_http_200": true,
+    "stock_vram_ready_bytes": 28610588672
+  },
+  "verdict": "PASS: first controlled Phase5 canary window validated packaging, automatic readiness warmup, full serving parity/performance gate, and rollback to stock. No production-default promotion was performed."
+}
