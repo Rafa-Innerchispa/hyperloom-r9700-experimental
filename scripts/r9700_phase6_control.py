@@ -21,7 +21,10 @@ from typing import Any
 
 STOCK_SERVICE = "inneros-vllm-canary-rocm10.service"
 S3_SERVICE = "inneros-vllm-hyperloom-s3-production.service"
-GUARD_TIMER = "inneros-vllm-hyperloom-phase6-guard.timer"
+GUARD_SERVICE = "inneros-vllm-hyperloom-phase6-guard.service"
+GUARD_WATCH_UNIT = "inneros-vllm-hyperloom-phase6-watch"
+GUARD_TIMER = f"{GUARD_WATCH_UNIT}.timer"
+GUARD_RUNNER_SERVICE = f"{GUARD_WATCH_UNIT}.service"
 MODEL_ID = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
 API_MODELS_URL = "http://127.0.0.1:8000/v1/models"
 SCHEMA = "hyperloom.r9700.phase6.routing.v1"
@@ -144,6 +147,41 @@ def verify_backend(service: str) -> dict[str, Any]:
     return result
 
 
+def stop_guard_scheduler() -> None:
+    """Stop the transient guard timer/runner if present.
+
+    The timer is deliberately transient. A reboot therefore cannot preserve an
+    S3 promotion decision; stock remains the boot/default backend.
+    """
+    set_service("stop", GUARD_TIMER, check=False, timeout=30)
+    set_service("stop", GUARD_RUNNER_SERVICE, check=False, timeout=30)
+    set_service("reset-failed", GUARD_TIMER, check=False, timeout=30)
+    set_service("reset-failed", GUARD_RUNNER_SERVICE, check=False, timeout=30)
+
+
+def start_guard_scheduler() -> None:
+    """Create a 30-second transient systemd timer for the installed guard service."""
+    stop_guard_scheduler()
+    run(
+        [
+            "systemd-run",
+            "--user",
+            f"--unit={GUARD_WATCH_UNIT}",
+            "--on-active=30s",
+            "--on-unit-active=30s",
+            "--timer-property=AccuracySec=2s",
+            "--collect",
+            "/usr/bin/systemctl",
+            "--user",
+            "start",
+            GUARD_SERVICE,
+        ],
+        check=True,
+        timeout=30,
+    )
+    wait_for(lambda: service_state(GUARD_TIMER) == "active", timeout=10, description="phase6_guard_timer_active")
+
+
 @contextmanager
 def exclusive_lock():
     path = lock_path()
@@ -163,8 +201,7 @@ def exclusive_lock():
 
 
 def fallback_locked(reason: str) -> dict[str, Any]:
-    set_service("disable", GUARD_TIMER, check=False, timeout=30)
-    set_service("stop", GUARD_TIMER, check=False, timeout=30)
+    stop_guard_scheduler()
     set_service("stop", S3_SERVICE, check=False, timeout=90)
     wait_service_inactive(S3_SERVICE, timeout=60)
     wait_vram_clean(timeout=120)
@@ -197,7 +234,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
             "wait_vram_clean",
             "start_s3_production_on_port_8000",
             "verify_s3_systemd_and_model_identity",
-            "enable_phase6_guard",
+            "start_transient_phase6_guard",
             "commit_active_state",
         ],
         "fallback_on_any_failure": True,
@@ -221,8 +258,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
             verification = verify_backend(S3_SERVICE)
             if not verification["pass"]:
                 raise RuntimeError("s3_readiness_failed")
-            set_service("enable", GUARD_TIMER, check=True, timeout=30)
-            set_service("start", GUARD_TIMER, check=True, timeout=30)
+            start_guard_scheduler()
             state.update({"active_backend": "hyperloom_s3", "validated": True, "reason": "promotion_validated",
                           "guard_failures": 0, "verification": verification})
             save_state(state)
@@ -234,7 +270,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
 
 def rollback(*, dry_run: bool = False) -> dict[str, Any]:
     if dry_run:
-        return {"dry_run": True, "plan": ["stop_guard", "stop_s3", "wait_vram_clean", "start_stock", "verify_stock"]}
+        return {"dry_run": True, "plan": ["stop_transient_guard", "stop_s3", "wait_vram_clean", "start_stock", "verify_stock"]}
     with exclusive_lock():
         return fallback_locked("manual_rollback")
 
@@ -269,8 +305,13 @@ def status() -> dict[str, Any]:
     return {
         "schema": "hyperloom.r9700.phase6.status.v1",
         "state": load_state(),
-        "services": {"stock": service_state(STOCK_SERVICE), "hyperloom_s3": service_state(S3_SERVICE),
-                     "guard_timer": service_state(GUARD_TIMER)},
+        "services": {
+            "stock": service_state(STOCK_SERVICE),
+            "hyperloom_s3": service_state(S3_SERVICE),
+            "guard_service": service_state(GUARD_SERVICE),
+            "guard_timer": service_state(GUARD_TIMER),
+            "guard_runner": service_state(GUARD_RUNNER_SERVICE),
+        },
         "public_endpoint": {"url": API_MODELS_URL, "ready": ready, "details": details},
         "vram_used_bytes": vram_used_bytes(),
     }
