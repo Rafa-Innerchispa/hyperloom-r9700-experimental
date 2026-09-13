@@ -1,0 +1,55 @@
+{
+  "schema": "hyperloom.r9700.phase5.concurrency_contamination.v1",
+  "captured_at_utc": "2026-09-13T02:59:30Z",
+  "valid_for_candidate_stability_decision": false,
+  "incident": {
+    "canary_port": 18018,
+    "concurrent_task": "ops_641301d1e3d9",
+    "canonical_task": "ops_1fdc08a1b732",
+    "overlapping_soaks": [
+      "r9700_phase5_canary_soak_20260913T025312Z.json",
+      "r9700_phase5_canary_soak_20260913T025313Z.json"
+    ],
+    "overlap_start_delta_sec_approx": 1,
+    "observation": "Two benchmark suites sent inference traffic to the same canary at nearly the same time. Both throughput samples degraded and therefore cannot be interpreted as single-client candidate stability."
+  },
+  "overlap_measure_a": {
+    "captured_at_utc": "2026-09-13T02:53:12.489300+00:00",
+    "c1_tok_s": 57.83470971433954,
+    "c4_tok_s": 151.30471057828137,
+    "c4_hashes_match_stock": true,
+    "long_y_tok_s": 36.17784234286669,
+    "long_z_tok_s": 43.72353579614465,
+    "correctness_hash_match_stock": true,
+    "pass": false
+  },
+  "overlap_measure_b": {
+    "captured_at_utc": "2026-09-13T02:53:13.859692+00:00",
+    "c1_tok_s": 43.19112618884806,
+    "c4_tok_s": 88.64339419463673,
+    "c4_hashes_match_stock": false,
+    "first_c4_hash": "e79a200bc8873644025664d6509122b274dc04637148159130eca7f1a097c4f5",
+    "long_y_tok_s": 53.68210804823016,
+    "long_z_tok_s": 61.615092580590854,
+    "correctness_hash_match_stock": true,
+    "pass": false
+  },
+  "post_overlap_recovery": {
+    "captured_at_utc": "2026-09-13T02:53:47.421536+00:00",
+    "c1_tok_s": 67.97712865753901,
+    "c4_tok_s": 193.45849993345612,
+    "c4_hashes_match_stock": true,
+    "long_y_tok_s": 62.730475013259415,
+    "long_z_tok_s": 62.554214282385026,
+    "correctness_hash_match_stock": true,
+    "correctness_ttft_sec": 0.05149825906846672,
+    "pass": true
+  },
+  "interpretation": "The immediate recovery on the same process after overlapping benchmark traffic ceased strongly supports benchmark interference as the cause of the degraded samples. The overlapping samples are preserved as a negative harness result, not as evidence of persistent S3 degradation.",
+  "mitigation": {
+    "measure_lock_commit": "61a8194c87d670c83a7a7b18e4d9e0955a03047a",
+    "soak_lock_commit": "507d6fe1946b8b65805effa184df2f2a66ffc540",
+    "dynamic_lock_selftest_commit": "d7293f10e520106bc7087015e9e7d5236ae80128",
+    "policy": "One exclusive local file lease covers a full soak. Standalone measurements acquire the same lease. A second client exits rc=4 with benchmark_lock_busy before sending inference traffic."
+  }
+}
