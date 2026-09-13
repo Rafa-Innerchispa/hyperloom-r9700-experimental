@@ -1,7 +1,6 @@
 """Synthetic adversarial fixtures for offline metric replay, not GPU evidence."""
 from __future__ import annotations
 
-import copy
 import hashlib
 import importlib.util
 import json
