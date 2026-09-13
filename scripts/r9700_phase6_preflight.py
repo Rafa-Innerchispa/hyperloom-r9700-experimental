@@ -18,7 +18,7 @@ S3_CONFIG_SHA256 = "8b63443060479c3edf254556f93a31e251cd4d4e510ac391d2482d8228d4
 CONFIG_NAME = "E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json"
 FILES = {
     "vllm/model_executor/layers/fused_moe/config.py": "18af9f7414b4a9e7620fd998f26b58b3294e58a5951af99a3923135509edc8a6",
-    "vllm/model_executor/layers/fused_moe/experts/triton_moe.py": "beec848e3a6b76c3620fd998f26b58b3294e58a5951af99a3923135509edc8a6",
+    "vllm/model_executor/layers/fused_moe/experts/triton_moe.py": "beec848e3a6b76c362ec81ecf35e8a515f14fa5deb959aff7f166b6e9e499201",
     "vllm/model_executor/layers/fused_moe/fused_moe.py": "8de93930b8f7071741404fb27190273cd798d447fa32e274eda36e9499e0eb71",
     "vllm/model_executor/layers/fused_moe/oracle/int_wna16.py": "6fd057e0f0fff1bdfad3a8c70f34f7fe352ab4c2f920ba13466ae2eb79096a24",
     "vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py": "0f526fa4910b98fa8e64dea6b9c54b43d310ce47e91fa8366ab6e4e907d9a35d",
