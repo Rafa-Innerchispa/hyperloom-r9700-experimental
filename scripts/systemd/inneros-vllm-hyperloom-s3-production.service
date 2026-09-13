@@ -1,0 +1,15 @@
+[Unit]
+Description=InnerOS HyperLoom R9700 S3 controlled production backend
+After=default.target
+Conflicts=inneros-vllm-canary-rocm10.service
+
+[Service]
+Type=simple
+# Manual-only Phase 6 backend. Stock remains the boot/default service.
+ExecStartPre=/usr/bin/python3 /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/scripts/r9700_phase6_preflight.py
+ExecStart=/usr/bin/docker run --rm --name inneros-vllm-hyperloom-s3-production --network host --ipc host --device /dev/kfd --device /dev/dri --group-add video --security-opt label=disable -e GPU_MAX_HW_QUEUES=1 -v /home/rlopez/inneros/inneros_core/var/local_models:/models:ro -v /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/var/r9700_phase5_canary_bundle/config/E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json:/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/fused_moe/configs/E=128,N=768,device_name=AMD_Radeon_R9700,dtype=int4_w4a16.json:ro -v /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/var/r9700_phase5_canary_bundle/overlay/vllm/model_executor/layers/fused_moe/config.py:/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/fused_moe/config.py:ro -v /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/var/r9700_phase5_canary_bundle/overlay/vllm/model_executor/layers/fused_moe/experts/triton_moe.py:/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/fused_moe/experts/triton_moe.py:ro -v /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/var/r9700_phase5_canary_bundle/overlay/vllm/model_executor/layers/fused_moe/fused_moe.py:/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/fused_moe/fused_moe.py:ro -v /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/var/r9700_phase5_canary_bundle/overlay/vllm/model_executor/layers/fused_moe/oracle/int_wna16.py:/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/fused_moe/oracle/int_wna16.py:ro -v /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/var/r9700_phase5_canary_bundle/overlay/vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py:/opt/python/lib/python3.14/site-packages/vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py:ro rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0 python3 -m vllm.entrypoints.openai.api_server --model /models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ --served-model-name QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ --host 127.0.0.1 --port 8000 --max-model-len 8192 --gpu-memory-utilization 0.82 --dtype float16 --trust-remote-code --jit-monitor-mode warn --jit-monitor-verbose
+ExecStartPost=/usr/bin/python3 /home/rlopez/inneros/inneros_core/workspaces/hyperloom-r9700-experimental/scripts/r9700_readiness_warmup.py --base-url http://127.0.0.1:8000 --ready-timeout 600
+ExecStop=-/usr/bin/docker stop -t 20 inneros-vllm-hyperloom-s3-production
+TimeoutStartSec=720
+TimeoutStopSec=45
+Restart=no
