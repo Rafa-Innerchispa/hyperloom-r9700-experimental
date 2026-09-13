@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2026 Advanced Micro Devices, Inc.
+# SPDX-License-Identifier: MIT
+
+name: Ruff Diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install exact Ruff gate version
+        run: |
+          pip install --upgrade pip
+          pip install "ruff==0.16.2"
+
+      - name: Capture full-tree Ruff report
+        shell: bash
+        run: |
+          set +e
+          ruff --version > ruff-version.txt
+          ruff check . --output-format=concise > ruff-report.txt 2>&1
+          status=$?
+          printf 'exit_code=%s\n' "$status" > ruff-status.txt
+          printf 'Ruff diagnostic exit code: %s\n' "$status" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+
+      - name: Upload diagnostic report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruff-diagnostic-${{ github.sha }}
+          path: |
+            ruff-report.txt
+            ruff-status.txt
+            ruff-version.txt
+          retention-days: 1
+          if-no-files-found: error
