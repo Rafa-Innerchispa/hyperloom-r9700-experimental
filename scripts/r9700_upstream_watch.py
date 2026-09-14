@@ -12,7 +12,6 @@ import argparse
 import json
 import os
 import re
-import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -151,10 +150,12 @@ def evaluate_snapshot(
             "vllm_pr_43389_state": current_pr["state"],
             "vllm_pr_43389_merged": current_pr["merged"],
             "vllm_latest_release": current["vllm"]["latest_release"],
-            "autoawq_triton_rejection_present": current["vllm"]
-            ["autoawq_triton_rejection_present"],
-            "hyperloom_declares_r9700_or_gfx1201_support": current["hyperloom"]
-            ["declares_r9700_or_gfx1201_support"],
+            "autoawq_triton_rejection_present": current["vllm"][
+                "autoawq_triton_rejection_present"
+            ],
+            "hyperloom_declares_r9700_or_gfx1201_support": current["hyperloom"][
+                "declares_r9700_or_gfx1201_support"
+            ],
         },
     }
 
