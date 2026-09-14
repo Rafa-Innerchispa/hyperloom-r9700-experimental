@@ -8,11 +8,16 @@ def workflow_text() -> str:
     return WORKFLOW.read_text(encoding="utf-8")
 
 
-def test_r9700_upstream_watch_has_daily_and_manual_triggers():
+def test_r9700_upstream_watch_has_daily_manual_and_scoped_pr_triggers():
     text = workflow_text()
 
     assert 'cron: "17 12 * * *"' in text
     assert "workflow_dispatch:" in text
+    assert "pull_request:" in text
+    assert '      - ".github/workflows/r9700-upstream-watch.yml"' in text
+    assert '      - "scripts/r9700_upstream_watch.py"' in text
+    assert '      - "scripts/tests/test_r9700_upstream_watch_workflow.py"' in text
+    assert '      - "docs/evidence/r9700_upstream_watch_baseline_20260914.json"' in text
 
 
 def test_r9700_upstream_watch_is_read_only_and_uses_hosted_runner():
@@ -53,3 +58,10 @@ def test_r9700_upstream_watch_propagates_fail_closed_exit_code_last():
     assert "SENTINEL_EXIT_CODE: ${{ steps.sentinel.outputs.exit_code }}" in text
     assert 'exit "$SENTINEL_EXIT_CODE"' in text
     assert text.index("Upload sentinel evidence") < text.index("Enforce fail-closed sentinel verdict")
+
+
+def test_r9700_upstream_watch_deduplicates_same_ref_runs():
+    text = workflow_text()
+
+    assert "group: r9700-upstream-watch-${{ github.ref }}" in text
+    assert "cancel-in-progress: true" in text
