@@ -27,12 +27,16 @@ def test_default_plan_is_isolated_and_non_executing() -> None:
     assert proc.returncode == 0, proc.stderr or proc.stdout
     payload = json.loads(proc.stdout)
     assert payload["pass"] is True
+    assert payload["schema"] == "hyperloom.r9700.current_upstream_candidate.plan.v2"
     assert payload["candidate"]["port"] == 8011
+    assert payload["candidate"]["proven_runtime_rocm"] == "10.0"
+    assert payload["candidate"]["build_strategy"] == "isolated_source_build"
     assert payload["production_immutability"]["port"] == 8000
     assert payload["production_immutability"]["must_not_be_mutated"] is True
     assert "Planning artifact only" in payload["truth_boundary"]
     assert [stage["id"] for stage in payload["stages"]] == [
         "source",
+        "build_compatibility",
         "isolation",
         "load",
         "correctness",
@@ -40,6 +44,10 @@ def test_default_plan_is_isolated_and_non_executing() -> None:
         "performance",
         "promotion",
     ]
+    build_gate = payload["stages"][1]["requirements"]
+    assert build_gate["proven_runtime_rocm"] == "10.0"
+    assert build_gate["strategy"] == "isolated_source_build"
+    assert build_gate["prebuilt_wheel_policy"].startswith("forbidden_unless")
 
 
 def test_production_port_is_rejected() -> None:
