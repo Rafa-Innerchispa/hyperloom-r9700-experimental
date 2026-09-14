@@ -52,6 +52,4 @@ def test_r9700_upstream_watch_propagates_fail_closed_exit_code_last():
     assert 'echo "exit_code=$rc" >> "$GITHUB_OUTPUT"' in text
     assert "SENTINEL_EXIT_CODE: ${{ steps.sentinel.outputs.exit_code }}" in text
     assert 'exit "$SENTINEL_EXIT_CODE"' in text
-    assert text.index("Upload sentinel evidence") < text.index(
-        "Enforce fail-closed sentinel verdict"
-    )
+    assert text.index("Upload sentinel evidence") < text.index("Enforce fail-closed sentinel verdict")
