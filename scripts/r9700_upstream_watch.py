@@ -6,6 +6,7 @@ change only requests manual revalidation against the exact validated workload.
 Offline snapshot mode is deterministic and is the default; ``--live`` performs
 read-only HTTP GETs against public GitHub endpoints.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -21,25 +22,17 @@ RESULT_SCHEMA = "r9700-upstream-watch-v1"
 SNAPSHOT_SCHEMA = "r9700-upstream-watch-snapshot-v1"
 OVERLAY_ACTION = "retain_until_manual_revalidation"
 DEFAULT_BASELINE = (
-    Path(__file__).resolve().parents[1]
-    / "docs"
-    / "evidence"
-    / "r9700_upstream_watch_baseline_20260914.json"
+    Path(__file__).resolve().parents[1] / "docs" / "evidence" / "r9700_upstream_watch_baseline_20260914.json"
 )
 
 PR_URL = "https://api.github.com/repos/vllm-project/vllm/pulls/43389"
 RELEASE_URL = "https://api.github.com/repos/vllm-project/vllm/releases/latest"
 WNA16_URL = (
-    "https://raw.githubusercontent.com/vllm-project/vllm/main/"
-    "vllm/model_executor/layers/fused_moe/oracle/int_wna16.py"
+    "https://raw.githubusercontent.com/vllm-project/vllm/main/vllm/model_executor/layers/fused_moe/oracle/int_wna16.py"
 )
-HYPERLOOM_README_URL = (
-    "https://raw.githubusercontent.com/AMD-AGI/Hyperloom/main/README.md"
-)
+HYPERLOOM_README_URL = "https://raw.githubusercontent.com/AMD-AGI/Hyperloom/main/README.md"
 AUTOAWQ_TRITON_REJECTION = "the AutoAWQ weight layout is not supported"
-R9700_SUPPORT_PATTERN = re.compile(
-    r"(?:Radeon\s+AI\s+PRO\s+R9700|\bR9700\b|\bgfx1201\b)", re.IGNORECASE
-)
+R9700_SUPPORT_PATTERN = re.compile(r"(?:Radeon\s+AI\s+PRO\s+R9700|\bR9700\b|\bgfx1201\b)", re.IGNORECASE)
 MAX_SNAPSHOT_BYTES = 256 * 1024
 DEFAULT_TIMEOUT_SECONDS = 15.0
 
@@ -150,12 +143,8 @@ def evaluate_snapshot(
             "vllm_pr_43389_state": current_pr["state"],
             "vllm_pr_43389_merged": current_pr["merged"],
             "vllm_latest_release": current["vllm"]["latest_release"],
-            "autoawq_triton_rejection_present": current["vllm"][
-                "autoawq_triton_rejection_present"
-            ],
-            "hyperloom_declares_r9700_or_gfx1201_support": current["hyperloom"][
-                "declares_r9700_or_gfx1201_support"
-            ],
+            "autoawq_triton_rejection_present": current["vllm"]["autoawq_triton_rejection_present"],
+            "hyperloom_declares_r9700_or_gfx1201_support": current["hyperloom"]["declares_r9700_or_gfx1201_support"],
         },
     }
 
@@ -206,15 +195,9 @@ def collect_live_snapshot(*, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[s
             "vllm": {
                 "pr_43389": {"state": state, "merged": merged},
                 "latest_release": tag_name,
-                "autoawq_triton_rejection_present": (
-                    AUTOAWQ_TRITON_REJECTION in wna16
-                ),
+                "autoawq_triton_rejection_present": (AUTOAWQ_TRITON_REJECTION in wna16),
             },
-            "hyperloom": {
-                "declares_r9700_or_gfx1201_support": bool(
-                    R9700_SUPPORT_PATTERN.search(hyperloom_readme)
-                )
-            },
+            "hyperloom": {"declares_r9700_or_gfx1201_support": bool(R9700_SUPPORT_PATTERN.search(hyperloom_readme))},
         }
     )
 
@@ -237,9 +220,7 @@ def main() -> int:
     try:
         baseline = load_snapshot(args.baseline)
         current = (
-            collect_live_snapshot(timeout=args.timeout)
-            if args.live
-            else load_snapshot(args.snapshot or args.baseline)
+            collect_live_snapshot(timeout=args.timeout) if args.live else load_snapshot(args.snapshot or args.baseline)
         )
         result = evaluate_snapshot(current, baseline, source=source)
     except (OSError, SnapshotError, ValueError, urllib.error.URLError) as exc:
