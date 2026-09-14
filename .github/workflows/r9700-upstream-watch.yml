@@ -1,0 +1,67 @@
+name: R9700 Upstream Watch
+
+on:
+  schedule:
+    - cron: "17 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: r9700-upstream-watch
+  cancel-in-progress: false
+
+jobs:
+  upstream-watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Run fail-closed upstream sentinel
+        id: sentinel
+        shell: bash
+        run: |
+          set +e
+          python scripts/r9700_upstream_watch.py --live > r9700-upstream-watch.json
+          rc=$?
+          set -e
+
+          cat r9700-upstream-watch.json
+          {
+            echo "### R9700 upstream watch"
+            echo
+            echo '```json'
+            cat r9700-upstream-watch.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+
+      - name: Upload sentinel evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: r9700-upstream-watch-${{ github.run_id }}
+          path: r9700-upstream-watch.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Enforce fail-closed sentinel verdict
+        if: always()
+        shell: bash
+        env:
+          SENTINEL_EXIT_CODE: ${{ steps.sentinel.outputs.exit_code }}
+        run: |
+          if [[ ! "$SENTINEL_EXIT_CODE" =~ ^[0-9]+$ ]]; then
+            echo "Sentinel exit code is missing or invalid; failing closed." >&2
+            exit 1
+          fi
+          exit "$SENTINEL_EXIT_CODE"
