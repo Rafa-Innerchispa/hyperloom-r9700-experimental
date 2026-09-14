@@ -82,6 +82,37 @@ The correct migration shape is selective rebase/adaptation in an isolated branch
 5. **Future HyperLoom lane:** selectively rebase harness fixes from upstream 1.1.0 while keeping Radeon-specific integration and deployment guards isolated.
 6. **Public wording:** say that ROCm 10 supports R9700/gfx1201, while this project remains an experimental/bleeding-edge HyperLoom + vLLM integration for the exact AWQ MoE workload. Do not claim official HyperLoom R9700 support, universal acceleration, or “world first”.
 
+## Automated upstream drift sentinel
+
+The review boundary above is now guarded by `scripts/r9700_upstream_watch.py`.
+The sentinel is deliberately read-only and fail-closed: it can request a new
+manual revalidation, but it can never authorize automatic removal of the S3
+overlay or mutate the validated runtime.
+
+It watches the upstream facts that would materially change this review:
+
+- vLLM PR #43389 changing state or becoming merged;
+- the explicit AutoAWQ -> Triton WNA16 incompatibility disappearing from the
+  current vLLM oracle;
+- the latest stable vLLM release changing from the pinned baseline;
+- upstream HyperLoom beginning to declare R9700 / `gfx1201` support.
+
+Deterministic offline check against the pinned baseline:
+
+`python scripts/r9700_upstream_watch.py`
+
+Compare a captured snapshot without network access:
+
+`python scripts/r9700_upstream_watch.py --snapshot <snapshot.json>`
+
+Explicit live read-only check:
+
+`python scripts/r9700_upstream_watch.py --live`
+
+Any relevant drift or malformed/unavailable input yields `review_required=true`,
+`automatic_overlay_removal_allowed=false`, and
+`overlay_action=retain_until_manual_revalidation`. The pinned baseline lives at
+`docs/evidence/r9700_upstream_watch_baseline_20260914.json`.
 ## Change boundary
 
 This delta review intentionally changes documentation only. It does not:
