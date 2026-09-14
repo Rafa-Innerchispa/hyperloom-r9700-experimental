@@ -8,6 +8,7 @@ artifacts whose upstream status is documented in R9700_UPSTREAM_DELTA_20260913.
 It is deliberately a source/invariant probe, not a claim that current upstream
 has been executed on the production R9700 workload.
 """
+
 from __future__ import annotations
 
 import json
@@ -47,8 +48,8 @@ def main() -> int:
         ),
         "phase3_overlay_lineage": contains(
             BUILDER,
-            f"UPSTREAM_COMMIT = \"{PHASE3_VLLM_COMMIT}\"",
-            "upstream_pr\": 43389",
+            f'UPSTREAM_COMMIT = "{PHASE3_VLLM_COMMIT}"',
+            'upstream_pr": 43389',
             "vllm/model_executor/layers/fused_moe/oracle/int_wna16.py",
             "vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py",
         ),
