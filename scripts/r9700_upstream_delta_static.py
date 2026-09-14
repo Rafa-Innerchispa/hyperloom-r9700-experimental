@@ -43,7 +43,7 @@ def main() -> int:
     checks = {
         "hyperloom_identity_patch": contains(
             PATCH,
-            '"r9700": {"arch": "gfx1201", "cu": 64}',
+            '"r9700": ("gfx1201", 64)',
             '"gfx1201": "r9700"',
         ),
         "phase3_overlay_lineage": contains(
