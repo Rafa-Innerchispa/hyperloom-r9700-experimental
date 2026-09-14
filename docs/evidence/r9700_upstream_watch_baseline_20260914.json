@@ -1,0 +1,15 @@
+{
+  "schema": "r9700-upstream-watch-snapshot-v1",
+  "captured_at": "2026-09-14T18:00:00Z",
+  "vllm": {
+    "pr_43389": {
+      "state": "open",
+      "merged": false
+    },
+    "latest_release": "v0.29.0",
+    "autoawq_triton_rejection_present": true
+  },
+  "hyperloom": {
+    "declares_r9700_or_gfx1201_support": false
+  }
+}
