@@ -4,13 +4,19 @@ on:
   schedule:
     - cron: "17 12 * * *"
   workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/r9700-upstream-watch.yml"
+      - "scripts/r9700_upstream_watch.py"
+      - "scripts/tests/test_r9700_upstream_watch_workflow.py"
+      - "docs/evidence/r9700_upstream_watch_baseline_20260914.json"
 
 permissions:
   contents: read
 
 concurrency:
-  group: r9700-upstream-watch
-  cancel-in-progress: false
+  group: r9700-upstream-watch-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   upstream-watch:
