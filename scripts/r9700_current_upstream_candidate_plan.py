@@ -17,6 +17,7 @@ HYPERLOOM_UPSTREAM_COMMIT = "ec3b1cbe9da752398388ea3497a3b40a500e0387"
 MODEL = "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"
 GPU_ARCH = "gfx1201"
 GPU_NAME = "AMD Radeon AI PRO R9700"
+PROVEN_RUNTIME_ROCM = "10.0"
 
 PRODUCTION_PORT = 8000
 PRODUCTION_CONTAINER = "inneros-vllm-hyperloom-s3-production"
@@ -54,6 +55,21 @@ def build_plan(candidate_port: int, candidate_container: str, candidate_root: st
                 "s3_small_m_w1_patch": "absent_for_native_candidate",
             },
             "on_failure": "reject_candidate",
+        },
+        {
+            "id": "build_compatibility",
+            "gate": "build_against_proven_rocm_generation",
+            "requirements": {
+                "proven_runtime_rocm": PROVEN_RUNTIME_ROCM,
+                "strategy": "isolated_source_build",
+                "upstream_rocm_dockerfile": "docker/Dockerfile.rocm",
+                "prebuilt_wheel_policy": "forbidden_unless_rocm_variant_is_explicitly_verified_compatible",
+                "reason": (
+                    "current upstream prebuilt ROCm wheels target ROCm 7.x; "
+                    "the production-proven R9700 runtime is ROCm 10"
+                ),
+            },
+            "on_failure": "reject_candidate_keep_s3_unchanged",
         },
         {
             "id": "isolation",
@@ -123,7 +139,7 @@ def build_plan(candidate_port: int, candidate_container: str, candidate_root: st
     ]
 
     return {
-        "schema": "hyperloom.r9700.current_upstream_candidate.plan.v1",
+        "schema": "hyperloom.r9700.current_upstream_candidate.plan.v2",
         "pass": not errors,
         "errors": errors,
         "truth_boundary": (
@@ -135,6 +151,8 @@ def build_plan(candidate_port: int, candidate_container: str, candidate_root: st
             "model": MODEL,
             "gpu": GPU_NAME,
             "arch": GPU_ARCH,
+            "proven_runtime_rocm": PROVEN_RUNTIME_ROCM,
+            "build_strategy": "isolated_source_build",
             "port": candidate_port,
             "container": candidate_container,
             "root": str(root),
