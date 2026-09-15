@@ -156,15 +156,6 @@ diff --git a/vllm/model_executor/layers/fused_moe/fused_moe.py b/vllm/model_exec
      use_int8_w8a16: tl.constexpr,
 +    use_int4_interleave: tl.constexpr = False,
  ):
-@@ -135,3 +136,8 @@ def fused_moe_kernel_gptq_awq(
-     `sorted_token_ids` by expert index and padding ensures divisibility by
-     BLOCK_SIZE_M, which is necessary to maintain consistency in block matrix
-     multiplication across different blocks processed by the same expert.
-+
-+    When use_int4_interleave=True (int4 with N-packed int32 weights [E, K, N//8]):
-+    Uses tl.interleave for weight unpacking for efficient global memory access.
-+    Scales are [E, K_groups, N] and zeros are [E, K_groups, N] fp16.
-+    See vllm/model_executor/kernels/linear/mixed_precision/triton_w4a16.py
 @@ -189,13 +195,31 @@ def fused_moe_kernel_gptq_awq(
      )
  
