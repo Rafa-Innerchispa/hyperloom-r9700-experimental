@@ -32,9 +32,7 @@ def test_runtime_mutation_fails_closed():
 
 def test_current_main_must_be_distinct_from_rehearsal_baseline():
     payload = manifest()
-    payload["refs"]["prototype_current_main_sha"] = payload["refs"][
-        "rehearsal_baseline_main_sha"
-    ]
+    payload["refs"]["prototype_current_main_sha"] = payload["refs"]["rehearsal_baseline_main_sha"]
 
     result = contract.evaluate_manifest(payload)
 
@@ -59,9 +57,7 @@ def test_direct_autoawq_rejection_must_remain_in_prototype_contract():
     result = contract.evaluate_manifest(payload)
 
     assert result["ok"] is False
-    assert result["reasons"] == [
-        "manifest:preserve:keep_direct_autoawq_triton_rejection"
-    ]
+    assert result["reasons"] == ["manifest:preserve:keep_direct_autoawq_triton_rejection"]
 
 
 def test_auto_awq_source_must_not_become_a_prototype_edit():

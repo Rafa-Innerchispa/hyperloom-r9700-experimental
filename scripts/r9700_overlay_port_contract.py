@@ -18,10 +18,7 @@ from typing import Any
 SCHEMA = "r9700-vllm-overlay-port-contract-v1"
 MANIFEST_SCHEMA = "r9700-vllm-overlay-port-manifest-v1"
 DEFAULT_MANIFEST = (
-    Path(__file__).resolve().parents[1]
-    / "docs"
-    / "evidence"
-    / "r9700_vllm029_overlay_port_manifest_20260915.json"
+    Path(__file__).resolve().parents[1] / "docs" / "evidence" / "r9700_vllm029_overlay_port_manifest_20260915.json"
 )
 
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
