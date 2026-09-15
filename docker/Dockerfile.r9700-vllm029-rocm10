@@ -4,6 +4,8 @@ FROM ${BASE_IMAGE}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ARG VLLM_SHA=98dff2a81d747d1dba01a47f939f48c3526d4206
+ARG TRITON_REPO=https://github.com/ROCm/triton.git
+ARG TRITON_SHA=f0b55c0
 ARG PYTORCH_ROCM_ARCH=gfx1201
 ARG MAX_JOBS=8
 
@@ -45,19 +47,28 @@ RUN python3 -m pip install --upgrade pip \
     && python3 - <<'PY'
 import platform
 import torch
-import triton
 assert platform.python_version().startswith("3.13."), platform.python_version()
 assert torch.__version__.startswith("2.13.0"), torch.__version__
 assert getattr(torch.version, "hip", None), torch.version.hip
-print({
-    "python": platform.python_version(),
-    "torch": torch.__version__,
-    "hip": torch.version.hip,
-    "triton": getattr(triton, "__version__", None),
-})
+print({"python": platform.python_version(), "torch": torch.__version__, "hip": torch.version.hip})
 PY
 
+# Full ROCm source builds of exact vLLM 0.29.0 require ROCm/triton. Use the
+# validated pin from that release's Dockerfile.rocm_base rather than trusting
+# whichever Triton package happens to be present in the PyTorch base image.
 WORKDIR /opt
+RUN python3 -m pip uninstall -y triton || true \
+    && git clone "${TRITON_REPO}" rocm-triton \
+    && cd rocm-triton \
+    && git checkout --detach "${TRITON_SHA}" \
+    && test "$(git rev-parse --short=7 HEAD)" = "${TRITON_SHA}" \
+    && if [ -f setup.py ]; then python3 setup.py install; else cd python && python3 setup.py install; fi \
+    && python3 - <<'PY'
+import triton
+assert getattr(triton, "__version__", None), triton
+print({"triton": triton.__version__})
+PY
+
 RUN git clone https://github.com/vllm-project/vllm.git vllm \
     && cd vllm \
     && git checkout --detach "${VLLM_SHA}" \
