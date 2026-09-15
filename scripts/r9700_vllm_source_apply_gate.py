@@ -180,7 +180,11 @@ def evaluate_live(
     _require(patch_paths == EXPECTED_PATHS, "patch:scope_mismatch")
 
     if fetcher is None:
-        fetcher = lambda url: fetch_bytes(url, timeout=timeout)
+
+        def default_fetcher(url: str) -> bytes:
+            return fetch_bytes(url, timeout=timeout)
+
+        fetcher = default_fetcher
 
     with tempfile.TemporaryDirectory(prefix="r9700-vllm029-apply-") as tmp:
         tree = Path(tmp)
