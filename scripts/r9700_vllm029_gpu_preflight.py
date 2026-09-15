@@ -158,11 +158,7 @@ def collect_preflight(
         reasons.append("candidate_container_already_running")
 
     services = {service: service_state(service, run=run) for service in PRESERVED_SERVICES}
-    active_services = [
-        service
-        for service, state in services.items()
-        if state in {"active", "activating", "reloading"}
-    ]
+    active_services = [service for service, state in services.items() if state in {"active", "activating", "reloading"}]
     if active_services:
         reasons.append("preserved_runtime_active_requires_separate_host_control")
 
