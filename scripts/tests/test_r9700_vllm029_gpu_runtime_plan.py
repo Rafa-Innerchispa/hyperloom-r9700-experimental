@@ -25,6 +25,8 @@ def test_default_plan_is_exact_isolated_and_non_promoting():
     assert payload["candidate"]["build_base_ref"] == (
         f"{payload['candidate']['build_base_image']}@{payload['candidate']['build_base_digest']}"
     )
+    assert payload["candidate"]["triton_repo"] == "https://github.com/ROCm/triton.git"
+    assert payload["candidate"]["triton_sha"] == "f0b55c0"
     assert payload["candidate"]["port"] == 18029
     assert payload["candidate"]["port"] not in plan.FORBIDDEN_PORTS
     assert payload["preserved_runtime"]["must_not_be_mutated"] is True
@@ -32,8 +34,10 @@ def test_default_plan_is_exact_isolated_and_non_promoting():
     stages = {stage["id"]: stage for stage in payload["stages"]}
     assert stages["build"]["requirements"]["pytorch_rocm_arch"] == "gfx1201"
     assert stages["build"]["requirements"]["build_base_ref"] == plan.BUILD_BASE_REF
+    assert stages["build"]["requirements"]["triton_sha"] == plan.TRITON_SHA
     assert stages["import_abi"]["requirements"]["torch"] == "2.13.0"
     assert stages["import_abi"]["requirements"]["triton_importable"] is True
+    assert stages["import_abi"]["requirements"]["triton_source_sha"] == plan.TRITON_SHA
     assert stages["load"]["requirements"]["aiter"] is False
     assert stages["load"]["requirements"]["attention_backend"] == "ROCM_ATTN"
     assert stages["path_evidence"]["requirements"]["interleave_marker"] == "tl.interleave"
