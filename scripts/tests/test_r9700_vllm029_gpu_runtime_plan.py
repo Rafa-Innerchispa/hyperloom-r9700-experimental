@@ -23,7 +23,7 @@ def test_default_plan_is_exact_isolated_and_non_promoting():
         "sha256:c820e27bba8090875760d10b92e52aae790c776a937fa00c4357289dbc0addec"
     )
     assert payload["candidate"]["build_base_ref"] == (
-        f'{payload["candidate"]["build_base_image"]}@{payload["candidate"]["build_base_digest"]}'
+        f"{payload['candidate']['build_base_image']}@{payload['candidate']['build_base_digest']}"
     )
     assert payload["candidate"]["port"] == 18029
     assert payload["candidate"]["port"] not in plan.FORBIDDEN_PORTS
