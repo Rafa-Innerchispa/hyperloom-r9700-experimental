@@ -174,7 +174,7 @@ def evaluate_live(
     patch_path = patch_path.resolve()
     _require(patch_path.is_file(), "patch:not_found")
     patch_sha = sha256_file(patch_path)
-    _require(patch_sha == PATCH_SHA256, "patch:sha256_mismatch")
+    _require(patch_sha == PATCH_SHA256, f"patch:sha256_mismatch:{patch_sha}")
     patch_text = patch_path.read_text(encoding="utf-8")
     patch_paths = parse_patch_paths(patch_text)
     _require(patch_paths == EXPECTED_PATHS, "patch:scope_mismatch")
