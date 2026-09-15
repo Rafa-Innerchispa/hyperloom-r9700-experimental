@@ -261,7 +261,9 @@ def fail_result(reason: str) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--live", action="store_true", help="Fetch immutable upstream blobs and run the clean apply gate")
+    parser.add_argument(
+        "--live", action="store_true", help="Fetch immutable upstream blobs and run the clean apply gate"
+    )
     parser.add_argument("--patch", type=Path, default=DEFAULT_PATCH)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_SECONDS)
