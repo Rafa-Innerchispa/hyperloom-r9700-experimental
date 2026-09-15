@@ -17,9 +17,14 @@ A source-apply PASS is necessary but is **not** GPU-runtime proof.
 - target GPU: AMD Radeon AI PRO R9700
 - target architecture: `gfx1201`
 - ROCm generation: `10.0`
+- source-build Python: `3.13`
+- source-build Torch: `2.13.0`
+- source-build base: `rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0`
 - isolated candidate port: `18029`
 - isolated candidate container: `hyperloom-r9700-vllm029-gfx1201-candidate`
 - candidate root: `var/r9700_vllm029_gpu_candidate`
+
+The build-base choice is deliberate. Exact vLLM 0.29.0 build metadata pins Torch 2.13.0, while the AMD ROCm 10 image above provides Torch 2.13.0 on Ubuntu 24.04 with Python 3.13. The earlier validated vLLM 0.27 serving image uses Torch 2.12.0 and is preserved as prior-runtime evidence, not reused as the 0.29 build ABI.
 
 ## Preserved runtime boundary
 
@@ -43,18 +48,21 @@ S3 and stock remain available. Promotion is a separate manual decision.
 
 2. **Isolated ROCm 10 build**
    - Build vLLM 0.29.0 from exact source in an isolated candidate root.
-   - Use ROCm 10 as the compatibility target.
+   - Base the build on `rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0`.
+   - Require Python 3.13, Torch 2.13.0, HIP present, Rust 1.95 and `PYTORCH_ROCM_ARCH=gfx1201`.
+   - Use `docker/Dockerfile.r9700-vllm029-rocm10` as the reproducible build recipe.
    - Do not silently substitute an upstream prebuilt wheel built for a different ROCm generation.
 
 3. **Physical GPU preflight**
    - Prove R9700 identity and `gfx1201`.
    - Prove `/dev/kfd` and `/dev/dri` are available.
    - Record ROCm/driver/runtime identity.
+   - Use `scripts/r9700_vllm029_gpu_preflight.py`; it is read-only and fails closed.
 
 4. **Import / ABI gate**
    - Import Torch and vLLM from the candidate runtime.
    - Record Python, Torch, HIP and vLLM versions.
-   - Require vLLM `0.29.0` and ROCm platform detection.
+   - Require Python 3.13, Torch 2.13.0, vLLM `0.29.0` and ROCm platform detection.
 
 5. **Exact model load**
    - Load the local `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ` model.
@@ -109,7 +117,7 @@ Do not reuse the old vLLM 0.27 overlay identity as if it were the 0.29 candidate
 We may say **"the new stack works on the R9700"** only when all of these are recorded for the exact candidate identity:
 
 - isolated ROCm 10 build PASS
-- candidate import/ABI PASS
+- candidate import/ABI PASS with Python 3.13 + Torch 2.13.0 + HIP
 - exact AWQ model load PASS on physical `gfx1201`
 - intended WNA16/interleaved path proven
 - deterministic canonical correctness PASS
