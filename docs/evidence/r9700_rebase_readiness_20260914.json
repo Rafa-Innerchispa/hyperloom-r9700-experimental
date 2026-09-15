@@ -1,0 +1,48 @@
+{
+  "schema": "r9700-rebase-readiness-snapshot-v1",
+  "refs": {
+    "vllm_stable_tag": "v0.29.0",
+    "vllm_stable_sha": "98dff2a81d747d1dba01a47f939f48c3526d4206",
+    "vllm_main_sha": "00972dfd72988942138a7a6089eaee08580210b8",
+    "vllm_pr_43389_head": "56ef89e1ff4a1552beb3b5c51c00b73ea44daca1",
+    "hyperloom_main_sha": "0425bde3f6e76e1588400c37d056dfd3bb75ac11"
+  },
+  "vllm": {
+    "pr_43389": {
+      "state": "open",
+      "merged": false,
+      "head_sha": "56ef89e1ff4a1552beb3b5c51c00b73ea44daca1"
+    },
+    "stable": {
+      "autoawq_triton_rejection_present": true,
+      "triton_wna16_experts_present": true,
+      "select_wna16_moe_backend_present": true,
+      "convert_to_wna16_moe_kernel_format_present": true,
+      "triton_conversion_branch_present": true,
+      "process_weights_after_loading_present": true,
+      "rdna3_backend_present": false,
+      "overlay_oracle_repack_present": false,
+      "overlay_fused_interleave_present": false,
+      "overlay_config_layout_marker_present": false,
+      "overlay_triton_layout_argument_present": false,
+      "overlay_utility_module_present": false
+    },
+    "main": {
+      "autoawq_triton_rejection_present": true,
+      "triton_wna16_experts_present": true,
+      "select_wna16_moe_backend_present": true,
+      "convert_to_wna16_moe_kernel_format_present": true,
+      "triton_conversion_branch_present": true,
+      "process_weights_after_loading_present": true,
+      "rdna3_backend_present": true,
+      "overlay_oracle_repack_present": false,
+      "overlay_fused_interleave_present": false,
+      "overlay_config_layout_marker_present": false,
+      "overlay_triton_layout_argument_present": false,
+      "overlay_utility_module_present": false
+    }
+  },
+  "hyperloom": {
+    "declares_r9700_or_gfx1201_support": false
+  }
+}
