@@ -32,9 +32,7 @@ def _build_synthetic_candidate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         "vllm/model_executor/layers/fused_moe/config.py": b"BASE_CONFIG = True\n",
         "vllm/model_executor/layers/fused_moe/experts/triton_moe.py": b"BASE_TRITON = True\n",
         "vllm/model_executor/layers/fused_moe/fused_moe.py": (
-            "# (offs_k[:, None] // 2) * stride_bk\n"
-            "# b_shifter = (offs_k[:, None] % 2) * 4\n"
-            "BASE_FUSED = True\n"
+            "# (offs_k[:, None] // 2) * stride_bk\n# b_shifter = (offs_k[:, None] % 2) * 4\nBASE_FUSED = True\n"
         ).encode(),
     }
     monkeypatch.setattr(
@@ -70,8 +68,7 @@ def _build_synthetic_candidate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     )
 
     (source / "vllm/model_executor/layers/fused_moe/oracle/int_wna16.py").write_text(
-        baselines["vllm/model_executor/layers/fused_moe/oracle/int_wna16.py"].decode()
-        + "NORMALIZED_TRITON = True\n",
+        baselines["vllm/model_executor/layers/fused_moe/oracle/int_wna16.py"].decode() + "NORMALIZED_TRITON = True\n",
         encoding="utf-8",
     )
     (source / "vllm/model_executor/layers/fused_moe/config.py").write_text(
