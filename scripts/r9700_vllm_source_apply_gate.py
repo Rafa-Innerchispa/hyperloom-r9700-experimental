@@ -138,8 +138,8 @@ def _git_or_raise(args: list[str], *, cwd: Path, code: str) -> subprocess.Comple
     result = run_git(args, cwd=cwd)
     if result.returncode != 0:
         detail = (result.stderr or result.stdout).strip().splitlines()
-        suffix = detail[-1][:300] if detail else "git_failed"
-        raise GateError(f"{code}:{suffix}")
+        suffix = " | ".join(line[:300] for line in detail[-8:]) if detail else "git_failed"
+        raise GateError(f"{code}:{suffix[:1800]}")
     return result
 
 
@@ -203,7 +203,7 @@ def evaluate_live(
             code="git:commit_baseline",
         )
 
-        _git_or_raise(["apply", "--check", str(patch_path)], cwd=tree, code="git:apply_check")
+        _git_or_raise(["apply", "--check", "--verbose", str(patch_path)], cwd=tree, code="git:apply_check")
         _git_or_raise(["apply", str(patch_path)], cwd=tree, code="git:apply")
         _git_or_raise(["diff", "--check"], cwd=tree, code="git:diff_check")
 
