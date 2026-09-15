@@ -28,6 +28,8 @@ ROCM_GENERATION = "10.0"
 BUILD_PYTHON = "3.13"
 BUILD_TORCH = "2.13.0"
 BUILD_BASE_IMAGE = "rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0"
+BUILD_BASE_DIGEST = "sha256:c820e27bba8090875760d10b92e52aae790c776a937fa00c4357289dbc0addec"
+BUILD_BASE_REF = f"{BUILD_BASE_IMAGE}@{BUILD_BASE_DIGEST}"
 CANONICAL_TEXT_SHA256 = "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
 
 PRODUCTION_PORT = 8000
@@ -109,6 +111,8 @@ def build_plan(
                 "python": BUILD_PYTHON,
                 "torch": BUILD_TORCH,
                 "build_base_image": BUILD_BASE_IMAGE,
+                "build_base_digest": BUILD_BASE_DIGEST,
+                "build_base_ref": BUILD_BASE_REF,
                 "pytorch_rocm_arch": GPU_ARCH,
                 "strategy": "isolated_source_build",
                 "prebuilt_vllm029_wheel": "forbidden_unless_rocm10_abi_is_explicitly_proved",
@@ -155,6 +159,7 @@ def build_plan(
                 "vllm_version": "0.29.0",
                 "vllm_source_sha": VLLM_SHA,
                 "torch_hip_present": True,
+                "triton_importable": True,
                 "current_platform_is_rocm": True,
                 "current_platform_arch": GPU_ARCH,
             },
@@ -244,6 +249,8 @@ def build_plan(
             "python": BUILD_PYTHON,
             "torch": BUILD_TORCH,
             "build_base_image": BUILD_BASE_IMAGE,
+            "build_base_digest": BUILD_BASE_DIGEST,
+            "build_base_ref": BUILD_BASE_REF,
             "port": candidate_port,
             "container": candidate_container,
             "root": str(root),
