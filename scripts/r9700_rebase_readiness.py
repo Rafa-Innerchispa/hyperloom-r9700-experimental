@@ -31,12 +31,7 @@ EXPECTED_REFS = {
     "hyperloom_main_sha": "0425bde3f6e76e1588400c37d056dfd3bb75ac11",
 }
 
-DEFAULT_SNAPSHOT = (
-    Path(__file__).resolve().parents[1]
-    / "docs"
-    / "evidence"
-    / "r9700_rebase_readiness_20260914.json"
-)
+DEFAULT_SNAPSHOT = Path(__file__).resolve().parents[1] / "docs" / "evidence" / "r9700_rebase_readiness_20260914.json"
 
 PR_URL = "https://api.github.com/repos/vllm-project/vllm/pulls/43389"
 VLLM_RAW = "https://raw.githubusercontent.com/vllm-project/vllm/{ref}/{path}"
@@ -50,9 +45,7 @@ TRITON_EXPERT_PATH = "vllm/model_executor/layers/fused_moe/experts/triton_moe.py
 UTIL_PATH = "vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py"
 
 AUTOAWQ_REJECTION = "the AutoAWQ weight layout is not supported"
-R9700_SUPPORT_PATTERN = re.compile(
-    r"(?:Radeon\s+AI\s+PRO\s+R9700|\bR9700\b|\bgfx1201\b)", re.IGNORECASE
-)
+R9700_SUPPORT_PATTERN = re.compile(r"(?:Radeon\s+AI\s+PRO\s+R9700|\bR9700\b|\bgfx1201\b)", re.IGNORECASE)
 
 
 class ReadinessError(ValueError):
@@ -107,33 +100,22 @@ def _lane_snapshot(ref: str, *, timeout: float) -> dict[str, bool]:
     fused_moe = get(FUSED_MOE_PATH)
     config = get(CONFIG_PATH)
     triton_expert = get(TRITON_EXPERT_PATH)
-    utility = _fetch_optional_text(
-        VLLM_RAW.format(ref=ref, path=UTIL_PATH), timeout=timeout
-    )
+    utility = _fetch_optional_text(VLLM_RAW.format(ref=ref, path=UTIL_PATH), timeout=timeout)
 
     return {
         "autoawq_triton_rejection_present": AUTOAWQ_REJECTION in oracle,
         "triton_wna16_experts_present": "TritonWNA16Experts" in oracle,
         "select_wna16_moe_backend_present": "def select_wna16_moe_backend(" in oracle,
-        "convert_to_wna16_moe_kernel_format_present": (
-            "def convert_to_wna16_moe_kernel_format(" in oracle
-        ),
-        "triton_conversion_branch_present": (
-            "elif backend == WNA16MoEBackend.TRITON:" in oracle
-        ),
+        "convert_to_wna16_moe_kernel_format_present": ("def convert_to_wna16_moe_kernel_format(" in oracle),
+        "triton_conversion_branch_present": ("elif backend == WNA16MoEBackend.TRITON:" in oracle),
         "process_weights_after_loading_present": (
-            "def process_weights_after_loading(" in moe_wna16
-            and "convert_to_wna16_moe_kernel_format(" in moe_wna16
+            "def process_weights_after_loading(" in moe_wna16 and "convert_to_wna16_moe_kernel_format(" in moe_wna16
         ),
         "rdna3_backend_present": "WNA16MoEBackend.RDNA3" in oracle,
         "overlay_oracle_repack_present": "repack_int4_to_int32" in oracle,
         "overlay_fused_interleave_present": "use_int4_interleave" in fused_moe,
-        "overlay_config_layout_marker_present": (
-            "is_int4_w4a16_interleaved" in config
-        ),
-        "overlay_triton_layout_argument_present": (
-            "int4_packed_as_int32" in triton_expert
-        ),
+        "overlay_config_layout_marker_present": ("is_int4_w4a16_interleaved" in config),
+        "overlay_triton_layout_argument_present": ("int4_packed_as_int32" in triton_expert),
         "overlay_utility_module_present": utility is not None,
     }
 
@@ -164,11 +146,7 @@ def collect_live_snapshot(*, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[s
             "stable": stable,
             "main": main,
         },
-        "hyperloom": {
-            "declares_r9700_or_gfx1201_support": bool(
-                R9700_SUPPORT_PATTERN.search(hyperloom_readme)
-            )
-        },
+        "hyperloom": {"declares_r9700_or_gfx1201_support": bool(R9700_SUPPORT_PATTERN.search(hyperloom_readme))},
     }
 
 
@@ -293,11 +271,7 @@ def evaluate_snapshot(snapshot: Any, *, source: str = "offline") -> dict[str, An
             reasons.append(f"{name}:wna16_backbone_changed")
         if not _overlay_absent(lane):
             reasons.append(f"{name}:overlay_like_code_present_upstream")
-        hunk_status[name] = (
-            "rebase_adapt"
-            if _lane_backbone_ok(lane) and _overlay_absent(lane)
-            else "manual_review"
-        )
+        hunk_status[name] = "rebase_adapt" if _lane_backbone_ok(lane) and _overlay_absent(lane) else "manual_review"
 
     if snapshot["hyperloom"]["declares_r9700_or_gfx1201_support"]:
         reasons.append("hyperloom_r9700_support_declared")
@@ -319,15 +293,9 @@ def evaluate_snapshot(snapshot: Any, *, source: str = "offline") -> dict[str, An
         "hunk_status": hunk_status,
         "observed": {
             "pr_43389": pr,
-            "stable_rdna3_backend_present": lanes["stable_v0_29_0"][
-                "rdna3_backend_present"
-            ],
-            "main_rdna3_backend_present": lanes["current_main"][
-                "rdna3_backend_present"
-            ],
-            "hyperloom_declares_r9700_or_gfx1201_support": snapshot["hyperloom"][
-                "declares_r9700_or_gfx1201_support"
-            ],
+            "stable_rdna3_backend_present": lanes["stable_v0_29_0"]["rdna3_backend_present"],
+            "main_rdna3_backend_present": lanes["current_main"]["rdna3_backend_present"],
+            "hyperloom_declares_r9700_or_gfx1201_support": snapshot["hyperloom"]["declares_r9700_or_gfx1201_support"],
         },
     }
 
@@ -341,11 +309,7 @@ def main() -> int:
 
     source = "live" if args.live else "offline"
     try:
-        snapshot = (
-            collect_live_snapshot(timeout=args.timeout)
-            if args.live
-            else load_snapshot(args.snapshot)
-        )
+        snapshot = collect_live_snapshot(timeout=args.timeout) if args.live else load_snapshot(args.snapshot)
         result = evaluate_snapshot(snapshot, source=source)
     except (OSError, ValueError, urllib.error.URLError) as exc:
         code = str(exc) if isinstance(exc, ReadinessError) else "rebase_readiness:unavailable"
