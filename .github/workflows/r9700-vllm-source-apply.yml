@@ -1,0 +1,54 @@
+name: R9700 vLLM Source Apply
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/r9700_vllm_source_apply_gate.py"
+      - "scripts/tests/test_r9700_vllm_source_apply_gate.py"
+      - "docs/evidence/vllm_v0_29_0_r9700_awq_triton_candidate.patch"
+      - ".github/workflows/r9700-vllm-source-apply.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Run fail-closed clean-source apply gate
+        run: >-
+          python scripts/r9700_vllm_source_apply_gate.py
+          --live
+          --output r9700-vllm-source-apply-result.json
+
+      - name: Add result to job summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## R9700 vLLM v0.29.0 clean-source apply gate' >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f r9700-vllm-source-apply-result.json ]; then
+            cat r9700-vllm-source-apply-result.json >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '{"ok":false,"reason":"result_file_missing"}' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r9700-vllm-source-apply-result
+          path: r9700-vllm-source-apply-result.json
+          if-no-files-found: error
