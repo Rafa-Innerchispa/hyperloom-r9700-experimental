@@ -25,7 +25,9 @@ MODEL_PATH = "/models/QuantTrio__Qwen3-Coder-30B-A3B-Instruct-AWQ"
 GPU_NAME = "AMD Radeon AI PRO R9700"
 GPU_ARCH = "gfx1201"
 ROCM_GENERATION = "10.0"
-BUILD_BASE_IMAGE = "rocm/vllm:rocm10.0.0_ubuntu24.04_py3.14_pytorch_2.12.0_vllm_0.27.0"
+BUILD_PYTHON = "3.13"
+BUILD_TORCH = "2.13.0"
+BUILD_BASE_IMAGE = "rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0"
 CANONICAL_TEXT_SHA256 = "7931ecfbe6d2b41843001499ef498b96a4d7ddc101f77926bd867468271c5ce2"
 
 PRODUCTION_PORT = 8000
@@ -104,9 +106,16 @@ def build_plan(
             "gate": "isolated_source_build_against_rocm10",
             "requirements": {
                 "rocm_generation": ROCM_GENERATION,
+                "python": BUILD_PYTHON,
+                "torch": BUILD_TORCH,
                 "build_base_image": BUILD_BASE_IMAGE,
+                "pytorch_rocm_arch": GPU_ARCH,
                 "strategy": "isolated_source_build",
                 "prebuilt_vllm029_wheel": "forbidden_unless_rocm10_abi_is_explicitly_proved",
+                "reason": (
+                    "vLLM v0.29.0 build metadata pins torch 2.13.0; the ROCm 10 PyTorch "
+                    "2.13.0 image provides a coherent source-build base for Ubuntu 24.04."
+                ),
                 "candidate_root": str(root),
                 "production_root_mutation": False,
             },
@@ -141,6 +150,8 @@ def build_plan(
             "id": "import_abi",
             "gate": "prove_built_runtime_identity",
             "requirements": {
+                "python": BUILD_PYTHON,
+                "torch": BUILD_TORCH,
                 "vllm_version": "0.29.0",
                 "vllm_source_sha": VLLM_SHA,
                 "torch_hip_present": True,
@@ -230,6 +241,9 @@ def build_plan(
             "gpu": GPU_NAME,
             "arch": GPU_ARCH,
             "rocm_generation": ROCM_GENERATION,
+            "python": BUILD_PYTHON,
+            "torch": BUILD_TORCH,
+            "build_base_image": BUILD_BASE_IMAGE,
             "port": candidate_port,
             "container": candidate_container,
             "root": str(root),
