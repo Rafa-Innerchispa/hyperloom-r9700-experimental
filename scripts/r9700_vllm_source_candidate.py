@@ -16,12 +16,7 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA = "r9700-vllm-source-candidate-v1"
-PATCH_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "docs"
-    / "evidence"
-    / "vllm_v0_29_0_r9700_awq_triton_candidate.patch"
-)
+PATCH_PATH = Path(__file__).resolve().parents[1] / "docs" / "evidence" / "vllm_v0_29_0_r9700_awq_triton_candidate.patch"
 TARGET_VLLM_TAG = "v0.29.0"
 TARGET_VLLM_SHA = "98dff2a81d747d1dba01a47f939f48c3526d4206"
 COMPARISON_MAIN_SHA = "e6960af33b379d502f409e3e2241bbf2b2c2f68d"
@@ -156,8 +151,7 @@ def evaluate_patch(path: Path = PATCH_PATH) -> dict[str, Any]:
         for marker in required_markers:
             _require(marker in text, f"patch:missing_marker:{marker}")
         _require(
-            "(offs_k[:, None] // 2) * stride_bk" in text
-            and "b_shifter = (offs_k[:, None] % 2) * 4" in text,
+            "(offs_k[:, None] // 2) * stride_bk" in text and "b_shifter = (offs_k[:, None] % 2) * 4" in text,
             "patch:classic_int4_path_missing",
         )
     except (OSError, UnicodeDecodeError, CandidateError) as exc:
@@ -211,9 +205,7 @@ def repack_int4_reference(w: list[list[list[int]]]) -> list[list[list[int]]]:
     return out
 
 
-def unpack_repacked_int4_reference(
-    packed: list[list[list[int]]], N: int
-) -> list[list[list[int]]]:
+def unpack_repacked_int4_reference(packed: list[list[list[int]]], N: int) -> list[list[list[int]]]:
     E = len(packed)
     K = len(packed[0])
     out = [[[0 for _ in range(K)] for _ in range(N)] for _ in range(E)]

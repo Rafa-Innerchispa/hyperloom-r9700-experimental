@@ -14,9 +14,7 @@ def test_repository_patch_is_structurally_valid():
     assert result["automatic_promotion_allowed"] is False
     assert set(result["paths"]) == candidate.EXPECTED_PATHS
     assert len(result["patch_sha256"]) == 64
-    assert result["patch_sha256"] == (
-        "3e366ff0c8dff5b1e697d227250bce1f1fd6e06e70e78cc8d6672c59ba6a7089"
-    )
+    assert result["patch_sha256"] == ("3e366ff0c8dff5b1e697d227250bce1f1fd6e06e70e78cc8d6672c59ba6a7089")
 
 
 def test_target_is_pinned_vllm_029():
@@ -25,12 +23,8 @@ def test_target_is_pinned_vllm_029():
     assert result["ok"] is True, result
     assert result["target"]["tag"] == "v0.29.0"
     assert result["target"]["sha"] == "98dff2a81d747d1dba01a47f939f48c3526d4206"
-    assert result["target"]["comparison_main_sha"] == (
-        "e6960af33b379d502f409e3e2241bbf2b2c2f68d"
-    )
-    assert result["target"]["pr_43389_head_sha"] == (
-        "56ef89e1ff4a1552beb3b5c51c00b73ea44daca1"
-    )
+    assert result["target"]["comparison_main_sha"] == ("e6960af33b379d502f409e3e2241bbf2b2c2f68d")
+    assert result["target"]["pr_43389_head_sha"] == ("56ef89e1ff4a1552beb3b5c51c00b73ea44daca1")
 
 
 def test_exact_five_file_scope_and_no_broad_autoawq_or_rocm_edit():
