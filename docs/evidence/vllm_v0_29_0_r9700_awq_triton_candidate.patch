@@ -402,13 +402,22 @@ diff --git a/vllm/model_executor/layers/fused_moe/fused_moe.py b/vllm/model_exec
 +        use_int4_interleave=use_int4_interleave,
          **config,
      )
-@@ -1420,4 +1488,5 @@ def try_get_optimal_moe_config(
+@@ -1420,19 +1488,24 @@ def try_get_optimal_moe_config(
+     w1_shape: tuple[int, ...],
+     w2_shape: tuple[int, ...],
+     top_k: int,
      dtype: str | None,
      M: int,
      block_shape: list[int] | None = None,
 +    int4_packed_as_int32: bool = False,
  ) -> dict[str, int]:
-@@ -1428,3 +1497,7 @@ def try_get_optimal_moe_config(
+     from vllm.model_executor.layers.fused_moe import get_config
+ 
+     override_config = get_config()
+     if override_config:
+         config = override_config
+     else:
+         # First try to load optimal config from the file
 -        E, _, N = w2_shape
 -        if dtype == "int4_w4a16":
 -            N = N * 2
@@ -419,7 +428,10 @@ diff --git a/vllm/model_executor/layers/fused_moe/fused_moe.py b/vllm/model_exec
 +            E, _, N = w2_shape
 +            if dtype == "int4_w4a16":
 +                N = N * 2
-@@ -1683,2 +1757,7 @@ def fused_experts_impl(
+         block_n = block_shape[0] if block_shape else 0
+         block_k = block_shape[1] if block_shape else 0
+@@ -1682,45 +1756,56 @@ def fused_experts_impl(
+     # Check constraints.
 -    if use_int4_w4a16:
 +    _rocm_interleave = use_int4_w4a16 and w1.dtype == torch.int32
 +    if _rocm_interleave:
@@ -428,7 +440,18 @@ diff --git a/vllm/model_executor/layers/fused_moe/fused_moe.py b/vllm/model_exec
 +        )
 +    elif use_int4_w4a16:
          assert hidden_states.size(1) // 2 == w1.size(2), "Hidden size mismatch"
-@@ -1697,2 +1777,7 @@ def fused_experts_impl(
+     else:
+         assert hidden_states.size(1) == w1.size(2), (
+             f"Hidden size mismatch {hidden_states.size(1)} != {w1.size(2)}"
+         )
+ 
+     assert topk_weights.size() == topk_ids.size(), "topk shape mismatch"
+     assert hidden_states.is_contiguous(), "Hidden_states must be contiguous"
+     assert w1.stride(-1) == 1, "Stride of last dimension must be 1"
+     assert w2.stride(-1) == 1, "Stride of last dimension must be 1"
+     assert hidden_states.dtype in [torch.float32, torch.float16, torch.bfloat16]
+ 
+     num_tokens = hidden_states.size(0)
 -    E, N, _ = w1.size()
 -    K = w2.size(1)
 +    if _rocm_interleave:
@@ -438,7 +461,30 @@ diff --git a/vllm/model_executor/layers/fused_moe/fused_moe.py b/vllm/model_exec
 +    else:
 +        E, N, _ = w1.size()
 +        K = w2.size(1)
-@@ -1726,4 +1811,5 @@ def fused_experts_impl(
+     if global_num_experts == -1:
+         global_num_experts = E
+     top_k_num = topk_ids.size(1)
+ 
+     M = num_tokens
+ 
+     config_dtype = _get_config_dtype_str(
+         use_fp8_w8a8=use_fp8_w8a8,
+         use_int8_w8a16=use_int8_w8a16,
+         use_int4_w4a16=use_int4_w4a16,
+         dtype=hidden_states.dtype,
+     )
+ 
+     # Note: for use_int8_w8a16 or use_int4_w4a16, the activations are
+     # quantized prior to calling fused_experts.
+     quant_dtype = _get_config_quant_dtype(
+         use_fp8_w8a8=use_fp8_w8a8,
+         use_int8_w8a8=use_int8_w8a8,
+     )
+ 
+     get_config_func = functools.partial(
+         try_get_optimal_moe_config,
+         w1.size(),
+         w2.size(),
          top_k_num,
          config_dtype,
          block_shape=block_shape,
