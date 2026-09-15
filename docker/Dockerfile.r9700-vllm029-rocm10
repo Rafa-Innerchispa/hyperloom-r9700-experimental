@@ -56,12 +56,8 @@ RUN git clone https://github.com/vllm-project/vllm.git vllm \
     && cd vllm \
     && git checkout --detach "${VLLM_SHA}" \
     && test "$(git rev-parse HEAD)" = "${VLLM_SHA}" \
-    && test "$(python3 - <<'PY'
-from pathlib import Path
-text = Path('pyproject.toml').read_text()
-print('1' if 'torch == 2.13.0' in text else '0')
-PY
-)" = "1"
+    && grep -Fq '"torch == 2.13.0"' pyproject.toml \
+    && grep -Fq 'channel = "1.95"' rust-toolchain.toml
 
 COPY docs/evidence/vllm_v0_29_0_r9700_awq_triton_candidate.patch /tmp/r9700-vllm029.patch
 
