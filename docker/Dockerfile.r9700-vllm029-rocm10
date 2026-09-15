@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0
+ARG BASE_IMAGE=rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0@sha256:c820e27bba8090875760d10b92e52aae790c776a937fa00c4357289dbc0addec
 FROM ${BASE_IMAGE}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -45,10 +45,16 @@ RUN python3 -m pip install --upgrade pip \
     && python3 - <<'PY'
 import platform
 import torch
+import triton
 assert platform.python_version().startswith("3.13."), platform.python_version()
 assert torch.__version__.startswith("2.13.0"), torch.__version__
 assert getattr(torch.version, "hip", None), torch.version.hip
-print({"python": platform.python_version(), "torch": torch.__version__, "hip": torch.version.hip})
+print({
+    "python": platform.python_version(),
+    "torch": torch.__version__,
+    "hip": torch.version.hip,
+    "triton": getattr(triton, "__version__", None),
+})
 PY
 
 WORKDIR /opt
@@ -81,6 +87,7 @@ RUN python3 setup.py develop \
 import json
 import platform
 import torch
+import triton
 import vllm
 from vllm.platforms import current_platform
 
@@ -88,12 +95,14 @@ payload = {
     "python": platform.python_version(),
     "torch": torch.__version__,
     "torch_hip": getattr(torch.version, "hip", None),
+    "triton": getattr(triton, "__version__", None),
     "vllm": getattr(vllm, "__version__", None),
     "is_rocm": current_platform.is_rocm(),
 }
 assert payload["torch"].startswith("2.13.0"), payload
 assert payload["vllm"] == "0.29.0", payload
 assert payload["torch_hip"], payload
+assert payload["triton"], payload
 assert payload["is_rocm"] is True, payload
 print(json.dumps(payload, sort_keys=True))
 PY
