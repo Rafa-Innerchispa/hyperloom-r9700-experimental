@@ -10,9 +10,7 @@ def test_default_plan_is_exact_isolated_and_non_promoting():
     assert payload["errors"] == []
     assert payload["schema"] == "hyperloom.r9700.vllm029.gpu_runtime_plan.v1"
     assert payload["candidate"]["vllm_sha"] == "98dff2a81d747d1dba01a47f939f48c3526d4206"
-    assert payload["candidate"]["patch_sha256"] == (
-        "372d5b73c27536910a615eb0138231514747bde23d5d6a2a5460a2e41fa3c6c9"
-    )
+    assert payload["candidate"]["patch_sha256"] == ("372d5b73c27536910a615eb0138231514747bde23d5d6a2a5460a2e41fa3c6c9")
     assert payload["candidate"]["observed_patch_sha256"] == payload["candidate"]["patch_sha256"]
     assert payload["candidate"]["arch"] == "gfx1201"
     assert payload["candidate"]["rocm_generation"] == "10.0"
