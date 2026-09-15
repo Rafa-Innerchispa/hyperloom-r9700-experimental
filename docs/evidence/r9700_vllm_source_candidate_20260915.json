@@ -1,0 +1,85 @@
+{
+  "schema": "r9700-vllm-source-candidate-evidence-v1",
+  "status": "static_candidate_verified_not_applied",
+  "runtime_mutation": false,
+  "automatic_promotion_allowed": false,
+  "hyperloom_base_sha": "92bb944e44b62573b3a759815efe5a47b9fda3f2",
+  "workload": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ + vLLM + ROCm 10 + Radeon AI PRO R9700/gfx1201 + MoE + W4A16",
+  "patch": {
+    "path": "docs/evidence/vllm_v0_29_0_r9700_awq_triton_candidate.patch",
+    "sha256": "3e366ff0c8dff5b1e697d227250bce1f1fd6e06e70e78cc8d6672c59ba6a7089",
+    "size_bytes": 17384,
+    "exact_file_count": 5,
+    "applied_to_runtime": false
+  },
+  "refs": {
+    "vllm_stable_tag": "v0.29.0",
+    "vllm_stable_sha": "98dff2a81d747d1dba01a47f939f48c3526d4206",
+    "prototype_comparison_main_sha": "e6960af33b379d502f409e3e2241bbf2b2c2f68d",
+    "latest_main_observed_sha": "dffbb714e4e8e4b95ccc888df98d47c7d2cef78d",
+    "vllm_pr_43389_head_sha": "56ef89e1ff4a1552beb3b5c51c00b73ea44daca1"
+  },
+  "stable_target_blobs": {
+    "vllm/model_executor/layers/fused_moe/oracle/int_wna16.py": "c56712ac58bc9933165ccf04753b9ee1a6b9d45a",
+    "vllm/model_executor/layers/fused_moe/config.py": "8736b1393d82590c1adb9a8ca91841ab2337e555",
+    "vllm/model_executor/layers/fused_moe/experts/triton_moe.py": "9f982644b5691f8bccde0aa5229c404d394882f9",
+    "vllm/model_executor/layers/fused_moe/fused_moe.py": "dc619b2b12d27d2955f38a656e7c524fd6042887",
+    "vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py": null
+  },
+  "latest_main_surface_check": {
+    "material_surface_unchanged_since_prototype": true,
+    "oracle_blob": "d47ad9c97e317ab3df5980152548d7c360bf25a9",
+    "config_blob": "4c7760d007926dd5ebe7faae3c1892bef65e6284",
+    "triton_moe_blob": "9f982644b5691f8bccde0aa5229c404d394882f9",
+    "fused_moe_blob": "dc619b2b12d27d2955f38a656e7c524fd6042887",
+    "auto_awq_blob": "f8c7269add876a81a9aaf139668439d2fc2fa4e1",
+    "moe_wna16_blob": "430abdf705705016b2e33b7a2ecfeccf530299d3"
+  },
+  "upstream_state": {
+    "pr_43389_state": "open",
+    "pr_43389_merged": false,
+    "direct_autoawq_triton_rejection_present": true
+  },
+  "patch_paths": [
+    "vllm/model_executor/layers/quantization/utils/moe_wna16_utils.py",
+    "vllm/model_executor/layers/fused_moe/oracle/int_wna16.py",
+    "vllm/model_executor/layers/fused_moe/config.py",
+    "vllm/model_executor/layers/fused_moe/experts/triton_moe.py",
+    "vllm/model_executor/layers/fused_moe/fused_moe.py"
+  ],
+  "safety_contract": {
+    "forbidden_paths_absent": true,
+    "direct_autoawq_triton_rejection_preserved": true,
+    "classic_non_interleaved_path_preserved": true,
+    "layout_activation_requires_int4_and_int32": true,
+    "s3_action": "retain",
+    "stock_fallback_preserved": true,
+    "rocm_attn_preserved": true,
+    "gpu_max_hw_queues_1_preserved": true,
+    "deterministic_warmup_preserved": true,
+    "phases_2_to_6_reopened": false
+  },
+  "static_validation": {
+    "candidate_tests": "11 passed",
+    "repo_scripts_tests": "377 passed",
+    "compileall": "PASS",
+    "git_diff_check": "PASS",
+    "local_ruff": "delegated_to_ci",
+    "full_vllm_git_apply_check": "not_executed",
+    "full_vllm_git_apply_check_reason": "The restricted local lane does not contain a full vLLM source checkout and the container cannot reach GitHub. Exact immutable source blob identities were verified through the GitHub connector; a real source-tree apply remains an explicit next gate."
+  },
+  "algebraic_validation": {
+    "weight_repack": "uint8 [E,N,K/2] -> int32 [E,K,N/8] round-trip nibble equivalence PASS",
+    "zero_points": "packed int4 -> [E,K_groups,N] order preservation PASS",
+    "gate_projection_shapes": "PASS",
+    "down_projection_shapes": "PASS"
+  },
+  "remaining_gates": [
+    "Apply the patch to a clean vLLM v0.29.0 source checkout and require git apply --check/application PASS.",
+    "Build/import that isolated candidate with ROCm 10 on gfx1201 without touching the preserved S3 service.",
+    "Load the exact QuantTrio AWQ checkpoint and prove normalization through MoeWNA16Config plus intended Triton backend selection.",
+    "Verify real w13/w2, scale and asymmetric zero-point layouts before first inference.",
+    "Run exact correctness/hash regression against the preserved S3 contract.",
+    "Only after correctness passes, measure migration TTFT/decode/throughput and exercise fail-closed startup plus stock fallback."
+  ]
+}
