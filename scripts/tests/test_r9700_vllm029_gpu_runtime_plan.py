@@ -16,11 +16,18 @@ def test_default_plan_is_exact_isolated_and_non_promoting():
     assert payload["candidate"]["observed_patch_sha256"] == payload["candidate"]["patch_sha256"]
     assert payload["candidate"]["arch"] == "gfx1201"
     assert payload["candidate"]["rocm_generation"] == "10.0"
+    assert payload["candidate"]["python"] == "3.13"
+    assert payload["candidate"]["torch"] == "2.13.0"
+    assert payload["candidate"]["build_base_image"] == (
+        "rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0"
+    )
     assert payload["candidate"]["port"] == 18029
     assert payload["candidate"]["port"] not in plan.FORBIDDEN_PORTS
     assert payload["preserved_runtime"]["must_not_be_mutated"] is True
 
     stages = {stage["id"]: stage for stage in payload["stages"]}
+    assert stages["build"]["requirements"]["pytorch_rocm_arch"] == "gfx1201"
+    assert stages["import_abi"]["requirements"]["torch"] == "2.13.0"
     assert stages["load"]["requirements"]["aiter"] is False
     assert stages["load"]["requirements"]["attention_backend"] == "ROCM_ATTN"
     assert stages["path_evidence"]["requirements"]["interleave_marker"] == "tl.interleave"
