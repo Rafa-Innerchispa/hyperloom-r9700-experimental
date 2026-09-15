@@ -14,7 +14,7 @@ def test_repository_patch_is_structurally_valid():
     assert result["automatic_promotion_allowed"] is False
     assert set(result["paths"]) == candidate.EXPECTED_PATHS
     assert len(result["patch_sha256"]) == 64
-    assert result["patch_sha256"] == ("ff6f9bdfcad2e7051896c71a1db7faf905d612ff1d5215ff08c9c91291ccd0e1")
+    assert result["patch_sha256"] == ("6e8aba7839dfd4bc1ba060ab2dad576d42f91ed4df0a7038bfb735d0d9f06b3c")
 
 
 def test_target_is_pinned_vllm_029():
