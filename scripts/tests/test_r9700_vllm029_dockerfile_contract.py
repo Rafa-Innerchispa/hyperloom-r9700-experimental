@@ -18,9 +18,13 @@ def test_dockerfile_pins_exact_rocm10_build_identity():
     assert f"ARG BASE_IMAGE={plan.BUILD_BASE_REF}" in text
     assert plan.BUILD_BASE_DIGEST in text
     assert f"ARG VLLM_SHA={plan.VLLM_SHA}" in text
+    assert f"ARG TRITON_REPO={plan.TRITON_REPO}" in text
+    assert f"ARG TRITON_SHA={plan.TRITON_SHA}" in text
     assert f"ARG PYTORCH_ROCM_ARCH={plan.GPU_ARCH}" in text
     assert "torch == 2.13.0" in text
     assert "rustup toolchain install 1.95" in text
+    assert 'git clone "${TRITON_REPO}" rocm-triton' in text
+    assert 'git checkout --detach "${TRITON_SHA}"' in text
     assert "import triton" in text
 
 
