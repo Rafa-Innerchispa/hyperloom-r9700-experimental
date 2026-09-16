@@ -1,0 +1,123 @@
+ARG BASE_IMAGE=rocm/pytorch:rocm10.0_ubuntu24.04_py3.13_pytorch_release_2.13.0@sha256:c820e27bba8090875760d10b92e52aae790c776a937fa00c4357289dbc0addec
+FROM ${BASE_IMAGE}
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ARG VLLM_SHA=98dff2a81d747d1dba01a47f939f48c3526d4206
+ARG TRITON_REPO=https://github.com/ROCm/triton.git
+ARG TRITON_SHA=f0b55c0
+ARG PYTORCH_ROCM_ARCH=gfx1201
+ARG MAX_JOBS=8
+
+ENV VLLM_TARGET_DEVICE=rocm \
+    PYTORCH_ROCM_ARCH=${PYTORCH_ROCM_ARCH} \
+    MAX_JOBS=${MAX_JOBS} \
+    GPU_MAX_HW_QUEUES=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+LABEL org.opencontainers.image.title="HyperLoom R9700 vLLM 0.29 ROCm 10 candidate" \
+      org.opencontainers.image.description="Isolated experimental gfx1201 source build; not production promotion"
+
+RUN apt-get update -q -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -q -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        ccache \
+        cmake \
+        curl \
+        git \
+        libnuma-dev \
+        ninja-build \
+        pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# vLLM 0.29.0 carries a rust-toolchain.toml pin to Rust 1.95. Install that
+# exact toolchain instead of inheriting an arbitrary host/compiler version.
+ENV CARGO_HOME=/root/.cargo \
+    RUSTUP_HOME=/root/.rustup \
+    PATH=/root/.cargo/bin:/opt/rocm/bin:${PATH}
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+        | sh -s -- -y --default-toolchain none \
+    && rustup toolchain install 1.95 \
+    && rustup default 1.95 \
+    && rustc --version \
+    && cargo --version
+
+RUN python3 -m pip install --upgrade pip \
+    && python3 - <<'PY'
+import platform
+import torch
+assert platform.python_version().startswith("3.13."), platform.python_version()
+assert torch.__version__.startswith("2.13.0"), torch.__version__
+assert getattr(torch.version, "hip", None), torch.version.hip
+print({"python": platform.python_version(), "torch": torch.__version__, "hip": torch.version.hip})
+PY
+
+# Full ROCm source builds of exact vLLM 0.29.0 require ROCm/triton. Use the
+# validated pin from that release's Dockerfile.rocm_base rather than trusting
+# whichever Triton package happens to be present in the PyTorch base image.
+WORKDIR /opt
+RUN python3 -m pip uninstall -y triton || true \
+    && git clone "${TRITON_REPO}" rocm-triton \
+    && cd rocm-triton \
+    && git checkout --detach "${TRITON_SHA}" \
+    && test "$(git rev-parse --short=7 HEAD)" = "${TRITON_SHA}" \
+    && if [ -f setup.py ]; then python3 setup.py install; else cd python && python3 setup.py install; fi \
+    && python3 - <<'PY'
+import triton
+assert getattr(triton, "__version__", None), triton
+print({"triton": triton.__version__})
+PY
+
+RUN git clone https://github.com/vllm-project/vllm.git vllm \
+    && cd vllm \
+    && git checkout --detach "${VLLM_SHA}" \
+    && test "$(git rev-parse HEAD)" = "${VLLM_SHA}" \
+    && grep -Fq '"torch == 2.13.0"' pyproject.toml \
+    && grep -Fq 'channel = "1.95"' rust-toolchain.toml
+
+COPY docs/evidence/vllm_v0_29_0_r9700_awq_triton_candidate.patch /tmp/r9700-vllm029.patch
+
+WORKDIR /opt/vllm
+RUN echo '372d5b73c27536910a615eb0138231514747bde23d5d6a2a5460a2e41fa3c6c9  /tmp/r9700-vllm029.patch' \
+        | sha256sum --check --strict - \
+    && git apply --check --verbose /tmp/r9700-vllm029.patch \
+    && git apply /tmp/r9700-vllm029.patch \
+    && git diff --check \
+    && test "$(git diff --name-only | sort | wc -l)" -eq 5
+
+# Keep the existing ROCm/PyTorch ABI from the AMD ROCm 10 image. requirements/rocm.txt
+# does not install Torch; vLLM's build metadata is separately pinned to Torch 2.13.0.
+RUN if [ -d /opt/rocm/share/amd_smi ]; then python3 -m pip install /opt/rocm/share/amd_smi; fi \
+    && python3 -m pip install --upgrade numba scipy 'huggingface-hub[cli]' setuptools_scm \
+    && python3 -m pip install -r requirements/rocm.txt
+
+# vLLM's ROCm source-install guidance uses setup.py develop. Build only gfx1201.
+RUN python3 setup.py develop \
+    && python3 - <<'PY'
+import json
+import platform
+import torch
+import triton
+import vllm
+from vllm.platforms import current_platform
+
+payload = {
+    "python": platform.python_version(),
+    "torch": torch.__version__,
+    "torch_hip": getattr(torch.version, "hip", None),
+    "triton": getattr(triton, "__version__", None),
+    "vllm": getattr(vllm, "__version__", None),
+    "is_rocm": current_platform.is_rocm(),
+}
+assert payload["torch"].startswith("2.13.0"), payload
+assert payload["vllm"] == "0.29.0", payload
+assert payload["torch_hip"], payload
+assert payload["triton"], payload
+assert payload["is_rocm"] is True, payload
+print(json.dumps(payload, sort_keys=True))
+PY
+
+# Keep the image passive. Runtime launch, physical gfx1201 identity, exact model
+# load, WNA16 path proof and canonical correctness are separate fail-closed gates.
+ENTRYPOINT ["python3", "-m", "vllm.entrypoints.openai.api_server"]
