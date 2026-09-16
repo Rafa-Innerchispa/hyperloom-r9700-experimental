@@ -1,0 +1,58 @@
+name: R9700 physical preflight probe
+
+on:
+  push:
+    branches:
+      - chatgpt/r9700-physical-preflight-20260915
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: read-only R9700 identity and gate preflight
+    runs-on: Hyperloom-e2e-ci
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Runner identity
+        run: |
+          set -u
+          echo "hostname=$(hostname)"
+          echo "kernel=$(uname -a)"
+          echo "user=$(id -un)"
+          echo "pwd=$(pwd)"
+          echo "kfd=$(test -e /dev/kfd && echo present || echo absent)"
+          echo "dri=$(test -e /dev/dri && echo present || echo absent)"
+          command -v rocm-smi || true
+          command -v rocminfo || true
+          rocm-smi --showproductname --showdriverversion --json || true
+          rocminfo | grep -E 'Name:|Marketing Name:|gfx1201|R9700' | head -n 120 || true
+
+      - name: Canonical read-only preflight
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          mkdir -p var/r9700_vllm029_gpu_candidate
+          python3 scripts/r9700_vllm029_gpu_preflight.py \
+            --output var/r9700_vllm029_gpu_candidate/preflight.json
+          rc=$?
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          cat var/r9700_vllm029_gpu_candidate/preflight.json || true
+          exit 0
+
+      - name: Upload preflight evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r9700-physical-preflight
+          path: var/r9700_vllm029_gpu_candidate/preflight.json
+          if-no-files-found: warn
+
+      - name: Final gate status
+        shell: bash
+        run: |
+          test "${{ steps.preflight.outputs.exit_code }}" = "0"
