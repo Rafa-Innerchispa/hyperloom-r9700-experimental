@@ -1,5 +1,33 @@
 # ROCm Hyperloom
 
+<!-- HYPERLOOM-LINEAGE:START -->
+## HyperLoom R9700 research line
+
+This repository is the **public R&D hub** for the HyperLoom R9700 experiments inside the broader InnerOS sovereign-compute program. The related repositories are intentionally small, bounded probes. They are **not separate products**.
+
+| Repository | Role |
+|---|---|
+| `hyperloom-r9700-container-baseline` | Minimal reproducible container/runtime baseline |
+| `hyperloom-r9700-live-ab` | Live A/B validation path |
+| `hyperloom-r9700-bridge-smoke` | Bridge smoke test |
+| `hyperloom-r9700-tool-probe` | Tool-contract probe |
+| `hyperloom-r9700-json-agent-smoke` | Deterministic JSON agent-output probe |
+| `hyperloom-r9700-agent-smoke` | Minimal agent execution smoke test |
+| `hyperloom-r9700-autonomous-loop` | Bounded autonomous-loop experiment |
+| `hyperloom-r9700-anthropic-bridge` | Provider-bridge experiment |
+| `hyperloom-r9700-live-runner` | Live local workload runner validation |
+| `hyperloom-r9700-evidence-reader` | Execution-evidence reader probe |
+
+The promotion rule is simple:
+
+```text
+probe -> measured evidence -> architectural decision -> reusable InnerOS capability
+```
+
+A probe remains a probe unless its result is deliberately promoted into a maintained InnerOS platform or product repository.
+<!-- HYPERLOOM-LINEAGE:END -->
+
+
 [![Tests](https://github.com/AMD-AGI/Hyperloom/actions/workflows/tests-coverage.yml/badge.svg)](https://github.com/AMD-AGI/Hyperloom/actions/workflows/tests-coverage.yml)
 [![Lint](https://github.com/AMD-AGI/Hyperloom/actions/workflows/lint.yml/badge.svg)](https://github.com/AMD-AGI/Hyperloom/actions/workflows/lint.yml)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue)](pyproject.toml)
