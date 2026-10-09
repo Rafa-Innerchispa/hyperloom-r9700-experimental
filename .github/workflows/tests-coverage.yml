@@ -343,7 +343,7 @@ jobs:
 
       - name: Upload shard coverage data
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: covdata-py${{ matrix.python-version }}-shard${{ matrix.shard }}
           path: |
@@ -360,7 +360,7 @@ jobs:
       # real. Only uploaded on failure to avoid an artifact per green shard.
       - name: Upload pytest output log
         if: always() && steps.pytest.outcome != 'success'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: pytest-log-py${{ matrix.python-version }}-shard${{ matrix.shard }}
           path: |
@@ -374,7 +374,7 @@ jobs:
       # keep a single shared DB (see the restore key rationale above).
       - name: Upload shard durations
         if: always() && matrix.python-version == '3.10'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: durations-shard${{ matrix.shard }}
           path: .test_durations.shard${{ matrix.shard }}
