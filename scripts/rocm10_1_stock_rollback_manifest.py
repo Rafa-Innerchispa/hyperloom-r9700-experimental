@@ -23,12 +23,8 @@ STOCK_CONTAINER = "inneros-vllm-qwen3-coder-30b-awq"
 STOCK_BASE_URL = "http://127.0.0.1:8000/v1"
 SCHEMA = "hyperloom.rocm10_1.stock_rollback_manifest.v1"
 
-_SECRET_KEY_RE = re.compile(
-    r"(?i)(token|secret|password|passwd|api[_-]?key|authorization|credential|private[_-]?key)"
-)
-_SECRET_VALUE_RE = re.compile(
-    r"(?i)(?:sk-|gh[pousr]_|crsr_|bearer\s+)[A-Za-z0-9._-]+"
-)
+_SECRET_KEY_RE = re.compile(r"(?i)(token|secret|password|passwd|api[_-]?key|authorization|credential|private[_-]?key)")
+_SECRET_VALUE_RE = re.compile(r"(?i)(?:sk-|gh[pousr]_|crsr_|bearer\s+)[A-Za-z0-9._-]+")
 
 
 def redact_text(value: str) -> str:
