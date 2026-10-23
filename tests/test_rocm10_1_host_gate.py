@@ -80,9 +80,7 @@ def test_cleanup_or_occupied_candidate_port_blocks_launch() -> None:
 
 
 def test_stock_health_is_required_before_exclusive_window() -> None:
-    report = MOD.evaluate_snapshot(
-        snapshot(stock_container_running=False, stock_endpoint_healthy=False)
-    )
+    report = MOD.evaluate_snapshot(snapshot(stock_container_running=False, stock_endpoint_healthy=False))
     assert report.ready is False
     assert "stock_container_not_running" in report.blockers
     assert "stock_endpoint_8000_not_healthy" in report.blockers
