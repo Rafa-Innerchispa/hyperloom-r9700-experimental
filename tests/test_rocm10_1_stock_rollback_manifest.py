@@ -96,9 +96,7 @@ def fake_runner(argv: list[str], _timeout: float):
 def test_manifest_preserves_stock_identity_and_redacts_secrets() -> None:
     manifest = MOD.capture_manifest(
         runner=fake_runner,
-        request_json=lambda _url: {
-            "data": [{"id": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"}]
-        },
+        request_json=lambda _url: {"data": [{"id": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ"}]},
         port_probe=lambda: True,
     )
 
