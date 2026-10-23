@@ -200,14 +200,10 @@ def evaluate_snapshot(
     warnings: list[str] = []
 
     if snapshot.root_free_gib < thresholds.min_root_free_gib:
-        blockers.append(
-            f"root_free_below_gate:{snapshot.root_free_gib:.3f}GiB<"
-            f"{thresholds.min_root_free_gib:.3f}GiB"
-        )
+        blockers.append(f"root_free_below_gate:{snapshot.root_free_gib:.3f}GiB<{thresholds.min_root_free_gib:.3f}GiB")
     if snapshot.root_used_percent > thresholds.max_root_used_percent:
         blockers.append(
-            f"root_usage_above_gate:{snapshot.root_used_percent:.2f}%>"
-            f"{thresholds.max_root_used_percent:.2f}%"
+            f"root_usage_above_gate:{snapshot.root_used_percent:.2f}%>{thresholds.max_root_used_percent:.2f}%"
         )
     if snapshot.memory_available_gib < thresholds.min_memory_available_gib:
         blockers.append(
@@ -225,11 +221,7 @@ def evaluate_snapshot(
     if not snapshot.candidate_port_free:
         blockers.append(f"candidate_port_{CANDIDATE_PORT}_not_free")
 
-    swap_used_percent = (
-        snapshot.swap_used_gib / snapshot.swap_total_gib * 100.0
-        if snapshot.swap_total_gib > 0
-        else 0.0
-    )
+    swap_used_percent = snapshot.swap_used_gib / snapshot.swap_total_gib * 100.0 if snapshot.swap_total_gib > 0 else 0.0
     if swap_used_percent >= thresholds.swap_warning_percent:
         if snapshot.swap_io_kib_per_second > thresholds.max_swap_io_kib_per_second:
             blockers.append(
@@ -243,9 +235,7 @@ def evaluate_snapshot(
             )
 
     if snapshot.load_1m > snapshot.cpu_count * 1.5:
-        warnings.append(
-            f"high_load:{snapshot.load_1m:.3f} on {snapshot.cpu_count} CPUs"
-        )
+        warnings.append(f"high_load:{snapshot.load_1m:.3f} on {snapshot.cpu_count} CPUs")
 
     ready = not blockers
     next_action = (
