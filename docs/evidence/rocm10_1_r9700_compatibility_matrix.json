@@ -1,0 +1,90 @@
+{
+  "schema": "rocm10_1-r9700-compatibility-matrix-v1",
+  "evaluated_at": "2026-10-18T23:30:00Z",
+  "hardware": {
+    "gpu_model": "AMD Radeon AI PRO R9700",
+    "device_id": "0x7551",
+    "architecture": "RDNA4",
+    "target": "gfx1201",
+    "compute_units": 64,
+    "vram_gb": 32,
+    "dev_nodes": [
+      "/dev/kfd",
+      "/dev/dri"
+    ]
+  },
+  "host_stack": {
+    "rocm_base": "ROCm 10.0 / 10.1 driver compatibility",
+    "active_production_container": "inneros-vllm-qwen3-coder-30b-awq",
+    "active_production_port": 8000,
+    "active_production_status": "untouched / operational"
+  },
+  "components": {
+    "rocm10_1": {
+      "official_support": "Hardware officially recognized in ROCm 10 series (targets gfx1200 / gfx1201)",
+      "driver_compatibility": "Compatible with Linux kernel 6.x / amdgpu driver with /dev/kfd compute interface",
+      "status": "VALIDATED_FRAMEWORK_SMOKE"
+    },
+    "pytorch": {
+      "rocm10_1_build": "rocm/pytorch:rocm10.1.0_ubuntu26.04_py3.14_pytorch_release_2.14.0",
+      "compatibility": "PASS (torch 2.13.0/2.14.0+rocm10, cuda_available: True, target gfx1201 detected)"
+    },
+    "vllm": {
+      "upstream_version": "v0.32.0",
+      "amd_official_pairing": "vLLM 0.29.0 on PyTorch 2.13.0 / ROCm 10.1",
+      "pr_43389_status": "closed unmerged (Triton AutoAWQ MoE repack for gfx1201 not merged upstream)",
+      "int_wna16_oracle_status": "retains 'the AutoAWQ weight layout is not supported' for Triton backend",
+      "decision": "Overlay required for AWQ MoE on R9700"
+    },
+    "hyperloom": {
+      "upstream_version": "1.1.0",
+      "declared_platforms": [
+        "MI300X",
+        "MI325X",
+        "MI355X"
+      ],
+      "r9700_support": "Not declared upstream; maintained in experimental fork"
+    },
+    "triton": {
+      "gfx1201_support": "Recognizes gfx1200/gfx1201 in Gluon/AMD backend layouts",
+      "jit_warmup_requirement": "Warmup required to eliminate cold prefix-prefill JIT penalty (~50ms target TTFT)"
+    }
+  },
+  "patch_retention_audit": {
+    "wna16_hybrid_overlay": {
+      "status": "still_required",
+      "rationale": "Upstream PR 43389 closed unmerged; upstream oracle rejects AutoAWQ weight layout on Triton."
+    },
+    "r9700_hw_queue_tuning": {
+      "knob": "GPU_MAX_HW_QUEUES=1",
+      "status": "performance_required",
+      "rationale": "Ensures deterministic queue isolation and prevents wave starvation during concurrent multi-turn requests."
+    },
+    "device_recognition_hacks": {
+      "status": "obsolete_retired",
+      "rationale": "ROCm 10.0+ natively recognizes gfx1201 / Radeon AI PRO R9700. Standalone recognition patches are unnecessary."
+    },
+    "prefix_warmup_readiness": {
+      "status": "still_required",
+      "rationale": "Absorbs initial kernel compilation / JIT delay before live agent requests."
+    }
+  },
+  "agent_runtime_improvements": {
+    "tool_call_parser_recommendation": "--enable-auto-tool-choice and --tool-call-parser hermes/qwen for candidate container",
+    "concurrency_scaling": "R9700 serving runtime: concurrency=2 showed +85.36% aggregate output throughput in the recorded E2E harness; classify as serving/concurrency evidence, not ROCm 10.1 candidate proof."
+  },
+  "truth_boundary": {
+    "rocm10_1_candidate_status": "FRAMEWORK_SMOKE_VALIDATED_NOT_PROMOTED",
+    "serving_benchmark_scope": "R9700 serving/concurrency evidence on preserved local endpoint; not proof that ROCm 10.1 vLLM candidate was serving",
+    "production_promotion": "NOT_DONE"
+  },
+  "rocm10_1_promotion_gates": {
+    "raw_candidate_runtime_manifest": false,
+    "exact_30b_model_load_on_rocm10_1_candidate": false,
+    "awq_wna16_backend_path_observed": false,
+    "deterministic_correctness_hash_on_candidate": false,
+    "c1_c4_long_context_on_candidate": false,
+    "vram_cold_warm_ttft_soak": false,
+    "clean_stock_restore_after_candidate": false
+  }
+}

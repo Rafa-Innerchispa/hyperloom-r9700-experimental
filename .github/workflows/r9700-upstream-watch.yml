@@ -10,6 +10,7 @@ on:
       - "scripts/r9700_upstream_watch.py"
       - "scripts/tests/test_r9700_upstream_watch_workflow.py"
       - "docs/evidence/r9700_upstream_watch_baseline_20260914.json"
+      - "docs/evidence/r9700_upstream_watch_baseline_20261018.json"
 
 permissions:
   contents: read

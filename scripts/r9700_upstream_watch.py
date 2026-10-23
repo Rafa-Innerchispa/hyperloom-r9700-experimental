@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 """Read-only, fail-closed upstream drift sentinel for the R9700 S3 overlay.
 
-The sentinel never authorizes automatic overlay removal. A relevant upstream
-change only requests manual revalidation against the exact validated workload.
-Offline snapshot mode is deterministic and is the default; ``--live`` performs
-read-only HTTP GETs against public GitHub endpoints.
+The sentinel distinguishes actionable architectural drift from routine cosmetic
+upstream bumps:
+- Actionable drift: PR merged upstream, AutoAWQ Triton rejection removed, or
+  HyperLoom upstream officially declaring R9700/gfx1201 support.
+- Routine / cosmetic drift: new upstream patch releases or PR state transitions
+  that confirm the overlay must be retained.
+
+The sentinel never authorizes automatic overlay removal. An actionable change
+requests manual revalidation against the exact validated workload in an isolated
+canary. Offline snapshot mode is deterministic; ``--live`` performs read-only
+HTTP GETs against public endpoints.
 """
 
 from __future__ import annotations
@@ -18,10 +25,13 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-RESULT_SCHEMA = "r9700-upstream-watch-v1"
+RESULT_SCHEMA = "r9700-upstream-watch-v2"
 SNAPSHOT_SCHEMA = "r9700-upstream-watch-snapshot-v1"
 OVERLAY_ACTION = "retain_until_manual_revalidation"
 DEFAULT_BASELINE = (
+    Path(__file__).resolve().parents[1] / "docs" / "evidence" / "r9700_upstream_watch_baseline_20261018.json"
+)
+LEGACY_BASELINE = (
     Path(__file__).resolve().parents[1] / "docs" / "evidence" / "r9700_upstream_watch_baseline_20260914.json"
 )
 
@@ -35,6 +45,18 @@ AUTOAWQ_TRITON_REJECTION = "the AutoAWQ weight layout is not supported"
 R9700_SUPPORT_PATTERN = re.compile(r"(?:Radeon\s+AI\s+PRO\s+R9700|\bR9700\b|\bgfx1201\b)", re.IGNORECASE)
 MAX_SNAPSHOT_BYTES = 256 * 1024
 DEFAULT_TIMEOUT_SECONDS = 15.0
+
+MEANINGFUL_REASONS = {
+    "autoawq_triton_rejection_disappeared",
+    "hyperloom_r9700_support_declared",
+    "vllm_pr_43389_merged",
+}
+
+INFORMATIONAL_REASONS = {
+    "vllm_latest_release_changed",
+    "vllm_pr_43389_state_changed",
+    "vllm_pr_43389_merge_flag_changed",
+}
 
 
 class SnapshotError(ValueError):
@@ -50,7 +72,11 @@ def _fail_closed(reason: str, *, source: str) -> dict[str, Any]:
     return {
         "schema": RESULT_SCHEMA,
         "review_required": True,
+        "actionable_revalidation_required": True,
+        "drift_detected": True,
         "reasons": [reason],
+        "meaningful_reasons": [reason],
+        "informational_reasons": [],
         "automatic_overlay_removal_allowed": False,
         "overlay_action": OVERLAY_ACTION,
         "source": source,
@@ -98,8 +124,9 @@ def evaluate_snapshot(
     baseline: Any,
     *,
     source: str = "offline",
+    strict: bool = False,
 ) -> dict[str, Any]:
-    """Compare current facts to the pinned baseline and fail closed on bad input."""
+    """Compare current facts to the pinned baseline and categorize meaningful vs cosmetic drift."""
     try:
         current = _validated_snapshot(current)
         baseline = _validated_snapshot(baseline)
@@ -132,10 +159,30 @@ def evaluate_snapshot(
     ):
         reasons.append("hyperloom_r9700_support_declared")
 
+    meaningful = [r for r in reasons if r in MEANINGFUL_REASONS]
+    informational = [r for r in reasons if r in INFORMATIONAL_REASONS]
+
+    actionable_revalidation = bool(meaningful)
+    # If strict mode is requested, any drift triggers review_required; otherwise only actionable drift does.
+    review_required = bool(reasons) if strict else actionable_revalidation
+
+    recommended_action = (
+        "revalidate_on_isolated_canary"
+        if actionable_revalidation
+        else "retain_overlay_no_action_needed"
+        if informational
+        else "in_sync"
+    )
+
     return {
         "schema": RESULT_SCHEMA,
-        "review_required": bool(reasons),
+        "drift_detected": bool(reasons),
+        "review_required": review_required,
+        "actionable_revalidation_required": actionable_revalidation,
         "reasons": reasons,
+        "meaningful_reasons": meaningful,
+        "informational_reasons": informational,
+        "recommended_action": recommended_action,
         "automatic_overlay_removal_allowed": False,
         "overlay_action": OVERLAY_ACTION,
         "source": source,
@@ -152,7 +199,7 @@ def evaluate_snapshot(
 def _request(url: str, *, timeout: float) -> urllib.request.Request:
     headers = {
         "Accept": "application/vnd.github+json",
-        "User-Agent": "hyperloom-r9700-upstream-watch/1",
+        "User-Agent": "hyperloom-r9700-upstream-watch/2",
     }
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if token and url.startswith("https://api.github.com/"):
@@ -202,27 +249,37 @@ def collect_live_snapshot(*, timeout: float = DEFAULT_TIMEOUT_SECONDS) -> dict[s
     )
 
 
+def resolve_baseline(path: Path | None) -> Path:
+    if path and path.exists():
+        return path
+    if DEFAULT_BASELINE.exists():
+        return DEFAULT_BASELINE
+    return LEGACY_BASELINE
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--baseline",
         type=Path,
-        default=DEFAULT_BASELINE,
+        default=None,
         help="Pinned baseline snapshot (default: repository baseline)",
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--snapshot", type=Path, help="Offline current snapshot to compare")
     group.add_argument("--live", action="store_true", help="Collect current facts with GET only")
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_SECONDS)
+    parser.add_argument("--strict", action="store_true", help="Fail closed on any drift including cosmetic")
     args = parser.parse_args()
 
+    baseline_path = resolve_baseline(args.baseline)
     source = "live" if args.live else "offline"
     try:
-        baseline = load_snapshot(args.baseline)
+        baseline = load_snapshot(baseline_path)
         current = (
-            collect_live_snapshot(timeout=args.timeout) if args.live else load_snapshot(args.snapshot or args.baseline)
+            collect_live_snapshot(timeout=args.timeout) if args.live else load_snapshot(args.snapshot or baseline_path)
         )
-        result = evaluate_snapshot(current, baseline, source=source)
+        result = evaluate_snapshot(current, baseline, source=source, strict=args.strict)
     except (OSError, SnapshotError, ValueError, urllib.error.URLError) as exc:
         code = str(exc) if isinstance(exc, SnapshotError) else "upstream_watch:unavailable"
         result = _fail_closed(code, source=source)

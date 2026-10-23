@@ -18,6 +18,7 @@ def test_r9700_upstream_watch_has_daily_manual_and_scoped_pr_triggers():
     assert '      - "scripts/r9700_upstream_watch.py"' in text
     assert '      - "scripts/tests/test_r9700_upstream_watch_workflow.py"' in text
     assert '      - "docs/evidence/r9700_upstream_watch_baseline_20260914.json"' in text
+    assert '      - "docs/evidence/r9700_upstream_watch_baseline_20261018.json"' in text
 
 
 def test_r9700_upstream_watch_is_read_only_and_uses_hosted_runner():
