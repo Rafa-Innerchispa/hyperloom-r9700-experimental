@@ -41,12 +41,34 @@ This document defines the verified compatibility matrix between ROCm 10.1, upstr
 ---
 
 ## Agent Runtime & Benchmark Evidence
+
+### Truth boundary
+
+The autonomous E2E and C1-C16 serving benchmarks prove that the local R9700 serving stack and Qwen3-Coder workload are stable and scale under concurrency. They **do not by themselves prove that the ROCm 10.1 vLLM candidate image was the serving runtime**. The recorded E2E harness targets `http://127.0.0.1:8000/v1`, while the production/S3 service was intentionally preserved during the ROCm 10.1 canary work. Treat these results as R9700 serving evidence, not as ROCm 10.1 promotion evidence.
+
+The ROCm 10.1 evidence currently establishes:
+- physical R9700/gfx1201 preflight;
+- ROCm 10.1 PyTorch framework/GPU smoke;
+- compatibility planning for ROCm 10.1 + vLLM;
+- upstream/patch lifecycle analysis.
+
+Still required before ROCm 10.1 can be promoted:
+- raw runtime manifest from the actual ROCm 10.1 candidate container;
+- exact 30B model load on that candidate;
+- observed AWQ/WNA16 backend/path proof;
+- deterministic correctness hash;
+- C1/C4/long-context benchmark on the candidate itself;
+- VRAM, cold/warm TTFT, soak, and clean stock restore evidence.
+
+### Preserved R9700 serving baseline evidence
+
 - **Upstream Autonomous E2E Agent Harness (`r9700_upstream_agent_e2e.py`)**:
   - Model: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ`
   - Baseline Concurrency 1: 18.92 tok/s (median e2e 757ms)
   - Candidate Concurrency 2: 35.07 tok/s (median e2e 800ms)
   - **Throughput Gain**: **+85.36%** (Verdict: **KEEP**)
   - Evidence File: `docs/evidence/hyperloom_r9700_upstream_autonomous_e2e_20261019T043055453703Z.json`
+  - Classification: serving/concurrency evidence; **not ROCm 10.1 candidate proof**.
 - **Tool-Call / Agent Workload Finding**:
   - For native OpenAI function-calling (`tools` parameter), future vLLM candidate container must be launched with:
     `--enable-auto-tool-choice` and `--tool-call-parser hermes` (or `qwen`).
