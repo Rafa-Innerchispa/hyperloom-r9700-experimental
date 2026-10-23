@@ -71,6 +71,20 @@
   },
   "agent_runtime_improvements": {
     "tool_call_parser_recommendation": "--enable-auto-tool-choice and --tool-call-parser hermes/qwen for candidate container",
-    "concurrency_scaling": "Validated concurrency=2 yields +85.36% throughput gain on physical R9700 (KEEP verdict)"
+    "concurrency_scaling": "R9700 serving runtime: concurrency=2 showed +85.36% aggregate output throughput in the recorded E2E harness; classify as serving/concurrency evidence, not ROCm 10.1 candidate proof."
+  },
+  "truth_boundary": {
+    "rocm10_1_candidate_status": "FRAMEWORK_SMOKE_VALIDATED_NOT_PROMOTED",
+    "serving_benchmark_scope": "R9700 serving/concurrency evidence on preserved local endpoint; not proof that ROCm 10.1 vLLM candidate was serving",
+    "production_promotion": "NOT_DONE"
+  },
+  "rocm10_1_promotion_gates": {
+    "raw_candidate_runtime_manifest": false,
+    "exact_30b_model_load_on_rocm10_1_candidate": false,
+    "awq_wna16_backend_path_observed": false,
+    "deterministic_correctness_hash_on_candidate": false,
+    "c1_c4_long_context_on_candidate": false,
+    "vram_cold_warm_ttft_soak": false,
+    "clean_stock_restore_after_candidate": false
   }
 }
