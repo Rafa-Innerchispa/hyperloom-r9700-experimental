@@ -2,6 +2,51 @@
 
 This file is the canonical cross-chat handoff for the current HyperLoom R9700 work. It exists in GitHub `main` so the project does not depend on ChatGPT MCP/task continuity being available in every chat.
 
+## 2026-10-22 ROCm 10.1 continuity checkpoint
+
+This section supersedes older statements below where they conflict with newer evidence.
+
+### Current branch truth
+
+- ROCm 10.1 integration branch: `antigravity/hyperloom-rocm101-refresh-20261018`.
+- Last pre-audit evidence head: `382b6cd4bbcfb179ac79616bedf4098fc5786742`.
+- The branch was six commits ahead of `main` on 2026-10-22 and had no pull request, which is why the work was easy to lose across chats.
+- Target hardware remains Radeon AI PRO R9700 / `gfx1201` / 32 GiB.
+- Production endpoint `:8000` and stock/S3 fallback were intentionally not promoted to ROCm 10.1 during the canary work.
+
+### What ROCm 10.1 actually proved
+
+- ROCm 10.1 / PyTorch 2.14 framework smoke on R9700/gfx1201: PASS according to the recorded canary work.
+- Native gfx1201 recognition: historical device-recognition hacks are obsolete.
+- Upstream vLLM moved forward to 0.32.0, but the AutoAWQ Triton MoE/WNA16 gap remained in the audited upstream path; keep the overlay until direct candidate evidence proves it unnecessary.
+- HyperLoom upstream still does not declare Radeon R9700 as an officially supported target; keep this integration experimental.
+
+### What the later benchmarks proved, and what they did not
+
+The recorded autonomous E2E and C1-C16 concurrency reports prove useful R9700 serving behavior, including high concurrency survival and correct tool-call behavior. They target the preserved local serving endpoint and must **not** be used as proof that the ROCm 10.1 vLLM candidate itself passed the full promotion gate.
+
+Before saying "ROCm 10.1 is production-ready", capture direct evidence from the actual ROCm 10.1 candidate:
+
+1. candidate container runtime/version manifest;
+2. exact Qwen3-Coder-30B-A3B-Instruct-AWQ load;
+3. observed AWQ/WNA16 backend/path;
+4. deterministic correctness hash;
+5. C1/C4/long-context/repeated tool-call measurements on that candidate;
+6. VRAM and GPU utilization;
+7. cold/warm TTFT and repeated starts;
+8. bounded soak;
+9. clean restoration and verification of stock/S3.
+
+### Validation repeated on 2026-10-22
+
+- ROCm 10.1/watch focused tests: 18 PASS.
+- Full `scripts/tests` + ROCm 10.1 canary test: 405 PASS.
+- `compileall scripts src tests`: PASS.
+- `git diff --check`: PASS.
+
+No production promotion is implied by these tests.
+
+
 ## Repository
 
 - Repo: `Rafa-Innerchispa/hyperloom-r9700-experimental`
